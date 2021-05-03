@@ -4,11 +4,6 @@
   become: true
   tasks: 
 
-  # - name: Create go-dappley directory
-  #   file:
-  #     path: /home/ubuntu/go-dappley
-  #     state: directory
-
   - name: Clone the go-dappley repository
     ansible.builtin.git:
       repo: https://github.com/dappley/go-dappley.git
