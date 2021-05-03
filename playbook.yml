@@ -1,0 +1,10 @@
+---
+
+- hosts: all
+  become: true
+  tasks: 
+
+  - name: Clone the go-dappley repository
+    ansible.builtin.git:
+      repo: https://github.com/dappley/go-dappley.git
+      dest: $HOME
