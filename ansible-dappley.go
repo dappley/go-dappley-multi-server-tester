@@ -27,15 +27,21 @@ func main() {
 
 func update() {
 
-	//Create txt file for server info
-	file, err := os.Create("hosts")
+	//Create txt files for server info
+	host_file, err := os.Create("hosts")
+	if err != nil {
+		fmt.Println("Unable to create file!")
+		return
+	}
+
+	id_file, err := os.Create("instance_ids")
 	if err != nil {
 		fmt.Println("Unable to create file!")
 		return
 	}
 
 	for i := 1; i <= 5; i++ {
-		var private_ips string
+		var private_ips, instance_ids string
 		fileName := "node" + strconv.Itoa(i) + ".txt"
 		
 		node_byte, err := ioutil.ReadFile(fileName)
@@ -60,6 +66,7 @@ func update() {
 					fmt.Println(err)
 				}
 				fmt.Printf("%s\n", output)
+				instance_ids += instance_id + "\n"
 			}
 
 			if strings.Contains(line, "PrivateIpAddress") {
@@ -71,7 +78,13 @@ func update() {
 			}
 		}
 
-		_, err = file.WriteString(private_ips)
+		_, err = host_file.WriteString(private_ips)
+		if err != nil {
+			fmt.Println("Unable to write on file!")
+			return
+		}
+
+		_, err = id_file.WriteString(instance_ids)
 		if err != nil {
 			fmt.Println("Unable to write on file!")
 			return
