@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"fmt"
+	"flag"
 	"bufio"
 	"strconv"
 	"strings"
@@ -11,6 +12,20 @@ import (
 )
 
 func main() {
+	var function string
+	flag.StringVar(&function, "function", "<Function Name>", "Name of the function that will be run.")
+	flag.Parse()
+
+	if function == "update" {
+		update()
+	} else if function == "terminate" {
+		terminate()
+	} else {
+		fmt.Println("Function Invalid!")
+	}
+}
+
+func update() {
 
 	//Create txt file for server info
 	file, err := os.Create("hosts")
@@ -64,3 +79,27 @@ func main() {
 	}
 }
 
+func terminate() {
+	fileName := "hosts"
+	
+	hosts_byte, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		fmt.Println("Failed to read", fileName)
+		return
+	}
+
+	scanner := bufio.NewScanner(strings.NewReader(string(hosts_byte)))
+	for i := 1; scanner.Scan() && i <= 5; i++ {
+		private_ip := scanner.Text()
+
+		terminate_instance := "aws ec2 terminate-instances --instance-ids " + private_ip
+		// args := strings.Split(terminate_instance, " ")
+		// cmd := exec.Command(args[0], args[1:]...)
+		// output, err := cmd.CombinedOutput()
+		// if err != nil {
+		// 	fmt.Println(err)
+		// }
+		// fmt.Printf("%s\n", output)
+		fmt.Println(terminate_instance)
+	}
+}
