@@ -11,19 +11,16 @@ import (
 )
 
 func main() {
+
 	//Create txt file for server info
-	file, err := os.Create("nodes.txt")
+	file, err := os.Create("hosts")
 	if err != nil {
 		fmt.Println("Unable to create file!")
 		return
 	}
 
-	//Add the server info to the new txt file in the below format
-	// Name:               <INSTANCE NAME>
-	// Private ip address: <PRIVATE  IP>
-	// Instance id:        <INSTANCE ID>
 	for i := 1; i <= 5; i++ {
-		var nodeName, privateIP, instanceID string
+		var private_ips string
 		fileName := "node" + strconv.Itoa(i) + ".txt"
 		
 		node_byte, err := ioutil.ReadFile(fileName)
@@ -40,7 +37,6 @@ func main() {
 				args := strings.Split(line, ": ")
 				instance_id := strings.TrimLeft(strings.TrimRight(args[1], "\","), "\"")
 				fmt.Println(instance_id)
-				instanceID = "Instance id:        " + instance_id + "\n"
 				describe_instance := "aws ec2 describe-instances --instance-id " + instance_id
 				args = strings.Split(describe_instance, " ")
 				cmd := exec.Command(args[0], args[1:]...)
@@ -53,16 +49,14 @@ func main() {
 
 			if strings.Contains(line, "PrivateIpAddress") {
 				args := strings.Split(line, ": ")
-				private_ip := strings.TrimRight(args[1], ",")
+				private_ip := strings.TrimLeft(strings.TrimRight(args[1], "\","), "\"")
 				fmt.Println(private_ip)
-				privateIP = "Private ip address: " + private_ip + "\n\n"
+				private_ips += private_ip + "\n"
 				break
 			}
 		}
 
-		nodeName = "Name:               " + fileName + "\n"
-		info := nodeName + instanceID + privateIP
-		_, err = file.WriteString(info)
+		_, err = file.WriteString(private_ips)
 		if err != nil {
 			fmt.Println("Unable to write on file!")
 			return
