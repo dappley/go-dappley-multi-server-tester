@@ -93,19 +93,19 @@ func update() {
 }
 
 func terminate() {
-	fileName := "hosts"
+	fileName := "instance_ids"
 	
-	hosts_byte, err := ioutil.ReadFile(fileName)
+	instance_byte, err := ioutil.ReadFile(fileName)
 	if err != nil {
 		fmt.Println("Failed to read", fileName)
 		return
 	}
 
-	scanner := bufio.NewScanner(strings.NewReader(string(hosts_byte)))
+	scanner := bufio.NewScanner(strings.NewReader(string(instance_byte)))
 	for i := 1; scanner.Scan() && i <= 5; i++ {
-		private_ip := scanner.Text()
+		instance_id := scanner.Text()
 
-		terminate_instance := "aws ec2 terminate-instances --instance-ids " + private_ip
+		terminate_instance := "aws ec2 terminate-instances --instance-ids " + instance_id
 		// args := strings.Split(terminate_instance, " ")
 		// cmd := exec.Command(args[0], args[1:]...)
 		// output, err := cmd.CombinedOutput()
