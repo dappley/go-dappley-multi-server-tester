@@ -42,7 +42,7 @@ func update() {
 		return
 	}
 
-	for i := 1; i <= 1; i++ {
+	for i := 1; i <= 5; i++ {
 		var private_ips, instance_ids string
 		fileName := "node" + strconv.Itoa(i) + ".txt"
 		
@@ -104,7 +104,7 @@ func initialize() {
 	}
 
 	scanner := bufio.NewScanner(strings.NewReader(string(instance_byte)))
-	for i := 1; scanner.Scan() && i <= 1; i++ {
+	for i := 1; scanner.Scan() && i <= 5; i++ {
 		instance_id := scanner.Text()
 		initializing := true
 		for initializing {
@@ -165,7 +165,7 @@ func terminate() {
 	}
 
 	scanner := bufio.NewScanner(strings.NewReader(string(instance_byte)))
-	for i := 1; scanner.Scan() && i <= 1; i++ {
+	for i := 1; scanner.Scan() && i <= 5; i++ {
 		instance_id := scanner.Text()
 
 		terminate_instance := "aws ec2 terminate-instances --instance-ids " + instance_id
