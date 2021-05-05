@@ -106,13 +106,13 @@ func terminate() {
 		instance_id := scanner.Text()
 
 		terminate_instance := "aws ec2 terminate-instances --instance-ids " + instance_id
-		// args := strings.Split(terminate_instance, " ")
-		// cmd := exec.Command(args[0], args[1:]...)
-		// output, err := cmd.CombinedOutput()
-		// if err != nil {
-		// 	fmt.Println(err)
-		// }
-		// fmt.Printf("%s\n", output)
+		args := strings.Split(terminate_instance, " ")
+		cmd := exec.Command(args[0], args[1:]...)
+		output, err := cmd.CombinedOutput()
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Printf("%s\n", output)
 		fmt.Println(terminate_instance)
 	}
 }
