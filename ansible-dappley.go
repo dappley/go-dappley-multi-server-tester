@@ -20,6 +20,8 @@ func main() {
 		update()
 	} else if function == "terminate" {
 		terminate()
+	} else if function == "initialize" {
+		initialize()
 	} else {
 		fmt.Println("Function Invalid!")
 	}
@@ -88,6 +90,67 @@ func update() {
 		if err != nil {
 			fmt.Println("Unable to write on file!")
 			return
+		}
+	}
+}
+
+func initialize() {
+	fileName := "instance_ids"
+
+	instance_byte, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		fmt.Println("Failed to read", fileName)
+		return
+	}
+
+	scanner := bufio.NewScanner(strings.NewReader(string(instance_byte)))
+	for i := 1; scanner.Scan() && i <= 1; i++ {
+		instance_id := scanner.Text()
+		initializing := true
+		for initializing {
+			status_file, err := os.Create("status")
+			if err != nil {
+				fmt.Println("Unable to create file!")
+				return
+			}
+
+			terminate_instance := "aws ec2 describe-instance-status --instance-ids " + instance_id
+			args := strings.Split(terminate_instance, " ")
+			cmd := exec.Command(args[0], args[1:]...)
+			output, err := cmd.CombinedOutput()
+			if err != nil {
+				fmt.Println(err)
+			}
+			
+			//fmt.Println(terminate_instance)
+			//fmt.Printf("%s\n", output)
+
+			_, err = status_file.WriteString(string(output))
+			if err != nil {
+				fmt.Println("Unable update status!")
+				return
+			}
+
+			status_byte, err := ioutil.ReadFile("status")
+			if err != nil {
+				fmt.Println("Failed to check status")
+				return
+			}
+
+			status_scanner := bufio.NewScanner(strings.NewReader(string(status_byte)))
+			for status_scanner.Scan() {
+				line := status_scanner.Text()
+
+				if strings.Contains(line, "\"Status\":") {
+					args := strings.Split(line, ": ")
+					status := strings.TrimLeft(strings.TrimRight(args[1], "\""), "\"")
+					fmt.Println(status)
+					if status == "passed" {
+						initializing = false
+						break
+					}
+				}
+			}
 		}
 	}
 }
