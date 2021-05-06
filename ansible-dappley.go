@@ -101,14 +101,8 @@ func initialize() {
 	for i := 1; scanner.Scan() && i <= 5; i++ {
 		instance_id := scanner.Text()
 		initializing := true
+		fmt.Println("Initializing " + instance_id + "...")
 		for initializing {
-			fmt.Println("Initializing " + instance_id + "...")
-			// status_file, err := os.Create("status")
-			// if err != nil {
-			// 	fmt.Println("Unable to create file!")
-			// 	return
-			// }
-
 			terminate_instance := "aws ec2 describe-instance-status --instance-ids " + instance_id
 			args := strings.Split(terminate_instance, " ")
 			cmd := exec.Command(args[0], args[1:]...)
@@ -117,21 +111,6 @@ func initialize() {
 				fmt.Println(err)
 			}
 			
-			//fmt.Println(terminate_instance)
-			//fmt.Printf("%s\n", output)
-
-			// _, err = status_file.WriteString(string(output))
-			// if err != nil {
-			// 	fmt.Println("Unable update status!")
-			// 	return
-			// }
-
-			// status_byte, err := ioutil.ReadFile("status")
-			// if err != nil {
-			// 	fmt.Println("Failed to check status")
-			// 	return
-			// }
-
 			status_scanner := bufio.NewScanner(strings.NewReader(string(output)))
 			for status_scanner.Scan() {
 				line := status_scanner.Text()
