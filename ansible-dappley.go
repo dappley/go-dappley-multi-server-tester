@@ -23,6 +23,9 @@ func main() {
 		terminate()
 	} else if function == "initialize" {
 		initialize()
+	} else if function == "ssh_command" {
+		initialize()
+		ssh_command()
 	} else {
 		fmt.Println("Function Invalid!")
 	}
@@ -60,22 +63,12 @@ func update() {
 			if strings.Contains(line, "InstanceId") {
 				args := strings.Split(line, ": ")
 				instance_id := strings.TrimLeft(strings.TrimRight(args[1], "\","), "\"")
-				fmt.Println(instance_id)
-				describe_instance := "aws ec2 describe-instances --instance-id " + instance_id
-				args = strings.Split(describe_instance, " ")
-				cmd := exec.Command(args[0], args[1:]...)
-				output, err := cmd.CombinedOutput()
-				if err != nil {
-					fmt.Println(err)
-				}
-				fmt.Printf("%s\n", output)
 				instance_ids += instance_id + "\n"
 			}
 
 			if strings.Contains(line, "PrivateIpAddress") {
 				args := strings.Split(line, ": ")
 				private_ip := strings.TrimLeft(strings.TrimRight(args[1], "\","), "\"")
-				fmt.Println(private_ip)
 				private_ips += private_ip + "\n"
 				break
 			}
@@ -109,11 +102,11 @@ func initialize() {
 		instance_id := scanner.Text()
 		initializing := true
 		for initializing {
-			status_file, err := os.Create("status")
-			if err != nil {
-				fmt.Println("Unable to create file!")
-				return
-			}
+			// status_file, err := os.Create("status")
+			// if err != nil {
+			// 	fmt.Println("Unable to create file!")
+			// 	return
+			// }
 
 			terminate_instance := "aws ec2 describe-instance-status --instance-ids " + instance_id
 			args := strings.Split(terminate_instance, " ")
@@ -126,19 +119,19 @@ func initialize() {
 			//fmt.Println(terminate_instance)
 			//fmt.Printf("%s\n", output)
 
-			_, err = status_file.WriteString(string(output))
-			if err != nil {
-				fmt.Println("Unable update status!")
-				return
-			}
+			// _, err = status_file.WriteString(string(output))
+			// if err != nil {
+			// 	fmt.Println("Unable update status!")
+			// 	return
+			// }
 
-			status_byte, err := ioutil.ReadFile("status")
-			if err != nil {
-				fmt.Println("Failed to check status")
-				return
-			}
+			// status_byte, err := ioutil.ReadFile("status")
+			// if err != nil {
+			// 	fmt.Println("Failed to check status")
+			// 	return
+			// }
 
-			status_scanner := bufio.NewScanner(strings.NewReader(string(status_byte)))
+			status_scanner := bufio.NewScanner(strings.NewReader(string(output)))
 			for status_scanner.Scan() {
 				line := status_scanner.Text()
 
@@ -170,7 +163,7 @@ func terminate() {
 	
 	instance_byte, err := ioutil.ReadFile(fileName)
 	if err != nil {
-		fmt.Println("Failed to read", fileName)
+		fmt.Println("Failed to read", fileName, "!")
 		return
 	}
 
@@ -187,5 +180,38 @@ func terminate() {
 		}
 		fmt.Printf("%s\n", output)
 		fmt.Println(terminate_instance)
+	}
+}
+
+func ssh_command() {	
+	instance_byte, err := ioutil.ReadFile("instance_ids")
+	if err != nil {
+		fmt.Println("Failed to read instance_ids!")
+		return
+	}
+
+	scanner := bufio.NewScanner(strings.NewReader(string(instance_byte)))
+	for i := 1; scanner.Scan() && i <= 5; i++ {
+		instance_id := scanner.Text()
+
+		describe_instance := "aws ec2 describe-instances --instance-ids " + instance_id
+		args := strings.Split(describe_instance, " ")
+		cmd := exec.Command(args[0], args[1:]...)
+		output, err := cmd.CombinedOutput()
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		description_scanner := bufio.NewScanner(strings.NewReader(string(output)))
+		for description_scanner.Scan() {
+			line := description_scanner.Text()
+
+			if strings.Contains(line, "\"PublicIpAddress\":") {
+				public_ip_args := strings.Split(line, ": ")
+				public_ip := strings.TrimLeft(strings.TrimRight(public_ip_args[1], "\","), "\"")
+				fmt.Println("ssh -i jenkins.pem ubuntu@" + public_ip)
+				break
+			}
+		}
 	}
 }
