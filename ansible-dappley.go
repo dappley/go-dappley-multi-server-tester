@@ -102,6 +102,7 @@ func initialize() {
 		instance_id := scanner.Text()
 		initializing := true
 		for initializing {
+			fmt.Println("Initializing " + instance_id + "...")
 			// status_file, err := os.Create("status")
 			// if err != nil {
 			// 	fmt.Println("Unable to create file!")
@@ -147,9 +148,9 @@ func initialize() {
 				if strings.Contains(line, "\"Status\":") {
 					args := strings.Split(line, ": ")
 					status := strings.TrimLeft(strings.TrimRight(args[1], "\""), "\"")
-					fmt.Println(status)
 					if status == "passed" {
 						initializing = false
+						fmt.Println("Instance " + instance_id + " initialized!")
 						break
 					}
 				}
