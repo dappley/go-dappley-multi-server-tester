@@ -9,7 +9,11 @@
       repo: https://github.com/dappley/go-dappley.git
       dest: /home/ubuntu/go-dappley/
 
-  - name: Update apt
+  - name: Update  apt
+    apt:
+      update_cache: yes
+
+  - name: Upgrade apt
     apt:
       upgrade: dist
 
