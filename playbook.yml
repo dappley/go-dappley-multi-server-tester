@@ -9,16 +9,13 @@
       repo: https://github.com/dappley/go-dappley.git
       dest: /home/ubuntu/go-dappley/
 
-  - name: Update  apt
+  - name: Update apt
     apt:
       update_cache: yes
 
   - name: Upgrade apt
     apt:
       upgrade: dist
-
-  # - name: Install g++
-  #  shell: sudo apt install g++ -y
 
   - name: Install g++
     apt:
@@ -27,6 +24,11 @@
   - name: Install make
     apt:
       name: make
+
+  - name: Download go.zip
+    get_url:
+      url: https://golang.org/dl/go1.16.3.linux-amd64.tar.gz
+      dest: /home/ubuntu/
 
   # - name: Install golang
 
