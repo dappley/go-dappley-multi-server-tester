@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"flag"
 	"bufio"
+	"errors"
 	"strconv"
 	"strings"
 	"os/exec"
@@ -140,6 +141,15 @@ func initialize() {
 			status_scanner := bufio.NewScanner(strings.NewReader(string(status_byte)))
 			for status_scanner.Scan() {
 				line := status_scanner.Text()
+
+				if strings.Contains(line, "\"InstanceStatuses\":") {
+					args := strings.Split(line, ": ")
+					status := strings.TrimLeft(strings.TrimRight(args[1], "\""), "\"")
+					if status == "[]" {
+						err := errors.New("Instance " + instance_id + "has been termianted!")
+						panic(err)
+					}
+				}
 
 				if strings.Contains(line, "\"Status\":") {
 					args := strings.Split(line, ": ")
