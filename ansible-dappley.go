@@ -24,7 +24,6 @@ func main() {
 	} else if function == "initialize" {
 		initialize()
 	} else if function == "ssh_command" {
-		initialize()
 		ssh_command()
 	} else {
 		fmt.Println("Function Invalid!")
