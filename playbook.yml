@@ -2,7 +2,7 @@
 
 - hosts: all
   become: true
-  tasks: 
+  tasks:
 
   - name: Clone the go-dappley repository
     ansible.builtin.git:
@@ -10,10 +10,15 @@
       dest: /home/ubuntu/go-dappley/
 
   - name: Update apt
-    shell: apt dist-upgrade -y
+    apt:
+      upgrade: dist
+
+  # - name: Install g++
+  #  shell: sudo apt install g++ -y
 
   - name: Install g++
-    shell: apt install g++ -y
+    apt:
+      name: g++
 
   - name: Install make
     apt:
