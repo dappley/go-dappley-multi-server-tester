@@ -8,20 +8,12 @@
     ansible.builtin.git:
       repo: https://github.com/dappley/go-dappley.git
       dest: /home/ubuntu/go-dappley/
-    
-  - name: Update apt
-    apt:
-      name: "*"
-      state: latest
 
-  - name: gcc | Install C++ compiler (RedHat based)
-    action: "{{ ansible_pkg_mgr}} name={{ item }} state={{ gcc_pkg_state|default('present') }}"
-    when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
-    with_items:
-      - gcc{{ gcc_version }}
-      - gcc-c++{{ gcc_version }}
-    tags: gcc
-    become: yes
+  - name: Update apt
+    shell: apt dist-upgrade -y
+
+  - name: Install g++
+    shell: apt install g++ -y
 
   - name: Install make
     apt:

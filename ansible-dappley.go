@@ -30,6 +30,7 @@ func main() {
 	}
 }
 
+//Adds the server information to the hosts and instance_ids file
 func update() {
 
 	//Create txt files for server info
@@ -87,6 +88,7 @@ func update() {
 	}
 }
 
+//Runs until all servers are initialized
 func initialize() {
 	fileName := "instance_ids"
 
@@ -137,6 +139,7 @@ func initialize() {
 	}
 }
 
+//Termiante all servers via aws cli command
 func terminate() {
 	fileName := "instance_ids"
 	
@@ -162,6 +165,7 @@ func terminate() {
 	}
 }
 
+//Prints out the ssh command for all servers
 func ssh_command() {	
 	instance_byte, err := ioutil.ReadFile("instance_ids")
 	if err != nil {
