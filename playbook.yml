@@ -53,9 +53,6 @@
       path: /home/ubuntu/go-dappley
       owner: ubuntu
       group: ubuntu
-
-  # - name: Source .bashrc
-
-  # - name: Grant permission to go-dapply
+      recurse: yes
 
   # - name: Make build
