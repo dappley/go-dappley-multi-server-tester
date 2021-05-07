@@ -48,6 +48,12 @@
     - 'export GOROOT=/usr/local/go'
     - 'export PATH=$PATH:$GOROOT/bin:$GOPATH/bin'
 
+  - name: Grant permission
+    file:
+      path: /home/ubuntu/go-dappley
+      owner: ubuntu
+      group: ubuntu
+
   # - name: Source .bashrc
 
   # - name: Grant permission to go-dapply
