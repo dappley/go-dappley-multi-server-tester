@@ -30,7 +30,25 @@
       url: https://golang.org/dl/go1.16.3.linux-amd64.tar.gz
       dest: /home/ubuntu/
 
-  # - name: Install golang
+  - name: Extract go.tgz
+    ansible.builtin.unarchive:
+      src: /home/ubuntu/go1.16.3.linux-amd64.tar.gz
+      dest: /usr/local/
+      remote_src: yes
+
+  - name: Add lines to .bashrc
+    lineinfile:
+      path: /home/ubuntu/.bashrc
+      state: present
+      line: "{{ item }}"
+    with_items:
+    - ' '
+    - '# Add go to path'
+    - 'export GOPATH=$HOME/go'
+    - 'export GOROOT=/usr/local/go'
+    - 'export PATH=$PATH:$GOROOT/bin:$GOPATH/bin'
+
+  # - name: Source .bashrc
 
   # - name: Grant permission to go-dapply
 
