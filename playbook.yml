@@ -4,8 +4,14 @@
   become: true
   tasks:
 
+  - name: Check directory exists
+    stat:
+      path: /home/ubuntu/go
+    register: go_directory
+
   - name: Create go-dappley directories
     shell: mkdir go go/src go/pkg go/bin go/src/github.com go/src/github.com/dappley
+    when: go_directory.stat.exists == false
 
   - name: Clone the go-dappley repository
     ansible.builtin.git:
@@ -49,7 +55,9 @@
     - '# Add go to path'
     - 'export GOPATH=$HOME/go'
     - 'export GOROOT=/usr/local/go'
-    - 'export PATH=$PATH:$GOROOT/bin:$GOPATH/bin'
+    - 'export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin'
+    
+    # - 'export PATH=$PATH:$GOROOT/bin:$GOPATH/bin'
 
   - name: Grant permission
     file:
@@ -68,21 +76,21 @@
   - name:
     become: true
     become_user: ubuntu
-    shell: pwd && whoami && go version
+    shell: pwd && whoami && echo $PATH
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    register: directory
+    register: PATH
 
   - debug:
-      msg: "{{ directory }}"
+      msg: "{{ PATH }}"
 
-  - name:
-    become: true
-    become_user: ubuntu
-    shell: make build
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-  
+  # - name:
+  #   become: true
+  #   become_user: ubuntu
+  #   shell: make build
+  #   args:
+  #     chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+
 
   # - name: Make build
     # shell: make build
@@ -106,7 +114,7 @@
 
 
     # make:
-    #   chdir: /home/ubuntu/go-dappley 
+    #   chdir: /home/ubuntu/go-dappley
     #   target: build
     #   file: /home/ubuntu/go-dappley/Makefile
 
