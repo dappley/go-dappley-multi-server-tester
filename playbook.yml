@@ -55,4 +55,58 @@
       group: ubuntu
       recurse: yes
 
+  - name: Whoami
+    command: whoami
+    register: whoami
+
+  - debug:
+      msg: "{{ whoami }}"
+
+  - name:
+    become: true
+    become_user: ubuntu
+    shell: pwd && whoami && go version
+    args:
+      chdir: /home/ubuntu/go-dappley
+    register: directory
+
+  - debug:
+      msg: "{{ directory }}"
+
+  - name:
+    become: true
+    become_user: ubuntu
+    shell: make build
+    args:
+      chdir: /home/ubuntu/go-dappley
+  
+
   # - name: Make build
+    # shell: make build
+    # args:
+    #   chdir: /home/ubuntu/go-dappley
+
+    # become: yes
+    # become_method: su
+    # become_user: ubuntu
+    # shell: make build
+    # args:
+    #   chdir: /home/ubuntu/go-dappley
+
+#     become: yes
+#     become_method: su
+#     become_user: ubuntu
+#     make:
+#       chdir: /home/ubuntu/go-dappley
+#       target: build
+#       file: /home/ubuntu/go-dappley/Makefile
+
+
+    # make:
+    #   chdir: /home/ubuntu/go-dappley 
+    #   target: build
+    #   file: /home/ubuntu/go-dappley/Makefile
+
+
+  #   make:
+  #     chdir: /home/ubuntu/go-dappley
