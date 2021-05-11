@@ -45,6 +45,18 @@
       dest: /usr/local/
       remote_src: yes
 
+  # - name: Add lines to root .bashrc
+  #   lineinfile:
+  #     path: /usr/share/base-file/dot.bashrc
+  #     state: present
+  #     line: "{{ item }}"
+  #   with_items:
+  #   - ' '
+  #   - '# Add go to path'
+  #   - 'export GOPATH=$HOME/go'
+  #   - 'export GOROOT=/usr/local/go'
+  #   - 'export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin'
+    
   - name: Add lines to .bashrc
     lineinfile:
       path: /home/ubuntu/.bashrc
@@ -66,7 +78,7 @@
   - name:
     become: true
     become_user: ubuntu
-    shell: echo $PATH 
+    shell: echo $GOPATH && echo $GOROOT && echo $PATH 
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
     register: GOENV
