@@ -2,8 +2,12 @@
 
 - hosts: all
   become: true
-  tasks:
+  environment:
+    GOPATH: "$HOME/go"
+    GOROOT: "/usr/local/go"
+    PATH: "$PATH:$GOROOT/bin:$GOPATH/bin"
 
+  tasks:
   - name: Check directory exists
     stat:
       path: /home/ubuntu/go
@@ -45,18 +49,6 @@
       dest: /usr/local/
       remote_src: yes
 
-  - name: Add lines to root .bashrc
-    lineinfile:
-      path: /usr/share/base-files/dot.bashrc
-      state: present
-      line: "{{ item }}"
-    with_items:
-    - ' '
-    - '# Add go to path'
-    - 'export GOPATH=$HOME/go'
-    - 'export GOROOT=/usr/local/go'
-    - 'export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin'
-    
   - name: Add lines to .bashrc
     lineinfile:
       path: /home/ubuntu/.bashrc
@@ -71,9 +63,14 @@
     - '# Add go to path'
     - 'export GOPATH=$HOME/go'
     - 'export GOROOT=/usr/local/go'
-    - 'export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin'
-    
-    # - 'export PATH=$PATH:$GOROOT/bin:$GOPATH/bin'
+    - 'export PATH=$PATH:$GOROOT/bin:$GOPATH/bin'
+
+  - name: Grant permission
+    file:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      owner: ubuntu
+      group: ubuntu
+      recurse: yes
 
   - name:
     become: true
@@ -86,15 +83,16 @@
   - debug:
       msg: "{{ GOENV }}"
 
-  - name: Grant permission
-    file:
-      path: /home/ubuntu/go/src/github.com/dappley/go-dappley
-      owner: ubuntu
-      group: ubuntu
-      recurse: yes
+  - name:
+    become: true
+    become_user: ubuntu
+    shell: echo go version
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    register: GOVERSION
 
   - debug:
-      msg: "{{ GOENV }}"
+      msg: "{{ GOVERSION }}"
 
   # - name: Whoami
   #   command: whoami
