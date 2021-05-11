@@ -2,10 +2,6 @@
 
 - hosts: all
   become: true
-  # environment:
-  #   GOPATH: "$HOME/go"
-  #   GOROOT: "/usr/local/go"
-  #   PATH: "$PATH:$GOROOT/bin:$GOPATH/bin"
 
   tasks:
   - name: Check directory exists
@@ -71,70 +67,3 @@
       owner: ubuntu
       group: ubuntu
       recurse: yes
-
-  - name:
-    become: true
-    become_user: ubuntu
-    shell: echo $GOPATH && echo $GOROOT && echo $PATH 
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    register: GOENV
-
-  - debug:
-      msg: "{{ GOENV }}"
-
-  # - name:
-  #   become: true
-  #   become_user: ubuntu
-  #   shell: echo go version
-  #   args:
-  #     chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-  #   register: GOVERSION
-
-  # - debug:
-  #     msg: "{{ GOVERSION }}"
-
-  # - name: Whoami
-  #   command: whoami
-  #   register: whoami
-
-  # - debug:
-  #     msg: "{{ whoami }}"
-
-  # - name:
-  #   become: true
-  #   become_user: ubuntu
-  #   shell: make build
-  #   args:
-  #     chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-
-
-  # - name: Make build
-    # shell: make build
-    # args:
-    #   chdir: /home/ubuntu/go-dappley
-
-    # become: yes
-    # become_method: su
-    # become_user: ubuntu
-    # shell: make build
-    # args:
-    #   chdir: /home/ubuntu/go-dappley
-
-#     become: yes
-#     become_method: su
-#     become_user: ubuntu
-#     make:
-#       chdir: /home/ubuntu/go-dappley
-#       target: build
-#       file: /home/ubuntu/go-dappley/Makefile
-
-
-    # make:
-    #   chdir: /home/ubuntu/go-dappley
-    #   target: build
-    #   file: /home/ubuntu/go-dappley/Makefile
-
-
-  #   make:
-  #     chdir: /home/ubuntu/go-dappley
