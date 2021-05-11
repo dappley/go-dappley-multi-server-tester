@@ -52,10 +52,6 @@
       line: "{{ item }}"
     with_items:
     - ' '
-    - '# Test variable'
-    - 'export TEST="This is a test variable"'
-    - 'export TESTPATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin'
-    - 'export OGPATH=$PATH'
     - '# Add go to path'
     - 'export GOPATH=$HOME/go'
     - 'export GOROOT=/usr/local/go'
