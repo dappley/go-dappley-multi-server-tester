@@ -2,7 +2,6 @@
 
 - hosts: all
   become: true
-  become_user: ubuntu
   tasks:
 
   - name: Check directory exists
@@ -20,27 +19,22 @@
       dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/
 
   - name: Update apt
-    become_user: root
     apt:
       update_cache: yes
 
   - name: Upgrade apt
-    become_user: root
     apt:
       upgrade: dist
 
   - name: Install g++
-    become_user: root
     apt:
       name: g++
 
   - name: Install make
-    become_user: root
     apt:
       name: make
 
   - name: Download go.zip
-    become_user: root
     get_url:
       url: https://golang.org/dl/go1.16.3.linux-amd64.tar.gz
       dest: /home/ubuntu/
