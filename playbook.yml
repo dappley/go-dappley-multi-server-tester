@@ -47,7 +47,7 @@
 
   - name: Add lines to root .bashrc
     lineinfile:
-      path: /usr/share/base-file/dot.bashrc
+      path: /usr/share/base-files/dot.bashrc
       state: present
       line: "{{ item }}"
     with_items:
