@@ -2,10 +2,10 @@
 
 - hosts: all
   become: true
-  environment:
-    GOPATH: "$HOME/go"
-    GOROOT: "/usr/local/go"
-    PATH: "$PATH:$GOROOT/bin:$GOPATH/bin"
+  # environment:
+  #   GOPATH: "$HOME/go"
+  #   GOROOT: "/usr/local/go"
+  #   PATH: "$PATH:$GOROOT/bin:$GOPATH/bin"
 
   tasks:
   - name: Check directory exists
@@ -83,16 +83,16 @@
   - debug:
       msg: "{{ GOENV }}"
 
-  - name:
-    become: true
-    become_user: ubuntu
-    shell: echo go version
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    register: GOVERSION
+  # - name:
+  #   become: true
+  #   become_user: ubuntu
+  #   shell: echo go version
+  #   args:
+  #     chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+  #   register: GOVERSION
 
-  - debug:
-      msg: "{{ GOVERSION }}"
+  # - debug:
+  #     msg: "{{ GOVERSION }}"
 
   # - name: Whoami
   #   command: whoami
