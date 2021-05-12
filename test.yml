@@ -35,3 +35,9 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
       target: build
       file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+  - name: Update port in cli
+    ansible.builtin.replace:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
+      regexp: 'port: 50050'
+      replace: 'port: 50051'
