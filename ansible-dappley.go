@@ -69,7 +69,7 @@ func update() {
 			if strings.Contains(line, "PrivateIpAddress") {
 				args := strings.Split(line, ": ")
 				private_ip := strings.TrimLeft(strings.TrimRight(args[1], "\","), "\"")
-				private_ips += private_ip + "\n"
+				private_ips += "[NODE" + strconv.Itoa(i) + "]\n" + private_ip + "\n"
 				break
 			}
 		}
