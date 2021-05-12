@@ -59,7 +59,7 @@
 
   - name: Grant permission
     file:
-      path: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      path: /home/ubuntu/go/
       owner: ubuntu
       group: ubuntu
       recurse: yes
