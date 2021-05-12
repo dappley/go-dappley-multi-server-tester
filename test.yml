@@ -41,3 +41,98 @@
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
       regexp: 'port: 50050'
       replace: 'port: 50051'
+
+  - debug:
+      msg: "{{ item }}"
+    with_inventory_hostnames:
+      - NODE1
+    when: inventory_hostname in groups['NODE1']
+
+  - debug:
+      msg: "{{ ansible_all_ipv4_addresses[0] }}"
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Update node1 seed
+    ansible.builtin.replace:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node1.conf
+      regexp: '127.0.0.1'
+      replace: '{{ item }}'
+    with_inventory_hostnames:
+      - NODE2
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Update node2 seed
+    ansible.builtin.replace:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node2.conf
+      regexp: '127.0.0.1'
+      replace: '{{ item }}'
+    with_inventory_hostnames:
+      - NODE1
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Update node3 seed
+    ansible.builtin.replace:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node3.conf
+      regexp: '127.0.0.1'
+      replace: '{{ item }}'
+    with_inventory_hostnames:
+      - NODE1
+    when: inventory_hostname in groups['NODE3']
+
+  - name: Update node4 seed
+    ansible.builtin.replace:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node4.conf
+      regexp: '127.0.0.1'
+      replace: '{{ item }}'
+    with_inventory_hostnames:
+      - NODE1
+    when: inventory_hostname in groups['NODE4']
+
+  - name: Update node5 seed
+    ansible.builtin.replace:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node5.conf
+      regexp: '127.0.0.1'
+      replace: '{{ item }}'
+    with_inventory_hostnames:
+      - NODE1
+    when: inventory_hostname in groups['NODE5']
+
+  - name: Launch node1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 1000
+    poll: 0
+
+  - name: Launch node2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 1000
+    poll: 0
+
+  - name: Launch node3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 1000
+    poll: 0
+
+  - name: Launch node4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 1000
+    poll: 0
+
+  - name: Launch node5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 1000
+    poll: 0
