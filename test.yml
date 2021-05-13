@@ -98,6 +98,8 @@
     when: inventory_hostname in groups['NODE5']
 
   # - name: Launch node1
+  #   become: true
+  #   become_user: ubuntu
   #   shell: ./dapp -f conf/node1.conf
   #   args:
   #     chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
@@ -106,6 +108,8 @@
   #   poll: 0
 
   # - name: Launch node2
+  #   become: true
+  #   become_user: ubuntu
   #   shell: ./dapp -f conf/node2.conf
   #   args:
   #     chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
@@ -114,6 +118,8 @@
   #   poll: 0
 
   # - name: Launch node3
+  #   become: true
+  #   become_user: ubuntu
   #   shell: ./dapp -f conf/node3.conf
   #   args:
   #     chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
@@ -122,6 +128,8 @@
   #   poll: 0
 
   # - name: Launch node4
+  #   become: true
+  #   become_user: ubuntu
   #   shell: ./dapp -f conf/node4.conf
   #   args:
   #     chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
@@ -130,6 +138,8 @@
   #   poll: 0
 
   # - name: Launch node5
+  #   become: true
+  #   become_user: ubuntu
   #   shell: ./dapp -f conf/node5.conf
   #   args:
   #     chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
