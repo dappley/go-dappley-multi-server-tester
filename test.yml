@@ -182,7 +182,7 @@
 
   - name: Wait 10 seconds to complete transaction
     wait_for:
-      timeout: 10
+      timeout: 20
 
   - name: Check account1 balance
     shell: ./cli getBalance -address {{ account1 }}
@@ -210,7 +210,7 @@
 
   - name: Wait 10 seconds to complete transaction
     wait_for:
-      timeout: 10
+      timeout: 20
 
   - name: Check account1 balance
     shell: ./cli getBalance -address {{ account1 }}
