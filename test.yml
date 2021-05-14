@@ -156,6 +156,15 @@
     async: 1000
     poll: 0
 
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+
+  - debug:
+      msg: '{{ blockchainHeight.stdout_lines[1] }}'
+
   - name: Check account1 balance
     shell: ./cli getBalance -address {{ account1 }}
     args:
