@@ -181,8 +181,8 @@
     when: inventory_hostname in groups['NODE1']
 
   - name: Wait 10 seconds to complete transaction
-    pause:
-      seconds: 10
+    wait_for:
+      timeout: 10
 
   - name: Check account1 balance
     shell: ./cli getBalance -address {{ account1 }}
@@ -209,8 +209,8 @@
     when: inventory_hostname in groups['NODE1']
 
   - name: Wait 10 seconds to complete transaction
-    pause:
-      seconds: 10
+    wait_for:
+      timeout: 10
 
   - name: Check account1 balance
     shell: ./cli getBalance -address {{ account1 }}
