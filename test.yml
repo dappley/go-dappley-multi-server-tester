@@ -156,14 +156,14 @@
     async: 1000
     poll: 0
 
-  # - name: Wait til the blockchain reaches height of 10
-  #   shell: ./cli getBlockchainInfo
-  #   args:
-  #     chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-  #   register: blockchainHeight
-  #   until: blockchainHeight.stdout_lines[1][18:-1] == 10
-  #   retries: 1000
-  #   delay: 10
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    # until: blockchainHeight.stdout_lines[1][18:-1] == 10
+    # retries: 1000
+    # delay: 10
 
   - debug:
       msg: 'Blockchain height: {{ blockchainHeight.stdout_lines[1][18:-1] }}'
