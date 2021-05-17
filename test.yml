@@ -173,7 +173,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: blockchainHeight
-    until: "{{(blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int > (10)|int}}"
+    until: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int > (10)|int
     retries: 1000
     delay: 10
 
