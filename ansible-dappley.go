@@ -25,6 +25,8 @@ func main() {
 		initialize()
 	} else if function == "ssh_command" {
 		ssh_command()
+	} else if function == "send_result" {
+		SendTestResult()
 	} else {
 		fmt.Println("Function Invalid!")
 	}
