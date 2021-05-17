@@ -57,13 +57,17 @@ pipeline {
                 sh './ansible-dappley -function initialize'
             }
         }
-        stage('Run Ansible Playbook') {
+        stage('Setup Host Nodes') {
             steps {
                 sh 'ansible-playbook setup.yml'
+            }
+        }
+        stage('Run Test') {
+            steps {
                 sh 'ansible-playbook test.yml'
             }
         }
-        stage('Terminate Hosts') {
+        stage('Terminate Host Nodes') {
             steps {
                 sh './ansible-dappley -function terminate'
             }
