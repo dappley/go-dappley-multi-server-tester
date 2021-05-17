@@ -12,7 +12,7 @@
     account2: dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq
 
   tasks:
-    - name: Accounts.dat to Node1
+  - name: Accounts.dat to Node1
     copy:
       src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node1/accounts.dat
       dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
@@ -23,7 +23,7 @@
       src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node2/accounts.dat
       dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
     when: inventory_hostname in groups['NODE2']
-    
+
   - name: Check go environment
     shell: echo $GOPATH && echo $GOROOT && echo $PATH
     args:
