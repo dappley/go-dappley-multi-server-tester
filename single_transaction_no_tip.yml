@@ -168,6 +168,10 @@
     async: 1000
     poll: 0
 
+  - name: Wait 10 seconds to launch blockchain
+    wait_for:
+      timeout: 10
+
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
     args:
