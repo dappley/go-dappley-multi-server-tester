@@ -11,7 +11,9 @@ import (
 //Send email
 func SendTestResult(recipient string, senderEmail string, senderPasswd string) {
 	fileNames := []string{"setup.txt", "single_transaction_no_tip.txt"}
-	emailContents := composeEmail(fileNames)
+	emailContents := detailedEmail(fileNames)
+
+	fmt.Println(emailContents)
 
 	send(recipient, emailContents, fileNames, senderEmail, senderPasswd)
 }
@@ -35,8 +37,51 @@ func send(recipient string, emailBody string, attachment []string, senderEmail s
 	}
 }
 
-//Create email
-func composeEmail(fileNames []string) string {
+//Create simpler email
+func simpleEmail(fileNames []string) string {
+	failingFiles := isFileFail(fileNames)
+	if (len(failingFiles) == 0) {
+		return "ALL TESTS PASS!"
+	}
+
+	var emailContents string
+	emailContents += "Failing Playbook: \n"
+	for _, fileName := range failingFiles {
+		emailContents += "[" + strings.TrimRight(fileName, ".txt") + "] - Failing\n\n"
+	}
+
+	return emailContents
+}
+
+func simplify(task []string) []string {
+	var fatal bool
+	var simplified_task []string
+
+	for i, _ := range task {
+		if i == 0 || task[i] == ""{
+			simplified_task = append(simplified_task, task[i])
+			continue
+		}
+		if strings.Contains(task[i], "fatal: ") {
+			fatal = true
+		}
+		if strings.Contains(task[i], "ok: ") || strings.Contains(task[i], "changed: ") {
+			fatal = false
+		}
+		if fatal {
+			simplified_task = append(simplified_task, task[i])
+		}
+	}
+
+	fmt.Println(task)
+
+	fmt.Println(simplified_task)
+
+	return simplified_task
+}
+
+//Create email with all failing cases
+func detailedEmail(fileNames []string) string {
 	failingFiles  := isFileFail(fileNames)
 	files_results := make([][]string, len(failingFiles))
 
@@ -83,7 +128,8 @@ func composeEmail(fileNames []string) string {
 
 			if line == "" {
 				if doubleContains(task, "fatal:") {
-					file_description = append(file_description, task...)
+					simplified_task := simplify(task)
+					file_description = append(file_description, simplified_task...)
 				}
 				task = emptySlice
 			}
