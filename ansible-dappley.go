@@ -13,8 +13,11 @@ import (
 )
 
 func main() {
-	var function string
+	var function, recipient, senderEmail, senderPasswd string
 	flag.StringVar(&function, "function", "<Function Name>", "Name of the function that will be run.")
+	flag.StringVar(&recipient, "recipient", "<Recipient Email>", "Email of the recipient.")
+	flag.StringVar(&senderEmail, "senderEmail", "<Sender Email>", "Email of the addressee.")
+	flag.StringVar(&senderPasswd, "senderPasswd", "<Sender Password>", "Email password of the addressee.")
 	flag.Parse()
 
 	if function == "update" {
@@ -26,7 +29,7 @@ func main() {
 	} else if function == "ssh_command" {
 		ssh_command()
 	} else if function == "send_result" {
-		SendTestResult()
+		SendTestResult(recipient, senderEmail, senderPasswd)
 	} else {
 		fmt.Println("Function Invalid!")
 	}

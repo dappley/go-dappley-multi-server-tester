@@ -4,22 +4,46 @@ import (
 	"fmt"
 	"bufio"
 	"strings"
-	//"strconv"
 	"io/ioutil"
+	"gopkg.in/gomail.v2"
 )
 
 //Send email
-func SendTestResult() {
-	fileNames := []string{"setup.txt", "single_transaction_no_tip.txt", "Unreadable.txt"}
+func SendTestResult(recipient string, senderEmail string, senderPasswd string) {
+	fileNames := []string{"setup.txt", "single_transaction_no_tip.txt"}
 	emailContents := composeEmail(fileNames)
 
-	fmt.Println(emailContents)
+	send(recipient, emailContents, fileNames, senderEmail, senderPasswd)
+}
+
+func send(recipient string, emailBody string, attachment []string, senderEmail string, senderPasswd string) {
+	//send the email
+	mail := gomail.NewMessage()
+	mail.SetHeader("From", senderEmail)
+	mail.SetHeader("To",   recipient)
+	mail.SetHeader("Subject", "Ansible Test Result")
+	mail.SetBody("text", emailBody)
+	for _, fileName := range attachment {
+		mail.Attach(fileName)
+	}
+
+	deliver := gomail.NewDialer("smtp.gmail.com", 587, senderEmail, senderPasswd)
+
+	if err := deliver.DialAndSend(mail); err != nil {
+		fmt.Println("Failed to send email!")
+		panic(err)
+	}
 }
 
 //Create email
 func composeEmail(fileNames []string) string {
 	failingFiles  := isFileFail(fileNames)
 	files_results := make([][]string, len(failingFiles))
+
+	if (len(failingFiles) == 0) {
+		return "ALL TESTS PASS!"
+	}
+
 	var file_description []string
 	var task []string
 	var emailContents string
@@ -27,10 +51,12 @@ func composeEmail(fileNames []string) string {
 
 	for index := 0; index < len(failingFiles); index++ {
 		curr_file := failingFiles[index]
+		files_results[index] = append(files_results[index], curr_file)
+
 		file_byte, err := ioutil.ReadFile(curr_file)
 		if err != nil {
-			files_results[index] = append(files_results[index], curr_file)
-			files_results[index] = append(files_results[index], "Unable to read file!")
+			files_results[index] = append(files_results[index], "Read File")
+			files_results[index] = append(files_results[index], "Unable to read" + curr_file + "!")
 			continue
 		}
 
@@ -43,7 +69,7 @@ func composeEmail(fileNames []string) string {
 			line := scanner.Text()
 
 			if strings.Contains(line, "PLAY RECAP") {
-				files_results[index] = file_description
+				files_results[index] = append(files_results[index], file_description...)
 				file_description = emptySlice
 				break
 			}
@@ -64,9 +90,17 @@ func composeEmail(fileNames []string) string {
 		}
 	}
 
-	fmt.Println(files_results[0], "\n\n")
-	fmt.Println(files_results[1], "\n\n")
-	fmt.Println(files_results[2], "\n\n")
+	for _, result := range files_results {
+		emailContents += "Playbook: [" + strings.TrimRight(result[0], ".txt") + "]\n"
+		emailContents += "Failing Tasks: \n\n"
+		for i, line := range result {
+			if i == 0 {
+				continue
+			}
+			emailContents += line + "\n"
+		}
+		emailContents += "---------------------------\n"
+	}
 
 	return emailContents
 }
