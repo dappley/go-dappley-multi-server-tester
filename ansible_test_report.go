@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"bufio"
 	"strings"
+	//"strconv"
 	"io/ioutil"
 )
 
 //Send email
 func SendTestResult() {
-	fileNames := []string{"setup.txt", "single_transaction_no_tip.txt"}
+	fileNames := []string{"setup.txt", "single_transaction_no_tip.txt", "Unreadable.txt"}
 	emailContents := composeEmail(fileNames)
 
 	fmt.Println(emailContents)
@@ -22,19 +23,30 @@ func composeEmail(fileNames []string) string {
 	var file_description []string
 	var task []string
 	var emailContents string
+	var emptySlice []string
 
-	for i := 0; i < len(failingFiles); i++ {
-		curr_file := failingFiles[i]
+	for index := 0; index < len(failingFiles); index++ {
+		curr_file := failingFiles[index]
 		file_byte, err := ioutil.ReadFile(curr_file)
 		if err != nil {
-			files_results[i] = append(files_results[i], curr_file)
-			files_results[i] = append(files_results[i], "Unable to read file!")
+			files_results[index] = append(files_results[index], curr_file)
+			files_results[index] = append(files_results[index], "Unable to read file!")
 			continue
 		}
 
 		scanner := bufio.NewScanner(strings.NewReader(string(file_byte)))
-		for scanner.Scan() {
+		for i := 0; scanner.Scan(); i++ {
+			if i == 0 || i == 1 || i == 2 {
+				continue
+			}
+
 			line := scanner.Text()
+
+			if strings.Contains(line, "PLAY RECAP") {
+				files_results[index] = file_description
+				file_description = emptySlice
+				break
+			}
 
 			if strings.Contains(line, "TASK [") {
 				task = append(task, between(line, "[", "]"))
@@ -47,12 +59,14 @@ func composeEmail(fileNames []string) string {
 				if doubleContains(task, "fatal:") {
 					file_description = append(file_description, task...)
 				}
+				task = emptySlice
 			}
 		}
-		files_results[i] = file_description
 	}
 
-
+	fmt.Println(files_results[0], "\n\n")
+	fmt.Println(files_results[1], "\n\n")
+	fmt.Println(files_results[2], "\n\n")
 
 	return emailContents
 }
