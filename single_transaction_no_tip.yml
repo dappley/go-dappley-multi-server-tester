@@ -252,7 +252,7 @@
   - name: Account1 balance test
     fail:
      msg: "Expected 5000 but returned {{ account1Balance.stdout_lines[0][16:] }}"
-    when: account1Balance.stdout_lines[0][16:] != 5000
+    when: account1Balance.stdout_lines[0][16:]|int != 5000|int
     ignore_errors: true
 
   - name: Check account2 balance
@@ -267,5 +267,5 @@
   - name: Account2 balance test
     fail:
      msg: "Expected 5000 but returned {{ account2Balance.stdout_lines[0][16:] }}"
-    when: account2Balance.stdout_lines[0][16:] != 5000
+    when: account2Balance.stdout_lines[0][16:]|int != 5000|int
     ignore_errors: true

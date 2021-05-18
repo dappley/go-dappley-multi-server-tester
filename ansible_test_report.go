@@ -58,7 +58,7 @@ func simplify(task []string) []string {
 	var simplified_task []string
 
 	for i, _ := range task {
-		if i == 0 || task[i] == ""{
+		if i == 0 || task[i] == "" || strings.Contains(task[i], "...ignoring") {
 			simplified_task = append(simplified_task, task[i])
 			continue
 		}
@@ -174,7 +174,7 @@ func isFileFail(fileNames []string) []string {
 			line := scanner.Text()
 
 			if scan_result {
-				if !(strings.Contains(line, "failed=0")) {
+				if !(strings.Contains(line, "failed=0")) || !(strings.Contains(line, "ignored=0")) {
 					if contains(failingFiles, curr_file) {
 						continue
 					} else {
