@@ -189,6 +189,12 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account1Balance
+    ignore_errors: true
+
+  - name:
+    fail:
+     msg: "Expected 0 for account balance but got {{ account1Balance.stdout_lines[0][16:] }}"
+    when: {{ account1Balance.stdout_lines[0][16:] }} != 0
 
   - debug:
       msg: 'Account1 balance: {{ account1Balance.stdout_lines[0][16:] }}'
