@@ -189,12 +189,6 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account1Balance
-    ignore_errors: true
-
-  - name:
-    fail:
-     msg: "Expected 0 for account balance but got {{ account1Balance.stdout_lines[0][16:] }}"
-    when: {{ account1Balance.stdout_lines[0][16:] }} != 0
 
   - debug:
       msg: 'Account1 balance: {{ account1Balance.stdout_lines[0][16:] }}'
@@ -255,6 +249,12 @@
   - debug:
       msg: 'Account1 balance: {{ account1Balance.stdout_lines[0][16:] }}'
 
+  - name: Account1 balance test
+    fail:
+     msg: "Expected 5000 but {{ returned account1Balance.stdout_lines[0][16:] }}"
+    when: account1Balance.stdout_lines[0][16:] != 5000
+    ignore_errors: true
+
   - name: Check account2 balance
     shell: ./cli getBalance -address {{ account2 }}
     args:
@@ -263,3 +263,9 @@
 
   - debug:
       msg: 'Account2 blanace: {{ account2Balance.stdout_lines[0][16:] }}'
+
+  - name: Account2 balance test
+    fail:
+     msg: "Expected 5000 but {{ returned account2Balance.stdout_lines[0][16:] }}"
+    when: account2Balance.stdout_lines[0][16:] != 5000
+    ignore_errors: true
