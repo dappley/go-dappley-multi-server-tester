@@ -133,41 +133,48 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 180
+    async: 20
     poll: 0
+    register: blockchain
 
   - name: Launch node2
     shell: ./dapp -f conf/node2.conf
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 180
+    async: 20
     poll: 0
+    register: blockchain
 
   - name: Launch node3
     shell: ./dapp -f conf/node3.conf
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 180
+    async: 20
     poll: 0
+    register: blockchain
 
   - name: Launch node4
     shell: ./dapp -f conf/node4.conf
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 180
+    async: 20
     poll: 0
+    register: blockchain
 
   - name: Launch node5
     shell: ./dapp -f conf/node5.conf
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 180
+    async: 20
     poll: 0
-    register: blockchain_node5
+    register: blockchain
+
+  - debug:
+      msg: {{ blockchain }}
 
   - name: Wait 10 seconds to launch blockchain
     wait_for:
@@ -270,16 +277,6 @@
      msg: "Expected 5000 but returned {{ account2Balance.stdout_lines[0][16:] }}"
     when: account2Balance.stdout_lines[0][16:]|int != 5000|int
     ignore_errors: true
-
-  - debug:
-      msg: '{{ blockchain_node5.finished }}'
-
-  - name: Wait 3 minutes
-    wait_for:
-      timeout: 180
-
-  - debug:
-      msg: '{{ blockchain_node5.finished }}'
 
   # - name: Remove /go-dappley/bin All Nodes
   #   shell: rm -r bin
