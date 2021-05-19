@@ -46,9 +46,15 @@ pipeline {
                 sh "aws ec2 run-instances --image-id ami-02701bcdc5509e57b --instance-type m5.xlarge --count 1 --key-name jenkins --security-group-ids sg-03d39dd5dc5ddeef7 --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=JenkinsTestNode5}]' > node5.txt"
             }
         }
+        stage('Build') {
+            steps {
+                sh 'go mod init github.com/heesooh/ansible-dappley'
+                sh 'go mod tidy'
+                sh 'go build'
+            }
+        }
         stage('Update Hosts') {
             steps {
-                sh 'go build ansible-dappley.go'
                 sh './ansible-dappley -function update'
             }
         }
@@ -59,12 +65,17 @@ pipeline {
         }
         stage('Setup Host Nodes') {
             steps {
-                sh 'ansible-playbook setup.yml'
+                sh 'ansible-playbook setup.yml > setup.txt'
             }
         }
-        stage('Run Test') {
+        stage('Single Transaction With No Tips') {
             steps {
-                sh 'ansible-playbook test.yml'
+                sh 'ansible-playbook single_transaction_no_tip.yml > single_transaction_no_tip.txt'
+            }
+        }
+        stage('Send Report') {
+            steps {
+                sh './ansible-dappley -function send_result -recipient user_name@example.com -senderEmail user_name@example.com -senderPasswd PASSWORD'
             }
         }
         stage('Terminate Host Nodes') {
