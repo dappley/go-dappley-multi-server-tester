@@ -58,8 +58,11 @@ func simplify(task []string) []string {
 	var simplified_task []string
 
 	for i, _ := range task {
-		if i == 0 || task[i] == "" || strings.Contains(task[i], "...ignoring") {
+		if i == 0 || task[i] == "" {
 			simplified_task = append(simplified_task, task[i])
+			continue
+		}
+		if strings.Contains(task[i], "...ignoring") {
 			continue
 		}
 		if strings.Contains(task[i], "fatal: ") {
