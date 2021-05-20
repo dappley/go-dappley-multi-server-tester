@@ -4,6 +4,8 @@
   become: true
 
   tasks:
+
+  ## Create go-dappley directory
   - name: Check directory exists
     stat:
       path: /home/ubuntu/go
@@ -13,11 +15,13 @@
     shell: mkdir go go/src go/pkg go/bin go/src/github.com go/src/github.com/dappley
     when: go_directory.stat.exists == false
 
+  ## Clone go-dappley to directory
   - name: Clone the go-dappley repository
     ansible.builtin.git:
       repo: https://github.com/dappley/go-dappley.git
       dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/
 
+  ## Update server environment
   - name: Update apt
     apt:
       update_cache: yes
@@ -34,6 +38,7 @@
     apt:
       name: make
 
+  ## Install && configure golang
   - name: Download go.zip
     get_url:
       url: https://golang.org/dl/go1.16.3.linux-amd64.tar.gz
@@ -63,3 +68,85 @@
       owner: ubuntu
       group: ubuntu
       recurse: yes
+
+ ## Update cli ports on All nodes
+  - name: Update node1 cli port
+    ansible.builtin.replace:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
+      regexp: 'port: 50050'
+      replace: 'port: 50051'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Update node2 cli port
+    ansible.builtin.replace:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
+      regexp: 'port: 50050'
+      replace: 'port: 50052'
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Update node3 cli port
+    ansible.builtin.replace:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
+      regexp: 'port: 50050'
+      replace: 'port: 50053'
+    when: inventory_hostname in groups['NODE3']
+
+  - name: Update node4 cli port
+    ansible.builtin.replace:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
+      regexp: 'port: 50050'
+      replace: 'port: 50054'
+    when: inventory_hostname in groups['NODE4']
+
+  - name: Update node5 cli port
+    ansible.builtin.replace:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
+      regexp: 'port: 50050'
+      replace: 'port: 50055'
+    when: inventory_hostname in groups['NODE5']
+
+ ## Update seed on All nodes
+  - name: Update node1 seed
+    ansible.builtin.replace:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node1.conf
+      regexp: '127.0.0.1'
+      replace: '{{ item }}'
+    with_inventory_hostnames:
+      - NODE2
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Update node2 seed
+    ansible.builtin.replace:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node2.conf
+      regexp: '127.0.0.1'
+      replace: '{{ item }}'
+    with_inventory_hostnames:
+      - NODE1
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Update node3 seed
+    ansible.builtin.replace:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node3.conf
+      regexp: '127.0.0.1'
+      replace: '{{ item }}'
+    with_inventory_hostnames:
+      - NODE1
+    when: inventory_hostname in groups['NODE3']
+
+  - name: Update node4 seed
+    ansible.builtin.replace:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node4.conf
+      regexp: '127.0.0.1'
+      replace: '{{ item }}'
+    with_inventory_hostnames:
+      - NODE1
+    when: inventory_hostname in groups['NODE4']
+
+  - name: Update node5 seed
+    ansible.builtin.replace:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node5.conf
+      regexp: '127.0.0.1'
+      replace: '{{ item }}'
+    with_inventory_hostnames:
+      - NODE1
+    when: inventory_hostname in groups['NODE5']
