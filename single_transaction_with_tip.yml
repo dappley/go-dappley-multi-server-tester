@@ -133,40 +133,65 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 1000
+    async: 90
     poll: 0
+    register: blockchain_node1
 
   - name: Launch node2
     shell: ./dapp -f conf/node2.conf
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 1000
+    async: 90
     poll: 0
+    register: blockchain_node2
 
   - name: Launch node3
     shell: ./dapp -f conf/node3.conf
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 1000
+    async: 90
     poll: 0
+    register: blockchain_node3
 
   - name: Launch node4
     shell: ./dapp -f conf/node4.conf
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 1000
+    async: 90
     poll: 0
+    register: blockchain_node4
 
   - name: Launch node5
     shell: ./dapp -f conf/node5.conf
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 1000
+    async: 90
     poll: 0
+    register: blockchain_node5
+
+  - debug:
+      msg: '{{ blockchain_node1 }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - debug:
+      msg: '{{ blockchain_node2 }}'
+    when: inventory_hostname in groups['NODE2']
+
+  - debug:
+      msg: '{{ blockchain_node3 }}'
+    when: inventory_hostname in groups['NODE3']
+
+  - debug:
+      msg: '{{ blockchain_node4 }}'
+    when: inventory_hostname in groups['NODE4']
+
+  - debug:
+      msg: '{{ blockchain_node5 }}'
+    when: inventory_hostname in groups['NODE5']
 
   - name: Wait 10 seconds to launch blockchain
     wait_for:
@@ -269,3 +294,34 @@
      msg: "Expected 5000 but returned {{ account2Balance.stdout_lines[0][16:] }}"
     when: account2Balance.stdout_lines[0][16:]|int != 5000|int
     ignore_errors: true
+
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 10
+
+  - name: Check on an async task
+    async_status:
+      jid: "{{ blockchain_node1.ansible_job_id }}"
+    register: job_result
+    when: inventory_hostname in groups['NODE1']
+
+  - debug:
+      msg: '{{ job_result }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+
+  - name: Remove /go-dappley/dapp/bin Node1
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Remove /go-dappley/dapp/bin Node2
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
+    when: inventory_hostname in groups['NODE2']
