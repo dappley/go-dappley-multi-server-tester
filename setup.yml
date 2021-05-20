@@ -69,7 +69,7 @@
       group: ubuntu
       recurse: yes
 
- ## Update cli ports on All nodes
+  ## Update cli ports on All nodes
   - name: Update node1 cli port
     ansible.builtin.replace:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
@@ -105,7 +105,7 @@
       replace: 'port: 50055'
     when: inventory_hostname in groups['NODE5']
 
- ## Update seed on All nodes
+  ## Update seed on All nodes
   - name: Update node1 seed
     ansible.builtin.replace:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node1.conf

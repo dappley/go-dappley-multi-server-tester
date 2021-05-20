@@ -12,6 +12,7 @@
     account2: dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq
 
   tasks:
+  ## Send account.dat to Node1 && Node2
   - name: Accounts.dat to Node1
     copy:
       src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node1/accounts.dat
@@ -24,6 +25,7 @@
       dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
     when: inventory_hostname in groups['NODE2']
 
+  ## Check Go environment && version
   - name: Check go environment
     shell: echo $GOPATH && echo $GOROOT && echo $PATH
     args:
@@ -48,86 +50,7 @@
       target: build
       file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
 
-  - name: Update node1 cli port
-    ansible.builtin.replace:
-      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
-      regexp: 'port: 50050'
-      replace: 'port: 50051'
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Update node2 cli port
-    ansible.builtin.replace:
-      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
-      regexp: 'port: 50050'
-      replace: 'port: 50052'
-    when: inventory_hostname in groups['NODE2']
-
-  - name: Update node3 cli port
-    ansible.builtin.replace:
-      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
-      regexp: 'port: 50050'
-      replace: 'port: 50053'
-    when: inventory_hostname in groups['NODE3']
-
-  - name: Update node4 cli port
-    ansible.builtin.replace:
-      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
-      regexp: 'port: 50050'
-      replace: 'port: 50054'
-    when: inventory_hostname in groups['NODE4']
-
-  - name: Update node5 cli port
-    ansible.builtin.replace:
-      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
-      regexp: 'port: 50050'
-      replace: 'port: 50055'
-    when: inventory_hostname in groups['NODE5']
-
-  - name: Update node1 seed
-    ansible.builtin.replace:
-      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node1.conf
-      regexp: '127.0.0.1'
-      replace: '{{ item }}'
-    with_inventory_hostnames:
-      - NODE2
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Update node2 seed
-    ansible.builtin.replace:
-      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node2.conf
-      regexp: '127.0.0.1'
-      replace: '{{ item }}'
-    with_inventory_hostnames:
-      - NODE1
-    when: inventory_hostname in groups['NODE2']
-
-  - name: Update node3 seed
-    ansible.builtin.replace:
-      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node3.conf
-      regexp: '127.0.0.1'
-      replace: '{{ item }}'
-    with_inventory_hostnames:
-      - NODE1
-    when: inventory_hostname in groups['NODE3']
-
-  - name: Update node4 seed
-    ansible.builtin.replace:
-      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node4.conf
-      regexp: '127.0.0.1'
-      replace: '{{ item }}'
-    with_inventory_hostnames:
-      - NODE1
-    when: inventory_hostname in groups['NODE4']
-
-  - name: Update node5 seed
-    ansible.builtin.replace:
-      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node5.conf
-      regexp: '127.0.0.1'
-      replace: '{{ item }}'
-    with_inventory_hostnames:
-      - NODE1
-    when: inventory_hostname in groups['NODE5']
-
+  ## Launch blockchain 
   - name: Launch node1
     shell: ./dapp -f conf/node1.conf
     args:
@@ -209,6 +132,7 @@
   - debug:
       msg: "Blockchain height: {{ blockchainHeight.stdout_lines[1][17:]|replace(',','') }}"
 
+  ## Check account1 && account2 balance
   - name: Check account1 balance
     shell: ./cli getBalance -address {{ account1 }}
     args:
@@ -227,6 +151,7 @@
   - debug:
       msg: 'Account2 blanace: {{ account2Balance.stdout_lines[0][16:] }}'
 
+  ## SendFromMiner to account1 
   - name: Send money to account1
     shell: ./cli sendFromMiner -to {{ account1 }} -amount 10000
     args:
@@ -255,6 +180,7 @@
   - debug:
       msg: 'Account2 blanace: {{ account2Balance.stdout_lines[0][16:] }}'
 
+  ## Send from account1 to account2 with tip
   - name: Send money from account1 to account2 with tip
     shell: ./cli send -from {{ account1 }} -to {{ account2 }} -amount 5000 -tip 100
     args:
@@ -295,6 +221,7 @@
     when: account2Balance.stdout_lines[0][16:]|int != 5000|int
     ignore_errors: true
 
+  ## Terminate playbook
   - name: Wait till async tasks terminate
     wait_for:
       timeout: 10
