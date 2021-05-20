@@ -10,7 +10,7 @@ import (
 
 //Send email
 func SendTestResult(recipient string, senderEmail string, senderPasswd string) {
-	fileNames := []string{"setup.txt", "single_transaction_no_tip.txt", "single_transaction_with_tip.txt"}
+	fileNames := []string{"setup.txt", "sendFromMiner.txt", "single_transaction_no_tip.txt", "single_transaction_with_tip.txt"}
 	emailContents := detailedEmail(fileNames)
 
 	fmt.Println(emailContents)
