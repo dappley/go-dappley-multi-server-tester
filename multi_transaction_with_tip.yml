@@ -65,7 +65,6 @@
     when: inventory_hostname in groups['NODE1']
     async: 90
     poll: 0
-    register: blockchain_node1
 
   - name: Launch node2
     shell: ./dapp -f conf/node2.conf
@@ -74,7 +73,6 @@
     when: inventory_hostname in groups['NODE2']
     async: 90
     poll: 0
-    register: blockchain_node2
 
   - name: Launch node3
     shell: ./dapp -f conf/node3.conf
@@ -83,7 +81,6 @@
     when: inventory_hostname in groups['NODE3']
     async: 90
     poll: 0
-    register: blockchain_node3
 
   - name: Launch node4
     shell: ./dapp -f conf/node4.conf
@@ -92,7 +89,6 @@
     when: inventory_hostname in groups['NODE4']
     async: 90
     poll: 0
-    register: blockchain_node4
 
   - name: Launch node5
     shell: ./dapp -f conf/node5.conf
@@ -101,27 +97,6 @@
     when: inventory_hostname in groups['NODE5']
     async: 90
     poll: 0
-    register: blockchain_node5
-
-  - debug:
-      msg: '{{ blockchain_node1 }}'
-    when: inventory_hostname in groups['NODE1']
-
-  - debug:
-      msg: '{{ blockchain_node2 }}'
-    when: inventory_hostname in groups['NODE2']
-
-  - debug:
-      msg: '{{ blockchain_node3 }}'
-    when: inventory_hostname in groups['NODE3']
-
-  - debug:
-      msg: '{{ blockchain_node4 }}'
-    when: inventory_hostname in groups['NODE4']
-
-  - debug:
-      msg: '{{ blockchain_node5 }}'
-    when: inventory_hostname in groups['NODE5']
 
   - name: Wait 10 seconds to launch blockchain
     wait_for:
@@ -291,16 +266,6 @@
   - name: Wait till async tasks terminate
     wait_for:
       timeout: 10
-
-  - name: Check on an async task
-    async_status:
-      jid: "{{ blockchain_node1.ansible_job_id }}"
-    register: job_result
-    when: inventory_hostname in groups['NODE1']
-
-  - debug:
-      msg: '{{ job_result }}'
-    when: inventory_hostname in groups['NODE1']
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
