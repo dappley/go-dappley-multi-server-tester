@@ -128,7 +128,7 @@
 
   ## SendFromMiner to account1 
   - name: Send money to account1
-    shell: ./cli sendFromMiner -to {{ account1 }} -amount 100000
+    shell: ./cli sendFromMiner -to {{ account1 }} -amount 200000
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     when: inventory_hostname in groups['NODE1']
@@ -184,7 +184,7 @@
   - name: Account1 balance test
     fail:
      msg: "Expected to be greater or equal to 70000, but returned {{ account1Balance.stdout_lines[0][16:] }}"
-    when: account1Balance.stdout_lines[0][16:]|int < 70000|int
+    when: account1Balance.stdout_lines[0][16:]|int < 140000|int
     ignore_errors: true
 
   - name: Check account2 balance
@@ -230,8 +230,8 @@
 
   - name: Account1 balance test
     fail:
-     msg: "Expected to be greater or equal to 34900, but returned {{ account1Balance.stdout_lines[0][16:] }}"
-    when: account1Balance.stdout_lines[0][16:]|int < 34900|int
+     msg: "Expected to be greater or equal to 74900, but returned {{ account1Balance.stdout_lines[0][16:] }}"
+    when: account1Balance.stdout_lines[0][16:]|int < 74900|int
     ignore_errors: true
 
   - name: Check account2 balance
