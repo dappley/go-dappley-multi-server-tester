@@ -760,9 +760,25 @@
     when: account2Balance.stdout_lines[0][16:]|int != 0|int
     ignore_errors: true
 
-## TODO
 #################### Send From Wrong Node ####################
 
+  ## Deploy transaction from a different node
+  - name: Deploy transaction from the node without the account.dat file
+    shell: ./cli send -from {{ account1 }} -to {{ account2 }} -amount 100
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: transaction_result
+    when: inventory_hostname in groups['NODE5']
+
+  - debug:
+      msg: '{{ transaction_result.stdout_lines }}'
+    when: inventory_hostname in groups['NODE5']
+
+  - name: Transaction Test
+    fail:
+     msg: "Expected the transaction to fail but returned {{ transaction_result.stdout_lines }}"
+    when: inventory_hostname in groups['NODE5'] and transaction_result.stdout_lines[0][7:] != "invalid account address."
+    ignore_errors: true
 
 #################### Invalid Addresses ####################
 
