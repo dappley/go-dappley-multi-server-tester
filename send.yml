@@ -59,7 +59,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 220
+    async: 200
     poll: 0
 
   - name: Launch node2
@@ -67,7 +67,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 220
+    async: 200
     poll: 0
 
   - name: Launch node3
@@ -75,7 +75,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 220
+    async: 200
     poll: 0
 
   - name: Launch node4
@@ -83,7 +83,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 220
+    async: 200
     poll: 0
 
   - name: Launch node5
@@ -91,7 +91,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 220
+    async: 200
     poll: 0
 
   - name: Wait 10 seconds to launch blockchain
@@ -661,7 +661,6 @@
     ignore_errors: true
 
 
-## TODO
 #################### Invalid Gas Limit ####################
 
   ## Over balance gas limit
@@ -891,11 +890,10 @@
   - name: Transaction Test
     fail:
      msg: "Expected the transaction to fail but returned {{ deploy_contract.stderr_lines[0] }}"
-    when: inventory_hostname in groups['NODE1'] and deploy_contract.stderr_lines[0][:21] != "flag needs an argument"
+    when: inventory_hostname in groups['NODE1'] and deploy_contract.stderr_lines[0][:22] != "flag needs an argument"
     ignore_errors: true
 
 
-## TODO
 #################### Invalid Gas Price ####################
 
   ## Over balance gas price
@@ -961,13 +959,13 @@
     when: inventory_hostname in groups['NODE1']
 
   - debug:
-      msg: '{{ deploy_contract.stdout_lines[0][7:] }}'
+      msg: '{{ deploy_contract.stderr_lines[0] }}'
     when: inventory_hostname in groups['NODE1']
 
   - name: Transaction Test
     fail:
      msg: "Expected the transaction to fail but returned {{ deploy_contract.stdout }}"
-    when: inventory_hostname in groups['NODE1'] and deploy_contract.stdout_lines[0][7:] != "gas price error, must be a positive number"
+    when: inventory_hostname in groups['NODE1'] and deploy_contract.stderr_lines[0][:22] != "flag needs an argument"
     ignore_errors: true
 
 
@@ -1306,7 +1304,7 @@
   ## Wait for the tasks to terminate
   - name: Wait till async tasks terminate
     wait_for:
-      timeout: 30
+      timeout: 10
 
   ## Remove the db files and account.dat
   - name: Remove /go-dappley/bin All Nodes
