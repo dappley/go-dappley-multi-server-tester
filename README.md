@@ -21,7 +21,7 @@ pipeline {
 }
 ```
 
-Blockchain Testing Pipeline
+Ansible Playbook Pipeline
 ```
 pipeline {
     agent any
@@ -68,14 +68,49 @@ pipeline {
                 sh 'ansible-playbook setup.yml > setup.txt'
             }
         }
-        stage('Single Transaction With No Tips') {
+        stage('Send From Miner') {
+            steps {
+                sh 'ansible-playbook sendFromMiner.yml > sendFromMiner.txt'
+            }
+        }
+        stage('Single Transaction No Tip') {
             steps {
                 sh 'ansible-playbook single_transaction_no_tip.yml > single_transaction_no_tip.txt'
             }
         }
+        stage('Single Transaction With Tip') {
+            steps {
+                sh 'ansible-playbook single_transaction_with_tip.yml > single_transaction_with_tip.txt'
+            }
+        }
+        stage('Multi Transaction No Tip') {
+            steps {
+                sh 'ansible-playbook multi_transaction_no_tip.yml > multi_transaction_no_tip.txt'
+            }
+        }
+        stage('Multi Transaction With Tip') {
+            steps {
+                sh 'ansible-playbook multi_transaction_with_tip.yml > multi_transaction_with_tip.txt'
+            }
+        }
+        stage('Smart Contract Gas 1') {
+            steps {
+                sh 'ansible-playbook smart_contract_gas_1.yml > smart_contract_gas_1.txt'
+            }
+        }
+        stage('Smart Contract Gas 2') {
+            steps {
+                sh 'ansible-playbook smart_contract_gas_2.yml > smart_contract_gas_2.txt'
+            }
+        }
+        stage('Test Send') {
+            steps {
+                sh 'ansible-playbook send.yml > seend.txt'
+            }
+        }
         stage('Send Report') {
             steps {
-                sh './ansible-dappley -function send_result -recipient user_name@example.com -senderEmail user_name@example.com -senderPasswd PASSWORD'
+                sh './ansible-dappley -function send_result -recipient blockchainwarning@omnisolu.com -senderEmail blockchainwarning@omnisolu.com -senderPasswd gabroq-bucfe0-pubqiC'
             }
         }
         stage('Terminate Host Nodes') {
