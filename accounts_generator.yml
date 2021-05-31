@@ -23,7 +23,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 120
+    async: 80
     poll: 0
 
   - name: Launch node2
@@ -31,7 +31,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 120
+    async: 80
     poll: 0
 
   - name: Launch node3
@@ -39,7 +39,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 120
+    async: 80
     poll: 0
 
   - name: Launch node4
@@ -47,7 +47,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 120
+    async: 80
     poll: 0
 
   - name: Launch node5
@@ -55,7 +55,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 120
+    async: 80
     poll: 0
 
   ## -------------------------------------------
@@ -65,7 +65,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 120
+    async: 80
     poll: 0
 
   - name: Launch node2
@@ -73,7 +73,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 120
+    async: 80
     poll: 0
 
   - name: Launch node3
@@ -81,7 +81,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 120
+    async: 80
     poll: 0
 
   - name: Launch node4
@@ -89,7 +89,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 120
+    async: 80
     poll: 0
 
   - name: Launch node5
@@ -97,7 +97,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 120
+    async: 80
     poll: 0
 
   ## -------------------------------------------
@@ -107,7 +107,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 120
+    async: 80
     poll: 0
 
   - name: Launch node2
@@ -115,7 +115,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 120
+    async: 80
     poll: 0
 
   - name: Launch node3
@@ -123,7 +123,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 120
+    async: 80
     poll: 0
 
   - name: Launch node4
@@ -131,7 +131,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 120
+    async: 80
     poll: 0
 
   - name: Launch node5
@@ -139,7 +139,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 120
+    async: 80
     poll: 0
 
   ## -------------------------------------------
@@ -149,7 +149,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 120
+    async: 80
     poll: 0
 
   - name: Launch node2
@@ -157,7 +157,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 120
+    async: 80
     poll: 0
 
   - name: Launch node3
@@ -165,7 +165,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 120
+    async: 80
     poll: 0
 
   - name: Launch node4
@@ -173,7 +173,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 120
+    async: 80
     poll: 0
 
   - name: Launch node5
@@ -181,7 +181,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 120
+    async: 80
     poll: 0
 
   ## -------------------------------------------
@@ -191,7 +191,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 120
+    async: 80
     poll: 0
 
   - name: Launch node2
@@ -199,7 +199,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 120
+    async: 80
     poll: 0
 
   - name: Launch node3
@@ -207,7 +207,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 120
+    async: 80
     poll: 0
 
   - name: Launch node4
@@ -215,7 +215,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 120
+    async: 80
     poll: 0
 
   - name: Launch node5
@@ -223,7 +223,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 120
+    async: 80
     poll: 0
 
   - name: Wait 10 seconds to launch blockchain
@@ -261,36 +261,94 @@
     register: account_info
 
   - debug:
-      msg: '{{ account_info }}'
+      msg: '{{ account_info.stdout_lines[3] }}'
 
-  - name: Check if server is reachable
-    fail:
-      msg: "Server is not reachable!"
-    when: account_info.stdout_lines[3][7:] == "server is not reachable!"
-
-  - name:
-    shell: echo '{{ account_info.stdout_lines[3] }}' > account_address.txt
+  - name: Create account info file
+    shell: echo '{{ account_info.stdout_lines[3][12:] }}' > account_address.txt
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin
+
 
   - name: Move account info to Jenkins
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/accounts.dat
-      dest: ../go-dappley-ansible-accounts/testing/
+      dest: ../go-dappley-ansible-accounts/node1/
       flat: yes
+    when: inventory_hostname in groups['NODE1']
 
   - name: Move account info to Jenkins
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/account_address.txt
-      dest: ../go-dappley-ansible-accounts/testing/
+      dest: ../go-dappley-ansible-accounts/node1/
       flat: yes
+    when: inventory_hostname in groups['NODE1']
+
+
+  - name: Move account info to Jenkins
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/accounts.dat
+      dest: ../go-dappley-ansible-accounts/node2/
+      flat: yes
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Move account info to Jenkins
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/account_address.txt
+      dest: ../go-dappley-ansible-accounts/node2/
+      flat: yes
+    when: inventory_hostname in groups['NODE2']
+
+
+  - name: Move account info to Jenkins
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/accounts.dat
+      dest: ../go-dappley-ansible-accounts/node3/
+      flat: yes
+    when: inventory_hostname in groups['NODE3']
+
+  - name: Move account info to Jenkins
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/account_address.txt
+      dest: ../go-dappley-ansible-accounts/node3/
+      flat: yes
+    when: inventory_hostname in groups['NODE3']
+
+
+  - name: Move account info to Jenkins
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/accounts.dat
+      dest: ../go-dappley-ansible-accounts/node4/
+      flat: yes
+    when: inventory_hostname in groups['NODE4']
+
+  - name: Move account info to Jenkins
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/account_address.txt
+      dest: ../go-dappley-ansible-accounts/node4/
+      flat: yes
+    when: inventory_hostname in groups['NODE4']
+
+
+  - name: Move account info to Jenkins
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/accounts.dat
+      dest: ../go-dappley-ansible-accounts/node5/
+      flat: yes
+    when: inventory_hostname in groups['NODE5']
+
+  - name: Move account info to Jenkins
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/account_address.txt
+      dest: ../go-dappley-ansible-accounts/node5/
+      flat: yes
+    when: inventory_hostname in groups['NODE5']
 
 #################### Closing ####################
 
   ## Wait for the tasks to terminate
   - name: Wait till async tasks terminate
     wait_for:
-      timeout: 60
+      timeout: 30
 
   ## Remove the db files and account.dat
   - name: Remove /go-dappley/bin All Nodes
@@ -299,7 +357,7 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
     ignore_errors: true
 
-  - name: Remove /go-dappley/dapp/bin Node1
+  - name: Remove /go-dappley/dapp/bin Node
     shell: rm -r bin
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/

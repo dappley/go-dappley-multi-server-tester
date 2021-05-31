@@ -8,8 +8,8 @@
     GOROOT: "/usr/local/go"
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin"
   vars:
-    account1: dZmRE2UWEnB1hG85n9bUsZ7Z14Pp1ZFPPK
-    account2: dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq
+    account1: account_1_address
+    account2: account_2_address
     invalid_address: thisistheaddressofaninvalidaddress
 
   tasks:
@@ -665,7 +665,7 @@
 
   ## Over balance gas limit
   - name: Over balance gas limit
-    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 100000 -gasPrice 1 -data '{"function":"record","args":["dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq","500"]}'
+    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 100000 -gasPrice 1 -data '{"function":"record","args":["account_2_address","500"]}'
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: deploy_contract
@@ -718,7 +718,7 @@
 
   ## Negative gas limit
   - name: Negative gas limit
-    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit -30000 -gasPrice 1 -data '{"function":"record","args":["dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq","500"]}'
+    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit -30000 -gasPrice 1 -data '{"function":"record","args":["account_2_address","500"]}'
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: deploy_contract
@@ -771,7 +771,7 @@
 
   ## Zero gas limit
   - name: Zero gas limit
-    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 0 -gasPrice 1 -data '{"function":"record","args":["dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq","500"]}'
+    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 0 -gasPrice 1 -data '{"function":"record","args":["account_2_address","500"]}'
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: deploy_contract
@@ -824,7 +824,7 @@
 
   ## Insufficient gas limit
   - name: Insufficient gas limit
-    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 10000 -gasPrice 1 -data '{"function":"record","args":["dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq","500"]}'
+    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 10000 -gasPrice 1 -data '{"function":"record","args":["account_2_address","500"]}'
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: deploy_contract
@@ -877,7 +877,7 @@
 
   ## No gas limit
   - name: No gas limit
-    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasPrice 1 -data '{"function":"record","args":["dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq","500"]}' -gasLimit 
+    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasPrice 1 -data '{"function":"record","args":["account_2_address","500"]}' -gasLimit 
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: deploy_contract
@@ -898,7 +898,7 @@
 
   ## Over balance gas price
   - name: Over balance gas price
-    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 20 -data '{"function":"record","args":["dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq","500"]}'
+    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 20 -data '{"function":"record","args":["account_2_address","500"]}'
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: deploy_contract
@@ -916,7 +916,7 @@
 
   ## Zero gas price
   - name: Zero gas price
-    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 0 -data '{"function":"record","args":["dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq","500"]}'
+    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 0 -data '{"function":"record","args":["account_2_address","500"]}'
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: deploy_contract
@@ -934,7 +934,7 @@
 
   ## Negative gas price
   - name: Negative gas price
-    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice -1 -data '{"function":"record","args":["dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq","500"]}'
+    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice -1 -data '{"function":"record","args":["account_2_address","500"]}'
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: deploy_contract
@@ -952,7 +952,7 @@
 
   ## No gas price
   - name: No gas price
-    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000  -data '{"function":"record","args":["dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq","500"]}' -gasPrice 
+    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000  -data '{"function":"record","args":["account_2_address","500"]}' -gasPrice 
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: deploy_contract
@@ -1063,7 +1063,7 @@
 
   ## Negative amount in data
   - name: Invalid address in data
-    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq","-500"]}'
+    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["account_2_address","-500"]}'
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: deploy_contract
@@ -1081,7 +1081,7 @@
 
   ## Over balance amount in data
   - name: Invalid address in data
-    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq","500000"]}'
+    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["account_2_address","500000"]}'
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: deploy_contract
@@ -1099,7 +1099,7 @@
 
   ## Amount in data is empty
   - name: Invalid address in data
-    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq",""]}'
+    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["account_2_address",""]}'
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: deploy_contract
@@ -1117,7 +1117,7 @@
 
   ## No balance amount in data
   - name: Invalid address in data
-    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq"]}'
+    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["account_2_address"]}'
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: deploy_contract
@@ -1135,7 +1135,7 @@
 
   ## Invalid argument
   - name: Invalid address in data
-    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"this":"is","test":["dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq","500"]}'
+    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"this":"is","test":["account_2_address","500"]}'
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: deploy_contract

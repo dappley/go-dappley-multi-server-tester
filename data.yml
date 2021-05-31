@@ -8,8 +8,8 @@
     GOROOT: "/usr/local/go"
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin"
   vars:
-    account1: dZmRE2UWEnB1hG85n9bUsZ7Z14Pp1ZFPPK
-    account2: dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq
+    account1: account_1_address
+    account2: account_2_address
     invalid_address: thisistheaddressofaninvalidaddress
 
   tasks:
@@ -414,7 +414,7 @@
   ########## Fail :: The transaction still gets approved with negative amount, but the recipient's balance doen't increase ##########
   ## Negative amount in data
   - name: Negative amount in data
-    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq","-500"]}'
+    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["account_2_address","-500"]}'
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: deploy_contract
@@ -492,7 +492,7 @@
     when: inventory_hostname in groups['NODE1']
 
   - name: Over balance amount in data
-    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq","{{ miner_balance.stdout_lines[0][16:] + miner_balance.stdout_lines[0][16:]}}"]}'
+    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["account_2_address","{{ miner_balance.stdout_lines[0][16:] + miner_balance.stdout_lines[0][16:]}}"]}'
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: deploy_contract
@@ -548,7 +548,7 @@
   # ########## Fail :: This test makes the node1 to crash [Entire blockchain breaks] ##########
   # ## Amount in data is empty
   # - name: Invalid address in data
-  #   shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq",""]}'
+  #   shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["account_2_address",""]}'
   #   args:
   #     chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
   #   register: deploy_contract
@@ -604,7 +604,7 @@
   ########## Fail :: Transaction still gets processed, but the recipient's balance doesn't increase ##########
   ## Amount in data is in string
   - name: Amount is string in data
-    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq","five hundred"]}'
+    shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["account_2_address","five hundred"]}'
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: deploy_contract
@@ -659,7 +659,7 @@
 
   # ## No balance amount in data 1
   # - name: Invalid amount in data 1
-  #   shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq", ]}'
+  #   shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["account_2_address", ]}'
   #   args:
   #     chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
   #   register: deploy_contract
@@ -715,7 +715,7 @@
   # ########## Fail :: Transaction gets approved but the account balance is stableized ##########
   # ## No balance amount in data 2
   # - name: Invalid address in data 2
-  #   shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq"]}'
+  #   shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["account_2_address"]}'
   #   args:
   #     chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
   #   register: deploy_contract
@@ -770,7 +770,7 @@
 
   # ## Invalid arguments
   # - name: Invalid arguments in data
-  #   shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"this":"is","test":["dcbtkT5UattbmRZqPqP6yobYy5mMi8HiHq","500"]}'
+  #   shell: ./cli send -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"this":"is","test":["account_2_address","500"]}'
   #   args:
   #     chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
   #   register: deploy_contract
