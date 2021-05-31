@@ -13,12 +13,11 @@ import (
 )
 
 func main() {
-	var function, recipient, senderEmail, senderPasswd, playbooks string
+	var function, recipient, senderEmail, senderPasswd string
 	flag.StringVar(&function, "function", "<Function Name>", "Name of the function that will be run.")
 	flag.StringVar(&recipient, "recipient", "<Recipient Email>", "Email of the recipient.")
 	flag.StringVar(&senderEmail, "senderEmail", "<Sender Email>", "Email of the addressee.")
 	flag.StringVar(&senderPasswd, "senderPasswd", "<Sender Password>", "Email password of the addressee.")
-	flag.StringVar(&playbooks, "playbooks", "<Playbook Names>", "Name of all the playbooks.")
 	flag.Parse()
 
 	if function == "update" {
@@ -32,7 +31,7 @@ func main() {
 	} else if function == "send_result" {
 		SendTestResult(recipient, senderEmail, senderPasswd)
 	} else if function == "update_address" {
-		update_address(playbooks)
+		Update_address()
 	} else {
 		fmt.Println("Function Invalid!")
 	}
