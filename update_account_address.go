@@ -36,11 +36,15 @@ func Update_address() {
 
 			if strings.Contains(line, "account_1_address") {
 				updated_line := strings.ReplaceAll(line, "account_1_address", account_addresses[0])
+				fmt.Println(account_addresses[0])
+				fmt.Println(account_addresses[0][:34])
 				fmt.Println(updated_line)
 				updated_playbook += updated_line
 
 			} else if strings.Contains(line, "account_2_address") {
 				updated_line := strings.ReplaceAll(line, "account_2_address", account_addresses[1])
+				fmt.Println(account_addresses[1])
+				fmt.Println(account_addresses[1][:34])
 				updated_playbook += updated_line
 
 			} else if strings.Contains(line, "account_3_address") {
