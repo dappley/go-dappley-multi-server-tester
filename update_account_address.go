@@ -1,7 +1,7 @@
 package main 
 
 import (
-	"log"
+	// "log"
 	"fmt"
 	"bufio"
 	"strings"
@@ -10,7 +10,8 @@ import (
 )
 
 func Update_address() {
-	playbooks := []string{"accounts_generator.yml", "data.yml", "multi_transaction_no_tip.yml", "multi_transaction_with_tip.yml", "send.yml", "sendFromMiner.yml", "setup.yml", "single_transaction_no_tip.yml", "single_transaction_with_tip.yml", "smart_contract_gas_1.yml", "smart_contract_gas_2.yml", "update_seed_port.yml"}
+	// playbooks := []string{"accounts_generator.yml", "data.yml", "multi_transaction_no_tip.yml", "multi_transaction_with_tip.yml", "send.yml", "sendFromMiner.yml", "setup.yml", "single_transaction_no_tip.yml", "single_transaction_with_tip.yml", "smart_contract_gas_1.yml", "smart_contract_gas_2.yml", "update_seed_port.yml"}
+	playbooks := []string{"smart_contract_gas_1.yml"}
 	var account_addresses []string
 
 	for i := 1; i <= 5; i++ {
@@ -35,28 +36,23 @@ func Update_address() {
 			line := scanner.Text()
 
 			if strings.Contains(line, "account_1_address") {
-				updated_line := strings.ReplaceAll(line, "account_1_address", account_addresses[0])
-				fmt.Println(account_addresses[0])
-				fmt.Println(account_addresses[0][:34])
-				fmt.Println(updated_line)
+				updated_line := strings.ReplaceAll(line, "account_1_address", account_addresses[0][:34]) + "\n"
 				updated_playbook += updated_line
 
 			} else if strings.Contains(line, "account_2_address") {
-				updated_line := strings.ReplaceAll(line, "account_2_address", account_addresses[1])
-				fmt.Println(account_addresses[1])
-				fmt.Println(account_addresses[1][:34])
+				updated_line := strings.ReplaceAll(line, "account_2_address", account_addresses[1][:34]) + "\n"
 				updated_playbook += updated_line
 
 			} else if strings.Contains(line, "account_3_address") {
-				updated_line := strings.ReplaceAll(line, "account_3_address", account_addresses[2])
+				updated_line := strings.ReplaceAll(line, "account_3_address", account_addresses[2][:34]) + "\n"
 				updated_playbook += updated_line
 
 			} else if strings.Contains(line, "account_4_address") {
-				updated_line := strings.ReplaceAll(line, "account_4_address", account_addresses[3])
+				updated_line := strings.ReplaceAll(line, "account_4_address", account_addresses[3][:34]) + "\n"
 				updated_playbook += updated_line
 
 			} else if strings.Contains(line, "account_5_address") {
-				updated_line := strings.ReplaceAll(line, "account_5_address", account_addresses[4])
+				updated_line := strings.ReplaceAll(line, "account_5_address", account_addresses[4][:34]) + "\n"
 				updated_playbook += updated_line
 
 			} else {
@@ -64,9 +60,10 @@ func Update_address() {
 
 			}
 		}
-		err = ioutil.WriteFile(playbook, []byte(updated_playbook), 0644)
-		if err != nil {
-			log.Fatalln(err)
-		}
+		fmt.Println(updated_playbook)
+		// err = ioutil.WriteFile(playbook, []byte(updated_playbook), 0644)
+		// if err != nil {
+		// 	log.Fatalln(err)
+		// }
 	}
 }
