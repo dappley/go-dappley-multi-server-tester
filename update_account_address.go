@@ -1,7 +1,7 @@
 package main 
 
 import (
-	// "log"
+	"log"
 	"fmt"
 	"bufio"
 	"strings"
@@ -10,8 +10,7 @@ import (
 )
 
 func Update_address() {
-	// playbooks := []string{"accounts_generator.yml", "data.yml", "multi_transaction_no_tip.yml", "multi_transaction_with_tip.yml", "send.yml", "sendFromMiner.yml", "setup.yml", "single_transaction_no_tip.yml", "single_transaction_with_tip.yml", "smart_contract_gas_1.yml", "smart_contract_gas_2.yml", "update_seed_port.yml"}
-	playbooks := []string{"smart_contract_gas_1.yml"}
+	playbooks := []string{"accounts_generator.yml", "data.yml", "multi_transaction_no_tip.yml", "multi_transaction_with_tip.yml", "send.yml", "sendFromMiner.yml", "setup.yml", "single_transaction_no_tip.yml", "single_transaction_with_tip.yml", "smart_contract_gas_1.yml", "smart_contract_gas_2.yml", "update_seed_port.yml"}
 	var account_addresses []string
 
 	for i := 1; i <= 5; i++ {
@@ -60,10 +59,9 @@ func Update_address() {
 
 			}
 		}
-		fmt.Println(updated_playbook)
-		// err = ioutil.WriteFile(playbook, []byte(updated_playbook), 0644)
-		// if err != nil {
-		// 	log.Fatalln(err)
-		// }
+		err = ioutil.WriteFile(playbook, []byte(updated_playbook), 0644)
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}
 }
