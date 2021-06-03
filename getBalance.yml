@@ -1,0 +1,161 @@
+---
+
+- hosts: all
+  become: true
+  become_user: ubuntu
+  environment:
+    GOPATH: "/home/ubuntu/go"
+    GOROOT: "/usr/local/go"
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin"
+  vars:
+    account1: account_1_address
+    invalid_address: thisistheaddressofaninvalidaddress
+
+  tasks:
+  - name: Accounts.dat to Nodes
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node1/accounts.dat
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
+
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+  ## Launch blockchain 
+  - name: Launch node1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 60
+    poll: 0
+
+  - name: Launch node2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 60
+    poll: 0
+
+  - name: Launch node3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 60
+    poll: 0
+
+  - name: Launch node4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 60
+    poll: 0
+
+  - name: Launch node5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 60
+    poll: 0
+
+  - name: Wait 10 seconds to launch blockchain
+    wait_for:
+      timeout: 10
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int > (10)|int
+    retries: 20
+    delay: 10
+
+  - debug:
+      msg: "Blockchain height: {{ blockchainHeight.stdout_lines[1][17:]|replace(',','') }}"
+
+  ## Get blanace when there is an accounts.dat
+  - name: Check balance with accounts.dat
+    shell: ./cli getBalance -address {{ account1 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
+
+  - debug:
+      msg: '{{ test_result.stdout_lines }}'
+
+  - name: Account balance test
+    fail:
+     msg: "Expected 0 but returned {{ test_result.stdout_lines[0][16:] }}"
+    when: test_result.stdout_lines[0][16:]|int != 0|int
+    ignore_errors: true
+
+  ## Get blanace when there isn't an accounts.dat
+  - name: Check balance without accounts.dat
+    shell: ./cli getBalance -address {{ invalid_address }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
+
+  - debug:
+      msg: '{{ test_result.stdout_lines }}'
+
+  - name: Command test
+    fail:
+     msg: "Expected the command to fail but returned {{ test_result.stdout }}"
+    when: test_result.stdout_lines[0][7:] != "address is not valid"
+    ignore_errors: true
+
+  ## No flag
+  - name: No flag
+    shell: ./cli getBalance
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
+
+  - debug:
+      msg: '{{ test_result.stdout }}'
+
+  - name: Command test
+    fail:
+     msg: "Expected the command to fail but returned {{ test_result.stdout }}"
+    when: test_result.stdout_lines[0][:5] != "Usage"
+    ignore_errors: true
+
+  ## No argument
+  - name: No argument
+    shell: ./cli getBalance -address
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
+
+  - debug:
+      msg: '{{ test_result.stderr }}'
+
+  - name: Command test
+    fail:
+     msg: "Expected the command to fail but returned {{ test_result.stderr }}"
+    when: test_result.stderr_lines[0][:22] != "flag needs an argument"
+    ignore_errors: true
+
+  ## Wait for the tasks to terminate
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 10
+
+  ## Remove the db files and account.dat
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+
+  - name: Remove /go-dappley/dapp/bin Node1
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
