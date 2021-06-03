@@ -10,7 +10,7 @@ import (
 )
 
 func Update_address() {
-	playbooks := []string{"accounts_generator.yml", "data.yml", "multi_transaction_no_tip.yml", "multi_transaction_with_tip.yml", "send.yml", "sendFromMiner.yml", "setup.yml", "single_transaction_no_tip.yml", "single_transaction_with_tip.yml", "smart_contract_gas_1.yml", "smart_contract_gas_2.yml", "update_seed_port.yml"}
+	playbooks := []string{"accounts_generator.yml", "multi_transaction_no_tip.yml", "multi_transaction_with_tip.yml", "send.yml", "sendFromMiner.yml", "setup.yml", "single_transaction_no_tip.yml", "single_transaction_with_tip.yml", "smart_contract_gas_1.yml", "smart_contract_gas_2.yml", "update_seed_port.yml", "getBalance.yml"}
 	var account_addresses []string
 
 	for i := 1; i <= 5; i++ {

@@ -10,7 +10,7 @@ import (
 
 //Send email
 func SendTestResult(recipient string, senderEmail string, senderPasswd string) {
-	fileNames := []string{"accounts_generator.txt", "multi_transaction_no_tip.txt", "multi_transaction_with_tip.txt", "send.txt", "sendFromMiner.txt", "setup.txt", "single_transaction_no_tip.txt", "single_transaction_with_tip.txt", "smart_contract_gas_1.txt", "smart_contract_gas_2.txt"}
+	fileNames := []string{"accounts_generator.txt", "multi_transaction_no_tip.txt", "multi_transaction_with_tip.txt", "send.txt", "sendFromMiner.txt", "setup.txt", "single_transaction_no_tip.txt", "single_transaction_with_tip.txt", "smart_contract_gas_1.txt", "smart_contract_gas_2.txt", "getBalance.yml"}
 
 	emailContents := detailedEmail(fileNames)
 
