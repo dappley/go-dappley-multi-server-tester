@@ -242,6 +242,57 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
 
+  ## listAddresses when there is no accounts.dat
+  - name: Check if accounts.dat is working
+    ansible.builtin.expect:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+      command: ./cli listAddresses
+      responses:
+        'Please input the password:' : ''
+    register: list_address
+    ignore_errors: true
+
+  - debug:
+      msg: '{{ list_address }}'
+
+  ## listAddresses with private key when there is no accounts.dat
+  - name: Check if accounts.dat is working
+    ansible.builtin.expect:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+      command: ./cli listAddresses -privateKey
+      responses:
+        'Please input the password:' : ''
+    register: list_address
+    ignore_errors: true
+
+  - debug:
+      msg: '{{ list_address }}'
+
+  ## Invalid Password
+  - name: Space in Password
+    ansible.builtin.expect:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+      command: ./cli createAccount
+      responses:
+        'Please input the password for the new account:' : 'dappley'
+        'Repeat password:' : 'dappley'
+
+  - name: Check if accounts.dat is working
+    ansible.builtin.expect:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+      command: ./cli listAddresses
+      responses:
+        'Please input the password:' : 'wrong_password!'
+    register: list_address
+
+  - debug:
+      msg: '{{ list_address }}'
+
+  - name: Remove /go-dappley/dapp/bin
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
+
   ## Wait for the tasks to terminate
   - name: Wait till async tasks terminate
     wait_for:
