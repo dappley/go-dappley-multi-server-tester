@@ -24,7 +24,7 @@ func Update_address() {
 
 	for _, playbook := range playbooks {
 		var updated_playbook string
-		playbook_byte, err := ioutil.ReadFile(playbook)
+		playbook_byte, err := ioutil.ReadFile("./playbooks/" + playbook)
 		if err != nil {
 			fmt.Println("Failed to read " + playbook)
 			return
@@ -59,7 +59,7 @@ func Update_address() {
 
 			}
 		}
-		err = ioutil.WriteFile(playbook, []byte(updated_playbook), 0644)
+		err = ioutil.WriteFile("./playbooks/" + playbook, []byte(updated_playbook), 0644)
 		if err != nil {
 			log.Fatalln(err)
 		}
