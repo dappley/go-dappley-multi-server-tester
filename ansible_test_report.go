@@ -10,7 +10,8 @@ import (
 
 //Send email
 func SendTestResult(recipient string, senderEmail string, senderPasswd string) {
-	fileNames := []string{"accounts_generator.txt", "multi_transaction_no_tip.txt", "multi_transaction_with_tip.txt", "send.txt", "sendFromMiner.txt", "setup.txt", "single_transaction_no_tip.txt", "single_transaction_with_tip.txt", "smart_contract_gas_1.txt", "smart_contract_gas_2.txt", "getBalance.yml"}
+	file_list := []string{"accounts_generator.txt", "multi_transaction_no_tip.txt", "multi_transaction_with_tip.txt", "send.txt", "sendFromMiner.txt", "setup.txt", "single_transaction_no_tip.txt", "single_transaction_with_tip.txt", "smart_contract_gas_1.txt", "smart_contract_gas_2.txt", "getBalance.yml"}
+	fileNames := add_directory(file_list)
 
 	emailContents := detailedEmail(fileNames)
 
@@ -232,4 +233,13 @@ func between(value string, a string, b string) string {
         return ""
     }
     return value[posFirstAdjusted:posLast]
+}
+
+//Add directory
+func add_directory(file_list []string) []string {
+	var fileNames []string
+	for _, fileName := range file_list {
+		fileNames = append(fileNames, "./test_results/" + fileName)
+	}
+	return fileNames
 }
