@@ -272,14 +272,14 @@
   - name: Move account info to Jenkins
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/accounts.dat
-      dest: ../go-dappley-ansible-accounts/node1/
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node1/
       flat: yes
     when: inventory_hostname in groups['NODE1']
 
   - name: Move account info to Jenkins
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/account_address.txt
-      dest: ../go-dappley-ansible-accounts/node1/
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node1/
       flat: yes
     when: inventory_hostname in groups['NODE1']
 
@@ -287,14 +287,14 @@
   - name: Move account info to Jenkins
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/accounts.dat
-      dest: ../go-dappley-ansible-accounts/node2/
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node2/
       flat: yes
     when: inventory_hostname in groups['NODE2']
 
   - name: Move account info to Jenkins
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/account_address.txt
-      dest: ../go-dappley-ansible-accounts/node2/
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node2/
       flat: yes
     when: inventory_hostname in groups['NODE2']
 
@@ -302,14 +302,14 @@
   - name: Move account info to Jenkins
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/accounts.dat
-      dest: ../go-dappley-ansible-accounts/node3/
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node3/
       flat: yes
     when: inventory_hostname in groups['NODE3']
 
   - name: Move account info to Jenkins
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/account_address.txt
-      dest: ../go-dappley-ansible-accounts/node3/
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node3/
       flat: yes
     when: inventory_hostname in groups['NODE3']
 
@@ -317,14 +317,14 @@
   - name: Move account info to Jenkins
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/accounts.dat
-      dest: ../go-dappley-ansible-accounts/node4/
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node4/
       flat: yes
     when: inventory_hostname in groups['NODE4']
 
   - name: Move account info to Jenkins
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/account_address.txt
-      dest: ../go-dappley-ansible-accounts/node4/
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node4/
       flat: yes
     when: inventory_hostname in groups['NODE4']
 
@@ -332,14 +332,14 @@
   - name: Move account info to Jenkins
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/accounts.dat
-      dest: ../go-dappley-ansible-accounts/node5/
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node5/
       flat: yes
     when: inventory_hostname in groups['NODE5']
 
   - name: Move account info to Jenkins
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/account_address.txt
-      dest: ../go-dappley-ansible-accounts/node5/
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node5/
       flat: yes
     when: inventory_hostname in groups['NODE5']
 
