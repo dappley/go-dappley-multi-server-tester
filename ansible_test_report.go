@@ -75,9 +75,8 @@ func simplify(task []string) []string {
 		}
 	}
 
-	fmt.Println(task)
-
-	fmt.Println(simplified_task)
+	// fmt.Println(task)
+	// fmt.Println(simplified_task)
 
 	return simplified_task
 }
@@ -140,7 +139,7 @@ func createEmail(fileNames []string) string {
 	}
 
 	for _, result := range files_results {
-		emailContents += "Playbook: [" + strings.TrimLeft(strings.TrimRight(result[0], ".txt"), "./test_results/") + "]\n"
+		emailContents += "Playbook: [" + strings.TrimRight(result[0], ".txt")[15:] + "]\n"
 		emailContents += "Failing Tasks: \n\n"
 		for i, line := range result {
 			if i == 0 {
