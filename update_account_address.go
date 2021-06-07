@@ -57,7 +57,7 @@ func Update_address(playbooks []string) {
 
 			}
 		}
-		err = ioutil.WriteFile("./playbooks/" + playbook, []byte(updated_playbook), 0644)
+		err = ioutil.WriteFile(playbook, []byte(updated_playbook), 0644)
 		if err != nil {
 			log.Fatalln(err)
 		}
