@@ -183,9 +183,18 @@ func terminate() {
 		fmt.Printf("%s\n", output)
 		fmt.Println(terminate_instance)
 	}
-	remove_all := "rm -r *"
-	args := strings.Split(remove_all, " ")
+	//Clean go-dappley-ansible directory
+	clean_directory := "rm -r *"
+	args := strings.Split(clean_directory, " ")
 	cmd := exec.Command(args[0], args[1:]...)
+	_, err = cmd.CombinedOutput()
+	if err != nil {
+		fmt.Println(err)
+	}
+	//Remove go-dappley-ansible-accounts directory
+	remove_directory := "rm -r ../go-dappley-ansible-accounts"
+	args = strings.Split(remove_directory, " ")
+	cmd = exec.Command(args[0], args[1:]...)
 	_, err = cmd.CombinedOutput()
 	if err != nil {
 		fmt.Println(err)
