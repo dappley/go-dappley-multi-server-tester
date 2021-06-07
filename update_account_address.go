@@ -9,10 +9,8 @@ import (
 	"io/ioutil"
 )
 
-func Update_address() {
-	playbooks := []string{"accounts_generator.yml", "multi_transaction_no_tip.yml", "multi_transaction_with_tip.yml", "send.yml", "sendFromMiner.yml", "setup.yml", "single_transaction_no_tip.yml", "single_transaction_with_tip.yml", "smart_contract_gas_1.yml", "smart_contract_gas_2.yml", "update_seed_port.yml", "getBalance.yml"}
+func Update_address(playbooks []string) {
 	var account_addresses []string
-
 	for i := 1; i <= 5; i++ {
 		account_address, err := ioutil.ReadFile("../go-dappley-ansible-accounts/node" + strconv.Itoa(i) + "/account_address.txt")
 		if err != nil {
@@ -24,7 +22,7 @@ func Update_address() {
 
 	for _, playbook := range playbooks {
 		var updated_playbook string
-		playbook_byte, err := ioutil.ReadFile("./playbooks/" + playbook)
+		playbook_byte, err := ioutil.ReadFile(playbook)
 		if err != nil {
 			fmt.Println("Failed to read " + playbook)
 			return

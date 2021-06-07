@@ -9,15 +9,9 @@ import (
 )
 
 //Send email
-func SendTestResult(recipient string, senderEmail string, senderPasswd string) {
-	file_list := []string{"accounts_generator.txt", "multi_transaction_no_tip.txt", "multi_transaction_with_tip.txt", "send.txt", "sendFromMiner.txt", "setup.txt", "single_transaction_no_tip.txt", "single_transaction_with_tip.txt", "smart_contract_gas_1.txt", "smart_contract_gas_2.txt", "getBalance.yml"}
-	fileNames := add_directory(file_list)
-
-	emailContents := detailedEmail(fileNames)
-
-	fmt.Println(emailContents)
-
-	send(recipient, emailContents, fileNames, senderEmail, senderPasswd)
+func SendTestResult(recipient string, senderEmail string, senderPasswd string, test_results []string) {
+	emailContents := createEmail(test_results)
+	send(recipient, emailContents, test_results, senderEmail, senderPasswd)
 }
 
 func send(recipient string, emailBody string, attachment []string, senderEmail string, senderPasswd string) {
@@ -67,6 +61,9 @@ func simplify(task []string) []string {
 		if strings.Contains(task[i], "...ignoring") {
 			continue
 		}
+		if strings.Contains(task[i], "skipping:") {
+			continue
+		}
 		if strings.Contains(task[i], "fatal: ") {
 			fatal = true
 		}
@@ -86,14 +83,14 @@ func simplify(task []string) []string {
 }
 
 //Create email with all failing cases
-func detailedEmail(fileNames []string) string {
+func createEmail(fileNames []string) string {
 	failingFiles  := isFileFail(fileNames)
-	files_results := make([][]string, len(failingFiles))
 
 	if (len(failingFiles) == 0) {
 		return "ALL TESTS PASS!"
 	}
 
+	files_results := make([][]string, len(failingFiles))
 	var file_description []string
 	var task []string
 	var emailContents string
@@ -105,8 +102,9 @@ func detailedEmail(fileNames []string) string {
 
 		file_byte, err := ioutil.ReadFile(curr_file)
 		if err != nil {
-			files_results[index] = append(files_results[index], "Read File")
-			files_results[index] = append(files_results[index], "Unable to read" + curr_file + "!")
+			files_results[index] = append(files_results[index], "Playbook: [" + strings.TrimLeft(strings.TrimRight(curr_file, ".txt"), "./test_results/") + "]")
+			files_results[index] = append(files_results[index], "Failed to read playbook!")
+			files_results[index] = append(files_results[index], "------------------------------------------------------")
 			continue
 		}
 
@@ -142,7 +140,7 @@ func detailedEmail(fileNames []string) string {
 	}
 
 	for _, result := range files_results {
-		emailContents += "Playbook: [" + strings.TrimRight(result[0], ".txt") + "]\n"
+		emailContents += "Playbook: [" + strings.TrimLeft(strings.TrimRight(result[0], ".txt"), "./test_results/") + "]\n"
 		emailContents += "Failing Tasks: \n\n"
 		for i, line := range result {
 			if i == 0 {
@@ -150,7 +148,7 @@ func detailedEmail(fileNames []string) string {
 			}
 			emailContents += line + "\n"
 		}
-		emailContents += "---------------------------\n"
+		emailContents += "------------------------------------------------------\n"
 	}
 
 	return emailContents
@@ -163,6 +161,7 @@ func isFileFail(fileNames []string) []string {
 	var scan_result bool
 
 	for i := 0; i < len(fileNames); i++ {
+		// Reset bool value
 		if curr_file != fileNames[i] {
 			curr_file = fileNames[i]
 			scan_result = false
@@ -233,13 +232,4 @@ func between(value string, a string, b string) string {
         return ""
     }
     return value[posFirstAdjusted:posLast]
-}
-
-//Add directory
-func add_directory(file_list []string) []string {
-	var fileNames []string
-	for _, fileName := range file_list {
-		fileNames = append(fileNames, "./test_results/" + fileName)
-	}
-	return fileNames
 }

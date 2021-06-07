@@ -20,18 +20,34 @@ func main() {
 	flag.StringVar(&senderPasswd, "senderPasswd", "<Sender Password>", "Email password of the addressee.")
 	flag.Parse()
 
+	file_list := []string{"setup",
+						  "accounts_generator",
+						  "update_seed_port",
+						  "sendFromMiner",
+						  "getBalance",
+						  "create_n_list_accounts",
+						  "single_transaction_no_tip",
+						  "single_transaction_with_tip",
+						  "multi_transaction_no_tip",
+						  "multi_transaction_with_tip",
+						  "smart_contract_gas_1",
+						  "smart_contract_gas_2",
+						  "send"}
+
 	if function == "update" {
 		update()
-	} else if function == "terminate" {
-		terminate()
 	} else if function == "initialize" {
 		initialize()
 	} else if function == "ssh_command" {
 		ssh_command()
-	} else if function == "send_result" {
-		SendTestResult(recipient, senderEmail, senderPasswd)
 	} else if function == "update_address" {
-		Update_address()
+		playbooks := add_directory(file_list, true)
+		Update_address(playbooks)
+	} else if function == "send_result" {
+		test_results := add_directory(file_list, false)
+		SendTestResult(recipient, senderEmail, senderPasswd, test_results)
+	} else if function == "terminate" {
+		terminate()
 	} else {
 		fmt.Println("Function Invalid!")
 	}
@@ -39,7 +55,6 @@ func main() {
 
 //Adds the server information to the hosts and instance_ids file
 func update() {
-
 	//Create txt files for server info
 	host_file, err := os.Create("hosts")
 	if err != nil {
@@ -98,7 +113,6 @@ func update() {
 //Runs until all servers are initialized
 func initialize() {
 	fileName := "instance_ids"
-
 	instance_byte, err := ioutil.ReadFile(fileName)
 	if err != nil {
 		fmt.Println("Failed to read", fileName)
@@ -149,7 +163,6 @@ func initialize() {
 //Termiante all servers via aws cli command
 func terminate() {
 	fileName := "instance_ids"
-	
 	instance_byte, err := ioutil.ReadFile(fileName)
 	if err != nil {
 		fmt.Println("Failed to read", fileName, "!")
@@ -169,6 +182,13 @@ func terminate() {
 		}
 		fmt.Printf("%s\n", output)
 		fmt.Println(terminate_instance)
+	}
+	remove_all := "rm -r *"
+	args := strings.Split(remove_all, " ")
+	cmd := exec.Command(args[0], args[1:]...)
+	_, err = cmd.CombinedOutput()
+	if err != nil {
+		fmt.Println(err)
 	}
 }
 
@@ -204,4 +224,19 @@ func ssh_command() {
 			}
 		}
 	}
+}
+
+//Adds directory and the suffix to the file list and return the updated list
+func add_directory(file_list []string, is_playbook bool) []string {
+	var fileNames []string
+	if is_playbook {
+		for _, fileName := range file_list {
+			fileNames = append(fileNames, "./playbooks/" + fileName + ".yml")
+		}
+	} else {
+		for _, fileName := range file_list {
+			fileNames = append(fileNames, "./test_results/" + fileName + ".txt")
+		}
+	}
+	return fileNames
 }
