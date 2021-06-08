@@ -134,6 +134,10 @@
     register: transaction_result
     when: inventory_hostname in groups['NODE1']
 
+  - debug:
+      msg: '{{ transaction_result }}'
+    when: inventory_hostname in groups['NODE1']
+
   # - debug:
   #     msg: '{{ transaction_result.stderr_lines[0][:34] }}'
   #   when: inventory_hostname in groups['NODE1']
@@ -323,8 +327,12 @@
     when: inventory_hostname in groups['NODE1']
 
   - debug:
-      msg: '{{ transaction_result.stdout_lines }}'
+      msg: '{{ transaction_result }}'
     when: inventory_hostname in groups['NODE1']
+
+  # - debug:
+  #     msg: '{{ transaction_result.stdout_lines }}'
+  #   when: inventory_hostname in groups['NODE1']
 
   - name: Transaction Test
     fail:
@@ -510,8 +518,12 @@
     when: inventory_hostname in groups['NODE1']
 
   - debug:
-      msg: '{{ transaction_result.stdout_lines }}'
+      msg: '{{ transaction_result }}'
     when: inventory_hostname in groups['NODE1']
+
+  # - debug:
+  #     msg: '{{ transaction_result.stdout_lines }}'
+  #   when: inventory_hostname in groups['NODE1']
 
   - name: Transaction Test
     fail:
@@ -698,8 +710,12 @@
     when: inventory_hostname in groups['NODE1']
 
   - debug:
-      msg: '{{ transaction_result.stderr_lines[0] }}'
+      msg: '{{ transaction_result }}'
     when: inventory_hostname in groups['NODE1']
+
+  # - debug:
+  #     msg: '{{ transaction_result.stderr_lines[0] }}'
+  #   when: inventory_hostname in groups['NODE1']
 
   - name: Transaction Test
     fail:
@@ -886,8 +902,12 @@
     when: inventory_hostname in groups['NODE1']
 
   - debug:
-      msg: '{{ transaction_result.stderr_lines[0] }}'
+      msg: '{{ transaction_result }}'
     when: inventory_hostname in groups['NODE1']
+
+  # - debug:
+  #     msg: '{{ transaction_result.stderr_lines[0] }}'
+  #   when: inventory_hostname in groups['NODE1']
 
   - name: Transaction Test
     fail:

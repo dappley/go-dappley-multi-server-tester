@@ -134,6 +134,10 @@
     register: transaction_result
     when: inventory_hostname in groups['NODE1']
 
+  - debug:
+      msg: '{{ transaction_result }}'
+    when: inventory_hostname in groups['NODE1']
+
   - name: Transaction Test
     fail:
      msg: "Expected a warning or an error message, but the transaction is approved."
@@ -318,6 +322,10 @@
     register: transaction_result
     when: inventory_hostname in groups['NODE1']
 
+  - debug:
+      msg: '{{ transaction_result }}'
+    when: inventory_hostname in groups['NODE1']
+
   - name: Transaction Test
     fail:
      msg: "Expected an error message but returned {{ transaction_result.stdout_lines[0] }}"
@@ -499,6 +507,10 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: transaction_result
+    when: inventory_hostname in groups['NODE1']
+
+  - debug:
+      msg: '{{ transaction_result }}'
     when: inventory_hostname in groups['NODE1']
 
   - name: Transaction Test
@@ -686,6 +698,7 @@
 
   - debug:
       msg: '{{ transaction_result }}'
+    when: inventory_hostname in groups['NODE1']
 
   # - name: Transaction Test
   #   fail:
@@ -873,6 +886,7 @@
 
   - debug:
       msg: '{{ transaction_result }}'
+    when: inventory_hostname in groups['NODE1']
 
   # - name: Transaction Test
   #   fail:
@@ -1060,6 +1074,7 @@
 
   - debug:
       msg: '{{ transaction_result }}'
+    when: inventory_hostname in groups['NODE1']
 
   # - name: Transaction Test
   #   fail:

@@ -34,6 +34,11 @@ func main() {
 						  "smart_contract_gas_2",
 						  "send"}
 
+	test_file := []string{"./playbook/send/invalid_address.yml",
+						  "./playbook/send/invalid_amount.yml",
+						  "./playbook/send/invalid_data.yml",
+						  "./playbook/send/invalid_tip.yml"}
+
 	if function == "update" {
 		update()
 	} else if function == "initialize" {
@@ -41,8 +46,8 @@ func main() {
 	} else if function == "ssh_command" {
 		ssh_command()
 	} else if function == "update_address" {
-		playbooks := add_directory(file_list, true)
-		Update_address(playbooks)
+		//playbooks := add_directory(file_list, true)
+		Update_address(test_file)
 	} else if function == "send_result" {
 		test_results := add_directory(file_list, false)
 		SendTestResult(recipient, senderEmail, senderPasswd, test_results)
