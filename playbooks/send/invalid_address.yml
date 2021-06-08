@@ -97,13 +97,13 @@
     register: transaction_result
 
   - debug:
-      msg: '{{ transaction_result }}'
+      msg: '{{ transaction_result.stdout }}'
     when: inventory_hostname in groups['NODE1']
 
   - name: Transaction test
     fail:
       msg: Expected the transaction to approve but failed.
-    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout == "Requested amount is sent. Pending approval from network."
+    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout != "Requested amount is sent. Pending approval from network."
     ignore_errors: true
 
   - name: Wait 10 seconds to complete transaction
@@ -201,7 +201,7 @@
 #################### Terminate ####################
   - name: Wait till async tasks terminate
     wait_for:
-      timeout: 10
+      timeout: 20
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
@@ -314,7 +314,7 @@
   - name: Transaction test
     fail:
       msg: Expected the transaction to approve but failed.
-    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout == "Requested amount is sent. Pending approval from network."
+    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout != "Requested amount is sent. Pending approval from network."
     ignore_errors: true
 
   - name: Wait 10 seconds to complete transaction
@@ -411,7 +411,7 @@
 #################### Terminate ####################
   - name: Wait till async tasks terminate
     wait_for:
-      timeout: 10
+      timeout: 20
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
@@ -524,7 +524,7 @@
   - name: Transaction test
     fail:
       msg: Expected the transaction to approve but failed.
-    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout == "Requested amount is sent. Pending approval from network."
+    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout != "Requested amount is sent. Pending approval from network."
     ignore_errors: true
 
   - name: Wait 10 seconds to complete transaction
@@ -621,7 +621,7 @@
 #################### Terminate ####################
   - name: Wait till async tasks terminate
     wait_for:
-      timeout: 10
+      timeout: 20
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
@@ -734,7 +734,7 @@
   - name: Transaction test
     fail:
       msg: Expected the transaction to approve but failed.
-    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout == "Requested amount is sent. Pending approval from network."
+    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout != "Requested amount is sent. Pending approval from network."
     ignore_errors: true
 
   - name: Wait 10 seconds to complete transaction
@@ -832,7 +832,7 @@
 #################### Terminate ####################
   - name: Wait till async tasks terminate
     wait_for:
-      timeout: 10
+      timeout: 20
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
@@ -945,7 +945,7 @@
   - name: Transaction test
     fail:
       msg: Expected the transaction to approve but failed.
-    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout == "Requested amount is sent. Pending approval from network."
+    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout != "Requested amount is sent. Pending approval from network."
     ignore_errors: true
 
   - name: Wait 10 seconds to complete transaction
@@ -1043,7 +1043,7 @@
 #################### Terminate ####################
   - name: Wait till async tasks terminate
     wait_for:
-      timeout: 10
+      timeout: 20
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
@@ -1156,7 +1156,7 @@
   - name: Transaction test
     fail:
       msg: Expected the transaction to approve but failed.
-    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout == "Requested amount is sent. Pending approval from network."
+    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout != "Requested amount is sent. Pending approval from network."
     ignore_errors: true
 
   - name: Wait 10 seconds to complete transaction
@@ -1254,7 +1254,7 @@
 #################### Terminate ####################
   - name: Wait till async tasks terminate
     wait_for:
-      timeout: 10
+      timeout: 20
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin

@@ -34,10 +34,10 @@ func main() {
 						  "smart_contract_gas_2",
 						  "send"}
 
-	test_file := []string{"./playbook/send/invalid_address.yml",
-						  "./playbook/send/invalid_amount.yml",
-						  "./playbook/send/invalid_data.yml",
-						  "./playbook/send/invalid_tip.yml"}
+	test_file := []string{"./playbooks/send/invalid_address.yml",
+						  "./playbooks/send/invalid_amount.yml",
+						  "./playbooks/send/invalid_data.yml",
+						  "./playbooks/send/invalid_tip.yml"}
 
 	if function == "update" {
 		update()
