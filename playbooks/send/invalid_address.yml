@@ -39,7 +39,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE2
@@ -47,7 +47,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE3
@@ -55,7 +55,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE4
@@ -63,7 +63,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE5
@@ -71,7 +71,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Wait 10 seconds for blockchain
@@ -94,6 +94,17 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     when: inventory_hostname in groups['NODE1']
+    register: transaction_result
+
+  - debug:
+      msg: '{{ transaction_result }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Transaction test
+    fail:
+      msg: Expected the transaction to approve but failed.
+    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout == "Requested amount is sent. Pending approval from network."
+    ignore_errors: true
 
   - name: Wait 10 seconds to complete transaction
     wait_for:
@@ -107,6 +118,9 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account1Balance
 
+  - debug:
+      msg: '{{ account1Balance.stdout }}'
+
   - name: Account1 balance test
     fail:
      msg: "Expected a warning or an error message, but the transaction is approved."
@@ -118,6 +132,9 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account2Balance
+
+  - debug:
+      msg: '{{ account2Balance.stdout }}'
 
   - name: Account2 balance test
     fail:
@@ -135,7 +152,7 @@
     when: inventory_hostname in groups['NODE1']
 
   - debug:
-      msg: '{{ transaction_result }}'
+      msg: '{{ transaction_result.stdout }}'
     when: inventory_hostname in groups['NODE1']
 
   - name: Transaction Test
@@ -156,6 +173,9 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account1Balance
 
+  - debug:
+      msg: '{{ account1Balance.stdout }}'
+
   - name: Account1 balance test
     fail:
      msg: "Expected a warning or an error message, but the transaction is approved."
@@ -167,6 +187,9 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account2Balance
+
+  - debug:
+      msg: '{{ account2Balance.stdout }}'
 
   - name: Account2 balance test
     fail:
@@ -227,7 +250,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE2
@@ -235,7 +258,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE3
@@ -243,7 +266,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE4
@@ -251,7 +274,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE5
@@ -259,7 +282,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Wait 10 seconds for blockchain
@@ -282,6 +305,17 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     when: inventory_hostname in groups['NODE1']
+    register: transaction_result
+
+  - debug:
+      msg: '{{ transaction_result.stdout }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Transaction test
+    fail:
+      msg: Expected the transaction to approve but failed.
+    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout == "Requested amount is sent. Pending approval from network."
+    ignore_errors: true
 
   - name: Wait 10 seconds to complete transaction
     wait_for:
@@ -295,6 +329,9 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account1Balance
 
+  - debug:
+      msg: '{{ account1Balance.stdout }}'
+
   - name: Account1 balance test
     fail:
      msg: "Expected a warning or an error message, but the transaction is approved."
@@ -306,6 +343,9 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account2Balance
+
+  - debug:
+      msg: '{{ account2Balance.stdout }}'
 
   - name: Account2 balance test
     fail:
@@ -323,7 +363,7 @@
     when: inventory_hostname in groups['NODE1']
 
   - debug:
-      msg: '{{ transaction_result }}'
+      msg: '{{ transaction_result.stdout }}'
     when: inventory_hostname in groups['NODE1']
 
   - name: Transaction Test
@@ -343,6 +383,9 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account1Balance
 
+  - debug:
+      msg: '{{ account1Balance.stdout }}'
+
   - name: Account1 balance test
     fail:
      msg: "Expected a warning or an error message, but the transaction is approved."
@@ -354,6 +397,9 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account2Balance
+
+  - debug:
+      msg: '{{ account2Balance.stdout }}'
 
   - name: Account2 balance test
     fail:
@@ -414,7 +460,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE2
@@ -422,7 +468,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE3
@@ -430,7 +476,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE4
@@ -438,7 +484,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE5
@@ -446,7 +492,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Wait 10 seconds for blockchain
@@ -469,6 +515,17 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     when: inventory_hostname in groups['NODE1']
+    register: transaction_result
+
+  - debug:
+      msg: '{{ transaction_result.stdout }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Transaction test
+    fail:
+      msg: Expected the transaction to approve but failed.
+    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout == "Requested amount is sent. Pending approval from network."
+    ignore_errors: true
 
   - name: Wait 10 seconds to complete transaction
     wait_for:
@@ -482,6 +539,9 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account1Balance
 
+  - debug:
+      msg: '{{ account1Balance.stdout }}'
+
   - name: Account1 balance test
     fail:
      msg: "Expected a warning or an error message, but the transaction is approved."
@@ -493,6 +553,9 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account2Balance
+
+  - debug:
+      msg: '{{ account2Balance.stdout }}'
 
   - name: Account2 balance test
     fail:
@@ -510,7 +573,7 @@
     when: inventory_hostname in groups['NODE1']
 
   - debug:
-      msg: '{{ transaction_result }}'
+      msg: '{{ transaction_result.stdout }}'
     when: inventory_hostname in groups['NODE1']
 
   - name: Transaction Test
@@ -530,6 +593,9 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account1Balance
 
+  - debug:
+      msg: '{{ account1Balance.stdout }}'
+
   - name: Account1 balance test
     fail:
      msg: "Expected a warning or an error message, but the transaction is approved."
@@ -541,6 +607,9 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account2Balance
+
+  - debug:
+      msg: '{{ account2Balance.stdout }}'
 
   - name: Account2 balance test
     fail:
@@ -601,7 +670,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE2
@@ -609,7 +678,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE3
@@ -617,7 +686,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE4
@@ -625,7 +694,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE5
@@ -633,7 +702,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Wait 10 seconds for blockchain
@@ -656,6 +725,17 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     when: inventory_hostname in groups['NODE1']
+    register: transaction_result
+
+  - debug:
+      msg: '{{ transaction_result.stdout }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Transaction test
+    fail:
+      msg: Expected the transaction to approve but failed.
+    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout == "Requested amount is sent. Pending approval from network."
+    ignore_errors: true
 
   - name: Wait 10 seconds to complete transaction
     wait_for:
@@ -669,6 +749,9 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account1Balance
 
+  - debug:
+      msg: '{{ account1Balance.stdout }}'
+
   - name: Account1 balance test
     fail:
      msg: "Expected a warning or an error message, but the transaction is approved."
@@ -680,6 +763,9 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account2Balance
+
+  - debug:
+      msg: '{{ account2Balance.stdout }}'
 
   - name: Account2 balance test
     fail:
@@ -697,14 +783,14 @@
     when: inventory_hostname in groups['NODE1']
 
   - debug:
-      msg: '{{ transaction_result }}'
+      msg: '{{ transaction_result.stdout }}'
     when: inventory_hostname in groups['NODE1']
 
-  # - name: Transaction Test
-  #   fail:
-  #    msg: "Expected a warning or an error message, but the transaction is approved."
-  #   ignore_errors: true
-  #   when: inventory_hostname in groups['NODE1'] and transaction_result.stdout == "Transaction is sent! Pending approval from network."
+  - name: Transaction Test
+    fail:
+     msg: "Expected a warning or an error message, but the transaction is approved."
+    ignore_errors: true
+    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout == "Transaction is sent! Pending approval from network."
 
   - name: Wait 10 seconds to complete transaction
     wait_for:
@@ -718,6 +804,9 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account1Balance
 
+  - debug:
+      msg: '{{ account1Balance.stdout }}'
+
   - name: Account1 balance test
     fail:
      msg: "Expected a warning or an error message, but the transaction is approved."
@@ -729,6 +818,9 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account2Balance
+
+  - debug:
+      msg: '{{ account2Balance.stdout }}'
 
   - name: Account2 balance test
     fail:
@@ -789,7 +881,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE2
@@ -797,7 +889,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE3
@@ -805,7 +897,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE4
@@ -813,7 +905,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE5
@@ -821,7 +913,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Wait 10 seconds for blockchain
@@ -844,6 +936,17 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     when: inventory_hostname in groups['NODE1']
+    register: transaction_result
+
+  - debug:
+      msg: '{{ transaction_result.stdout }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Transaction test
+    fail:
+      msg: Expected the transaction to approve but failed.
+    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout == "Requested amount is sent. Pending approval from network."
+    ignore_errors: true
 
   - name: Wait 10 seconds to complete transaction
     wait_for:
@@ -857,6 +960,9 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account1Balance
 
+  - debug:
+      msg: '{{ account1Balance.stdout }}'
+
   - name: Account1 balance test
     fail:
      msg: "Expected a warning or an error message, but the transaction is approved."
@@ -868,6 +974,9 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account2Balance
+
+  - debug:
+      msg: '{{ account2Balance.stdout }}'
 
   - name: Account2 balance test
     fail:
@@ -885,14 +994,14 @@
     when: inventory_hostname in groups['NODE1']
 
   - debug:
-      msg: '{{ transaction_result }}'
+      msg: '{{ transaction_result.stdout }}'
     when: inventory_hostname in groups['NODE1']
 
-  # - name: Transaction Test
-  #   fail:
-  #    msg: "Expected a warning or an error message, but the transaction is approved."
-  #   ignore_errors: true
-  #   when: inventory_hostname in groups['NODE1'] and transaction_result.stdout == "Transaction is sent! Pending approval from network."
+  - name: Transaction Test
+    fail:
+     msg: "Expected an error message but returned {{ transaction_result.stdout_lines[0] }}"
+    ignore_errors: true
+    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout_lines[0][7:] != "'from' address is not valid!"
 
   - name: Wait 10 seconds to complete transaction
     wait_for:
@@ -906,6 +1015,9 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account1Balance
 
+  - debug:
+      msg: '{{ account1Balance.stdout }}'
+
   - name: Account1 balance test
     fail:
      msg: "Expected a warning or an error message, but the transaction is approved."
@@ -917,6 +1029,9 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account2Balance
+
+  - debug:
+      msg: '{{ account2Balance.stdout }}'
 
   - name: Account2 balance test
     fail:
@@ -977,7 +1092,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE2
@@ -985,7 +1100,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE3
@@ -993,7 +1108,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE4
@@ -1001,7 +1116,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Launch NODE5
@@ -1009,7 +1124,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 60
+    async: 90
     poll: 0
 
   - name: Wait 10 seconds for blockchain
@@ -1032,6 +1147,17 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     when: inventory_hostname in groups['NODE1']
+    register: transaction_result
+
+  - debug:
+      msg: '{{ transaction_result.stdout }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Transaction test
+    fail:
+      msg: Expected the transaction to approve but failed.
+    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout == "Requested amount is sent. Pending approval from network."
+    ignore_errors: true
 
   - name: Wait 10 seconds to complete transaction
     wait_for:
@@ -1045,6 +1171,9 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account1Balance
 
+  - debug:
+      msg: '{{ account1Balance.stdout }}'
+
   - name: Account1 balance test
     fail:
      msg: "Expected a warning or an error message, but the transaction is approved."
@@ -1056,6 +1185,9 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account2Balance
+
+  - debug:
+      msg: '{{ account2Balance.stdout }}'
 
   - name: Account2 balance test
     fail:
@@ -1073,14 +1205,14 @@
     when: inventory_hostname in groups['NODE1']
 
   - debug:
-      msg: '{{ transaction_result }}'
+      msg: '{{ transaction_result.stdout }}'
     when: inventory_hostname in groups['NODE1']
 
-  # - name: Transaction Test
-  #   fail:
-  #    msg: "Expected a warning or an error message, but the transaction is approved."
-  #   ignore_errors: true
-  #   when: inventory_hostname in groups['NODE1'] and transaction_result.stdout == "Transaction is sent! Pending approval from network."
+  - name: Transaction Test
+    fail:
+     msg: "Expected an error message but returned {{ transaction_result.stdout_lines[0] }}"
+    ignore_errors: true
+    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout_lines[0][7:] != "'from' address is not valid!"
 
   - name: Wait 10 seconds to complete transaction
     wait_for:
@@ -1094,6 +1226,9 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account1Balance
 
+  - debug:
+      msg: '{{ account1Balance }}'
+
   - name: Account1 balance test
     fail:
      msg: "Expected a warning or an error message, but the transaction is approved."
@@ -1105,6 +1240,9 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: account2Balance
+
+  - debug:
+      msg: '{{ account2Balance }}'
 
   - name: Account2 balance test
     fail:
