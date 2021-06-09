@@ -1,0 +1,33 @@
+---
+
+- hosts: all
+  become: true
+  become_user: ubuntu
+  environment:
+    GOPATH: "/home/ubuntu/go"
+    GOROOT: "/usr/local/go"
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin"
+
+  tasks:
+  - name: Check current branch
+    shell: git branch
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    register: git_branch
+
+  - debug:
+      msg: '{{ git_branch }}'
+
+  - name: Change branch
+    shell: git checkout -f develop
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+  
+  - name: Check current branch
+    shell: git branch
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    register: git_branch
+
+  - debug:
+      msg: '{{ git_branch }}'
