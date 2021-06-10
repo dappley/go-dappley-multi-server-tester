@@ -37,7 +37,8 @@ func main() {
 	test_file := []string{"./playbooks/send/invalid_address.yml",
 						  "./playbooks/send/invalid_amount.yml",
 						  "./playbooks/send/invalid_data.yml",
-						  "./playbooks/send/invalid_tip.yml"}
+						  "./playbooks/send/invalid_tip.yml",
+						  "./playbooks/send/invalid_file.yml"}
 
 	if function == "update" {
 		update()
