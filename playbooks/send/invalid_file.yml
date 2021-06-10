@@ -39,7 +39,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 70
+    async: 90
     poll: 0
 
   - name: Launch NODE2
@@ -47,7 +47,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 70
+    async: 90
     poll: 0
 
   - name: Launch NODE3
@@ -55,7 +55,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 70
+    async: 90
     poll: 0
 
   - name: Launch NODE4
@@ -63,7 +63,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 70
+    async: 90
     poll: 0
 
   - name: Launch NODE5
@@ -71,7 +71,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 70
+    async: 90
     poll: 0
 
   - name: Wait 10 seconds for blockchain
@@ -255,7 +255,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 70
+    async: 90
     poll: 0
 
   - name: Launch NODE2
@@ -263,7 +263,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 70
+    async: 90
     poll: 0
 
   - name: Launch NODE3
@@ -271,7 +271,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 70
+    async: 90
     poll: 0
 
   - name: Launch NODE4
@@ -279,7 +279,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 70
+    async: 90
     poll: 0
 
   - name: Launch NODE5
@@ -287,7 +287,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 70
+    async: 90
     poll: 0
 
   - name: Wait 10 seconds for blockchain
@@ -368,14 +368,14 @@
     when: inventory_hostname in groups['NODE1']
 
   - debug:
-      msg: '{{ smart_contract }}'
+      msg: '{{ smart_contract.stderr_lines[0] }}'
     when: inventory_hostname in groups['NODE1']
 
-  # - name: Transaction Test
-  #   fail: 
-  #    msg: "Expected the transaction to fail but returned {{ smart_contract.stdout }}"
-  #   when: inventory_hostname in groups['NODE1'] and smart_contract.stdout[7:] != "smart contract path \"../jslib/invalid_file.js\" is invalid."
-  #   ignore_errors: true
+  - name: Transaction Test
+    fail: 
+     msg: "Expected the transaction to warn about the missing argument, but returned {{ smart_contract.stdout }}"
+    when: inventory_hostname in groups['NODE1'] and smart_contract.stderr_lines[0][:-7] != "flag needs an argument"
+    ignore_errors: true
 
   - name: Wait 10 seconds to complete transaction
     wait_for:

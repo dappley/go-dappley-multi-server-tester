@@ -38,7 +38,8 @@ func main() {
 						  "./playbooks/send/invalid_amount.yml",
 						  "./playbooks/send/invalid_data.yml",
 						  "./playbooks/send/invalid_tip.yml",
-						  "./playbooks/send/invalid_file.yml"}
+						  "./playbooks/send/invalid_file.yml",
+						  "./playbooks/send/invalid_gas_limit.yml"}
 
 	if function == "update" {
 		update()
