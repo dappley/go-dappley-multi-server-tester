@@ -123,7 +123,7 @@
 
   - name: Account1 balance test
     fail:
-     msg: "Expected a warning or an error message, but the transaction is approved."
+     msg: "Expected the balance to be 100000, but returned {{ account1Balance.stdout_lines[0][16:] }}."
     ignore_errors: true
     when: account1Balance.stdout_lines[0][16:]|int != 100000|int
 
@@ -138,7 +138,7 @@
 
   - name: Account2 balance test
     fail:
-     msg: "Expected a warning or an error message, but the transaction is approved."
+     msg: "Expected the balance to be 100000, but returned {{ account2Balance.stdout_lines[0][16:] }}."
     ignore_errors: true
     when: account2Balance.stdout_lines[0][16:]|int != 0|int
 
@@ -157,7 +157,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected a warning or an error message, but the transaction is approved."
+     msg: "Expected an error message about the invalid -to argument, but returned: {{ transaction_result.stdout }}"
     ignore_errors: true
     when: inventory_hostname in groups['NODE1'] and transaction_result.stdout == "Transaction is sent! Pending approval from network."
 
@@ -171,31 +171,31 @@
     shell: ./cli getBalance -address {{ account1 }}
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account1Balance
+    register: account1Balance_new
 
   - debug:
-      msg: '{{ account1Balance.stdout }}'
+      msg: '{{ account1Balance_new.stdout }}'
 
   - name: Account1 balance test
     fail:
-     msg: "Expected a warning or an error message, but the transaction is approved."
+     msg: "Expected the account balance to be {{ account1Balance.stdout_lines[0][16:] }}, but returned {{ account1Balance_new.stdout_lines[0][16:] }}."
     ignore_errors: true
-    when: account1Balance.stdout_lines[0][16:]|int != 100000|int
+    when: account1Balance_new.stdout_lines[0][16:]|int != account1Balance.stdout_lines[0][16:]|int
 
   - name: Check account2 balance
     shell: ./cli getBalance -address {{ account2 }}
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account2Balance
+    register: account2Balance_new
 
   - debug:
-      msg: '{{ account2Balance.stdout }}'
+      msg: '{{ account2Balance_new.stdout }}'
 
   - name: Account2 balance test
     fail:
-     msg: "Expected a warning or an error message, but the transaction is approved."
+     msg: "Expected the account balance to be {{ account2Balance.stdout_lines[0][16:] }}, but returned {{ account2Balance_new.stdout_lines[0][16:] }}."
     ignore_errors: true
-    when: account2Balance.stdout_lines[0][16:]|int != 0|int
+    when: account2Balance_new.stdout_lines[0][16:]|int != account2Balance.stdout_lines[0][16:]|int
 
 
 #################### Terminate ####################
@@ -221,7 +221,8 @@
     when: inventory_hostname in groups['NODE2']
 
 
-
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -334,7 +335,7 @@
 
   - name: Account1 balance test
     fail:
-     msg: "Expected a warning or an error message, but the transaction is approved."
+     msg: "Expected the balance to be 100000, but returned {{ account1Balance.stdout_lines[0][16:] }}."
     ignore_errors: true
     when: account1Balance.stdout_lines[0][16:]|int != 100000|int
 
@@ -349,7 +350,7 @@
 
   - name: Account2 balance test
     fail:
-     msg: "Expected a warning or an error message, but the transaction is approved."
+     msg: "Expected the balance to be 100000, but returned {{ account2Balance.stdout_lines[0][16:] }}."
     ignore_errors: true
     when: account2Balance.stdout_lines[0][16:]|int != 0|int
 
@@ -368,7 +369,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected an error message but returned {{ transaction_result.stdout_lines[0] }}"
+     msg: "Expected an error message about the invalid -from argument, but returned: {{ transaction_result.stdout }}"
     ignore_errors: true
     when: inventory_hostname in groups['NODE1'] and transaction_result.stdout_lines[0][7:] != "'from' address is not valid!"
 
@@ -376,36 +377,37 @@
     wait_for:
       timeout: 10
 
+
 #################### Check account balance ####################
   - name: Check account1 balance
     shell: ./cli getBalance -address {{ account1 }}
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account1Balance
+    register: account1Balance_new
 
   - debug:
-      msg: '{{ account1Balance.stdout }}'
+      msg: '{{ account1Balance_new.stdout }}'
 
   - name: Account1 balance test
     fail:
-     msg: "Expected a warning or an error message, but the transaction is approved."
+     msg: "Expected the account balance to be {{ account1Balance.stdout_lines[0][16:] }}, but returned {{ account1Balance_new.stdout_lines[0][16:] }}."
     ignore_errors: true
-    when: account1Balance.stdout_lines[0][16:]|int != 100000|int
+    when: account1Balance_new.stdout_lines[0][16:]|int != account1Balance.stdout_lines[0][16:]|int
 
   - name: Check account2 balance
     shell: ./cli getBalance -address {{ account2 }}
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account2Balance
+    register: account2Balance_new
 
   - debug:
-      msg: '{{ account2Balance.stdout }}'
+      msg: '{{ account2Balance_new.stdout }}'
 
   - name: Account2 balance test
     fail:
-     msg: "Expected a warning or an error message, but the transaction is approved."
+     msg: "Expected the account balance to be {{ account2Balance.stdout_lines[0][16:] }}, but returned {{ account2Balance_new.stdout_lines[0][16:] }}."
     ignore_errors: true
-    when: account2Balance.stdout_lines[0][16:]|int != 0|int
+    when: account2Balance_new.stdout_lines[0][16:]|int != account2Balance.stdout_lines[0][16:]|int
 
 
 #################### Terminate ####################
@@ -431,7 +433,8 @@
     when: inventory_hostname in groups['NODE2']
 
 
-
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -544,7 +547,7 @@
 
   - name: Account1 balance test
     fail:
-     msg: "Expected a warning or an error message, but the transaction is approved."
+     msg: "Expected the balance to be 100000, but returned {{ account1Balance.stdout_lines[0][16:] }}."
     ignore_errors: true
     when: account1Balance.stdout_lines[0][16:]|int != 100000|int
 
@@ -559,7 +562,7 @@
 
   - name: Account2 balance test
     fail:
-     msg: "Expected a warning or an error message, but the transaction is approved."
+     msg: "Expected the balance to be 100000, but returned {{ account2Balance.stdout_lines[0][16:] }}."
     ignore_errors: true
     when: account2Balance.stdout_lines[0][16:]|int != 0|int
 
@@ -578,7 +581,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected an error message but returned {{ transaction_result.stdout_lines[0] }}"
+     msg: "Expected an error message about the invalid -from & -to arguments, but returned: {{ transaction_result.stdout }}"
     ignore_errors: true
     when: inventory_hostname in groups['NODE1'] and transaction_result.stdout_lines[0][7:] != "'from' address is not valid!"
 
@@ -586,36 +589,37 @@
     wait_for:
       timeout: 10
 
+
 #################### Check account balance ####################
   - name: Check account1 balance
     shell: ./cli getBalance -address {{ account1 }}
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account1Balance
+    register: account1Balance_new
 
   - debug:
-      msg: '{{ account1Balance.stdout }}'
+      msg: '{{ account1Balance_new.stdout }}'
 
   - name: Account1 balance test
     fail:
-     msg: "Expected a warning or an error message, but the transaction is approved."
+     msg: "Expected the account balance to be {{ account1Balance.stdout_lines[0][16:] }}, but returned {{ account1Balance_new.stdout_lines[0][16:] }}."
     ignore_errors: true
-    when: account1Balance.stdout_lines[0][16:]|int != 100000|int
+    when: account1Balance_new.stdout_lines[0][16:]|int != account1Balance.stdout_lines[0][16:]|int
 
   - name: Check account2 balance
     shell: ./cli getBalance -address {{ account2 }}
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account2Balance
+    register: account2Balance_new
 
   - debug:
-      msg: '{{ account2Balance.stdout }}'
+      msg: '{{ account2Balance_new.stdout }}'
 
   - name: Account2 balance test
     fail:
-     msg: "Expected a warning or an error message, but the transaction is approved."
+     msg: "Expected the account balance to be {{ account2Balance.stdout_lines[0][16:] }}, but returned {{ account2Balance_new.stdout_lines[0][16:] }}."
     ignore_errors: true
-    when: account2Balance.stdout_lines[0][16:]|int != 0|int
+    when: account2Balance_new.stdout_lines[0][16:]|int != account2Balance.stdout_lines[0][16:]|int
 
 
 #################### Terminate ####################
@@ -641,7 +645,8 @@
     when: inventory_hostname in groups['NODE2']
 
 
-
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -754,7 +759,7 @@
 
   - name: Account1 balance test
     fail:
-     msg: "Expected a warning or an error message, but the transaction is approved."
+     msg: "Expected the balance to be 100000, but returned {{ account1Balance.stdout_lines[0][16:] }}."
     ignore_errors: true
     when: account1Balance.stdout_lines[0][16:]|int != 100000|int
 
@@ -769,7 +774,7 @@
 
   - name: Account2 balance test
     fail:
-     msg: "Expected a warning or an error message, but the transaction is approved."
+     msg: "Expected the balance to be 100000, but returned {{ account2Balance.stdout_lines[0][16:] }}."
     ignore_errors: true
     when: account2Balance.stdout_lines[0][16:]|int != 0|int
 
@@ -788,7 +793,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected a warning or an error message, but the transaction is approved."
+     msg: "Expected an error message about the missing -to argument, but returned: {{ transaction_result.stdout }}"
     ignore_errors: true
     when: inventory_hostname in groups['NODE1'] and transaction_result.stdout == "Transaction is sent! Pending approval from network."
 
@@ -802,31 +807,31 @@
     shell: ./cli getBalance -address {{ account1 }}
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account1Balance
+    register: account1Balance_new
 
   - debug:
-      msg: '{{ account1Balance.stdout }}'
+      msg: '{{ account1Balance_new.stdout }}'
 
   - name: Account1 balance test
     fail:
-     msg: "Expected a warning or an error message, but the transaction is approved."
+     msg: "Expected the account balance to be {{ account1Balance.stdout_lines[0][16:] }}, but returned {{ account1Balance_new.stdout_lines[0][16:] }}."
     ignore_errors: true
-    when: account1Balance.stdout_lines[0][16:]|int != 100000|int
+    when: account1Balance_new.stdout_lines[0][16:]|int != account1Balance.stdout_lines[0][16:]|int
 
   - name: Check account2 balance
     shell: ./cli getBalance -address {{ account2 }}
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account2Balance
+    register: account2Balance_new
 
   - debug:
-      msg: '{{ account2Balance.stdout }}'
+      msg: '{{ account2Balance_new.stdout }}'
 
   - name: Account2 balance test
     fail:
-     msg: "Expected a warning or an error message, but the transaction is approved."
+     msg: "Expected the account balance to be {{ account2Balance.stdout_lines[0][16:] }}, but returned {{ account2Balance_new.stdout_lines[0][16:] }}."
     ignore_errors: true
-    when: account2Balance.stdout_lines[0][16:]|int != 0|int
+    when: account2Balance_new.stdout_lines[0][16:]|int != account2Balance.stdout_lines[0][16:]|int
 
 
 #################### Terminate ####################
@@ -852,7 +857,8 @@
     when: inventory_hostname in groups['NODE2']
 
 
-
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -965,7 +971,7 @@
 
   - name: Account1 balance test
     fail:
-     msg: "Expected a warning or an error message, but the transaction is approved."
+     msg: "Expected the balance to be 100000, but returned {{ account1Balance.stdout_lines[0][16:] }}."
     ignore_errors: true
     when: account1Balance.stdout_lines[0][16:]|int != 100000|int
 
@@ -980,7 +986,7 @@
 
   - name: Account2 balance test
     fail:
-     msg: "Expected a warning or an error message, but the transaction is approved."
+     msg: "Expected the balance to be 100000, but returned {{ account2Balance.stdout_lines[0][16:] }}."
     ignore_errors: true
     when: account2Balance.stdout_lines[0][16:]|int != 0|int
 
@@ -999,7 +1005,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected an error message but returned {{ transaction_result.stdout_lines[0] }}"
+     msg: "Expected an error message about the missing -from argument, but returned: {{ transaction_result.stdout }}"
     ignore_errors: true
     when: inventory_hostname in groups['NODE1'] and transaction_result.stdout_lines[0][7:] != "'from' address is not valid!"
 
@@ -1063,7 +1069,8 @@
     when: inventory_hostname in groups['NODE2']
 
 
-
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -1210,7 +1217,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected an error message but returned {{ transaction_result.stdout_lines[0] }}"
+     msg: "Expected an error message about the missing -from & -to argument, but returned: {{ transaction_result.stdout }}"
     ignore_errors: true
     when: inventory_hostname in groups['NODE1'] and transaction_result.stdout_lines[0][7:] != "'from' address is not valid!"
 
@@ -1224,31 +1231,31 @@
     shell: ./cli getBalance -address {{ account1 }}
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account1Balance
+    register: account1Balance_new
 
   - debug:
-      msg: '{{ account1Balance }}'
+      msg: '{{ account1Balance_new.stdout }}'
 
   - name: Account1 balance test
     fail:
-     msg: "Expected a warning or an error message, but the transaction is approved."
+     msg: "Expected the account balance to be {{ account1Balance.stdout_lines[0][16:] }}, but returned {{ account1Balance_new.stdout_lines[0][16:] }}."
     ignore_errors: true
-    when: account1Balance.stdout_lines[0][16:]|int != 100000|int
+    when: account1Balance_new.stdout_lines[0][16:]|int != account1Balance.stdout_lines[0][16:]|int
 
   - name: Check account2 balance
     shell: ./cli getBalance -address {{ account2 }}
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account2Balance
+    register: account2Balance_new
 
   - debug:
-      msg: '{{ account2Balance }}'
+      msg: '{{ account2Balance_new.stdout }}'
 
   - name: Account2 balance test
     fail:
-     msg: "Expected a warning or an error message, but the transaction is approved."
+     msg: "Expected the account balance to be {{ account2Balance.stdout_lines[0][16:] }}, but returned {{ account2Balance_new.stdout_lines[0][16:] }}."
     ignore_errors: true
-    when: account2Balance.stdout_lines[0][16:]|int != 0|int
+    when: account2Balance_new.stdout_lines[0][16:]|int != account2Balance.stdout_lines[0][16:]|int
 
 
 #################### Terminate ####################

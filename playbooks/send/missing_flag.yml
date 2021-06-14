@@ -157,7 +157,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected the transaction to fail but is approved."
+     msg: "Expected an error message about the missing flags but returned: {{ transaction_result.stdout }}"
     ignore_errors: true
     when: inventory_hostname in groups['NODE1'] and transaction_result.stdout[7:] != "'from' address is not valid!"
 
@@ -218,6 +218,10 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
     when: inventory_hostname in groups['NODE2']
+
+
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -364,7 +368,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected the transaction to fail but the transaction is approved."
+     msg: "Expected an error message about missing flags, but returned {{ transaction_result.stdout }}"
     ignore_errors: true
     when: inventory_hostname in groups['NODE1'] and transaction_result.stdout_lines[1] == "Transaction is sent! Pending approval from network."
 
@@ -426,6 +430,10 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
     when: inventory_hostname in groups['NODE2']
+
+
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -567,12 +575,12 @@
     when: inventory_hostname in groups['NODE1']
 
   - debug:
-      msg: '{{ transaction_result.stdout_lines }}'
+      msg: '{{ transaction_result.stdout }}'
     when: inventory_hostname in groups['NODE1']
 
   - name: Transaction Test
     fail:
-     msg: "Expected the transaction to fail but the transaction is approved."
+     msg: "Expected an error message about the missing arguments, but returned: {{ transaction_result.stdout }}"
     ignore_errors: true
     when: inventory_hostname in groups['NODE1'] and transaction_result.stdout_lines[1] == "Transaction is sent! Pending approval from network."
 

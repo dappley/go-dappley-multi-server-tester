@@ -111,7 +111,6 @@
       timeout: 10
 
 
-
 #################### Check account balance ####################
   - name: Check account1 balance
     shell: ./cli getBalance -address {{ account1 }}
@@ -206,7 +205,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected the transaction to fail but is approved."
+     msg: "Expected an error message about the missing address in data, but returned: {{ deploy_contract.stdout }}"
     when: inventory_hostname in groups['NODE1'] and deploy_contract.stdout[7:] != "error syntax"
     ignore_errors: true
 
@@ -270,12 +269,8 @@
     when: inventory_hostname in groups['NODE2']
 
 
-
-
-
-
-
-
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -471,7 +466,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected the transaction to fail but is approved."
+     msg: "Expected an error message about the missing address in data, but returned: {{ deploy_contract.stdout }}"
     when: inventory_hostname in groups['NODE1'] and deploy_contract.stdout == "Transaction is sent! Pending approval from network."
     ignore_errors: true
 
@@ -675,12 +670,8 @@
     when: inventory_hostname in groups['NODE2']
 
 
-
-
-
-
-
-
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -876,7 +867,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected the transaction to fail but is approved."
+     msg: "Expected an error message about the missing amout in data, but returned: {{ deploy_contract.stdout }}"
     when: inventory_hostname in groups['NODE1'] and deploy_contract.stdout[7:] != "error syntax"
     ignore_errors: true
 
@@ -940,12 +931,8 @@
     when: inventory_hostname in groups['NODE2']
 
 
-
-
-
-
-
-
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -1142,7 +1129,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected the transaction to fail but is approved."
+     msg: "Expected an error message about the missing amount in data, but returned: {{ deploy_contract.stdout }}"
     when: inventory_hostname in groups['NODE1'] and deploy_contract.stdout == "Transaction is sent! Pending approval from network."
     ignore_errors: true
 
@@ -1206,12 +1193,8 @@
     when: inventory_hostname in groups['NODE2']
 
 
-
-
-
-
-
-
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -1408,7 +1391,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected the transaction to fail but is approved."
+     msg: "Expected an error message about the negative amount in data, but returned: {{ deploy_contract.stdout }}"
     when: inventory_hostname in groups['NODE1'] and deploy_contract.stdout == "Transaction is sent! Pending approval from network."
     ignore_errors: true
 
@@ -1472,12 +1455,8 @@
     when: inventory_hostname in groups['NODE2']
 
 
-
-
-
-
-
-
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -1696,7 +1675,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected the transaction to fail but has been approved."
+     msg: "Expected an error message about the over-balance amount in data, but returned: {{ deploy_contract.stdout }}"
     when: inventory_hostname in groups['NODE1'] and deploy_contract.stdout == "Transaction is sent! Pending approval from network."
     ignore_errors: true
 
@@ -1760,12 +1739,8 @@
     when: inventory_hostname in groups['NODE2']
 
 
-
-
-
-
-
-
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -1962,7 +1937,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected the transaction to fail but has been approved."
+     msg: "Expected an error message about the string amount argument in data, but returned: {{ deploy_contract.stdout }}"
     when: inventory_hostname in groups['NODE1'] and deploy_contract.stdout == "Transaction is sent! Pending approval from network."
     ignore_errors: true
 
@@ -2026,12 +2001,8 @@
     when: inventory_hostname in groups['NODE2']
 
 
-
-
-
-
-
-
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -2227,7 +2198,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected the transaction to fail but returned {{ deploy_contract.stdout }}"
+     msg: "Expected an error message about the spcial character amount argument, but returned: {{ deploy_contract }}"
     when: inventory_hostname in groups['NODE1'] and deploy_contract.stdout[7:] != "error syntax"
     ignore_errors: true
 
@@ -2291,12 +2262,8 @@
     when: inventory_hostname in groups['NODE2']
 
 
-
-
-
-
-
-
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -2492,7 +2459,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected the transaction to fail but returned {{ deploy_contract.stdout }}"
+     msg: "Expected an error message about the invalid argument in data, but returned: {{ deploy_contract.stdout }}"
     when: inventory_hostname in groups['NODE1'] and deploy_contract.stdout[7:] != "error syntax"
     ignore_errors: true
 
@@ -2556,12 +2523,8 @@
     when: inventory_hostname in groups['NODE2']
 
 
-
-
-
-
-
-
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -2757,7 +2720,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected the transaction to fail but is approved."
+     msg: "Expected an error message about the invalid address in data, but returned: {{ deploy_contract.stdout }}"
     when: inventory_hostname in groups['NODE1'] and deploy_contract.stdout == "Transaction is sent! Pending approval from network."
     ignore_errors: true
 
@@ -2837,40 +2800,6 @@
     wait_for:
       timeout: 10
 
-#################### Check account balance ####################
-  - name: Check account1 balance
-    shell: ./cli getBalance -address {{ account1 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account1Balance_new
-
-  - debug:
-      msg: '{{ account1Balance_new.stdout }}'
-
-  - name: Account1 balance test
-    fail:
-     msg: "Expected the account balance to be {{ account1Balance.stdout_lines[0][16:] }}, but returned {{ account1Balance_new.stdout_lines[0][16:] }}."
-    ignore_errors: true
-    when: account1Balance_new.stdout_lines[0][16:]|int != account1Balance.stdout_lines[0][16:]|int
-
-  - name: Check account2 balance
-    shell: ./cli getBalance -address {{ account2 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account2Balance_new
-
-  - debug:
-      msg: '{{ account2Balance_new.stdout }}'
-
-  - name: Account2 balance test
-    fail:
-     msg: "Expected the account balance to be {{ account2Balance.stdout_lines[0][16:] }}, but returned {{ account2Balance_new.stdout_lines[0][16:] }}."
-    ignore_errors: true
-    when: account2Balance_new.stdout_lines[0][16:]|int != account2Balance.stdout_lines[0][16:]|int
-
-  - name: Wait 10 seconds
-    wait_for:
-      timeout: 10
 
 #################### Check account balance ####################
   - name: Check account1 balance
@@ -2906,6 +2835,43 @@
   - name: Wait 10 seconds
     wait_for:
       timeout: 10
+
+
+#################### Check account balance ####################
+  - name: Check account1 balance
+    shell: ./cli getBalance -address {{ account1 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account1Balance_new
+
+  - debug:
+      msg: '{{ account1Balance_new.stdout }}'
+
+  - name: Account1 balance test
+    fail:
+     msg: "Expected the account balance to be {{ account1Balance.stdout_lines[0][16:] }}, but returned {{ account1Balance_new.stdout_lines[0][16:] }}."
+    ignore_errors: true
+    when: account1Balance_new.stdout_lines[0][16:]|int != account1Balance.stdout_lines[0][16:]|int
+
+  - name: Check account2 balance
+    shell: ./cli getBalance -address {{ account2 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account2Balance_new
+
+  - debug:
+      msg: '{{ account2Balance_new.stdout }}'
+
+  - name: Account2 balance test
+    fail:
+     msg: "Expected the account balance to be {{ account2Balance.stdout_lines[0][16:] }}, but returned {{ account2Balance_new.stdout_lines[0][16:] }}."
+    ignore_errors: true
+    when: account2Balance_new.stdout_lines[0][16:]|int != account2Balance.stdout_lines[0][16:]|int
+
+  - name: Wait 10 seconds
+    wait_for:
+      timeout: 10
+
 
 #################### Check account balance ####################
   - name: Check account1 balance
@@ -2962,12 +2928,8 @@
     when: inventory_hostname in groups['NODE2']
 
 
-
-
-
-
-
-
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -3163,7 +3125,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected the transaction to fail but returned {{ deploy_contract.stderr_lines[0] }}"
+     msg: "Expected an error message about missing data, but returned: {{ deploy_contract.stderr }}"
     when: inventory_hostname in groups['NODE1'] and deploy_contract.stderr_lines[0][:22] != "flag needs an argument"
     ignore_errors: true
 
@@ -3227,12 +3189,8 @@
     when: inventory_hostname in groups['NODE2']
 
 
-
-
-
-
-
-
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -3429,7 +3387,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected the transaction to fail but instead the blockchain has crashed."
+     msg: "Expected an error message about the empty amout value in data, but returned: {{ deploy_contract.stdout }}"
     when: inventory_hostname in groups['NODE1'] and deploy_contract.stdout[7:] == "server is not reachable!"
     ignore_errors: true
 
@@ -3493,12 +3451,8 @@
     when: inventory_hostname in groups['NODE2']
 
 
-
-
-
-
-
-
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -3695,7 +3649,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected the transaction to fail but instead the blockchain has crashed."
+     msg: "Expected an error message about the empty address in data, but instead the blockchain has crashed."
     when: inventory_hostname in groups['NODE1'] and deploy_contract.stdout[7:] == "server is not reachable!"
     ignore_errors: true
 

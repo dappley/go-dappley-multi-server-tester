@@ -206,7 +206,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected the transaction to fail but returned {{ deploy_contract.stdout }}"
+     msg: "Expected an error message about the over-balance gas limit, but returned: {{ deploy_contract.stdout }}"
     when: inventory_hostname in groups['NODE1'] and deploy_contract.stdout[12:] != "the balance is insufficient"
     ignore_errors: true
 
@@ -268,6 +268,10 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
     when: inventory_hostname in groups['NODE2']
+
+
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -463,7 +467,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected the transaction verification to fail, but returned {{ deploy_contract.stdout }}"
+     msg: "Expected an error message about the 0 gas limit value, but returned {{ deploy_contract.stdout }}"
     when: inventory_hostname in groups['NODE1'] and deploy_contract.stdout[7:] != "transaction verification failed"
     ignore_errors: true
 
@@ -525,6 +529,10 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
     when: inventory_hostname in groups['NODE2']
+
+
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -720,7 +728,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected the transaction verification to fail, but returned {{ deploy_contract.stdout }}"
+     msg: "Expected an error message about the insuffivient gas limit, but returned {{ deploy_contract.stdout }}"
     when: inventory_hostname in groups['NODE1'] and deploy_contract.stdout[7:] != "transaction verification failed"
     ignore_errors: true
 
@@ -782,6 +790,10 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
     when: inventory_hostname in groups['NODE2']
+
+
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -981,7 +993,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected warning message about the invalid input value, but returned {{ deploy_contract.stdout }}"
+     msg: "Expected an error message about the negative gas limit, but returned {{ deploy_contract.stdout }}"
     when: inventory_hostname in groups['NODE1'] and deploy_contract.stderr_lines[0][:-13] != "invalid value \"-30000\" for flag -gasLimit"
     ignore_errors: true
 
@@ -1043,6 +1055,10 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
     when: inventory_hostname in groups['NODE2']
+
+
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -1238,7 +1254,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected a warning message about the string input, but returned {{ deploy_contract.stdout }}"
+     msg: "Expected an error message about the string gas limit argument, but returned {{ deploy_contract.stdout }}"
     when: inventory_hostname in groups['NODE1'] and deploy_contract.stderr_lines[0][:-13] != "invalid value \"five\" for flag -gasLimit"
     ignore_errors: true
 
@@ -1300,6 +1316,10 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
     when: inventory_hostname in groups['NODE2']
+
+
+#---------------------------------------------------------------
+#---------------------------------------------------------------
 
 
 #################### Send Accounts.dat ####################
@@ -1560,6 +1580,10 @@
     when: inventory_hostname in groups['NODE2']
 
 
+#---------------------------------------------------------------
+#---------------------------------------------------------------
+
+
 #################### Send Accounts.dat ####################
   - name: Copy accounts.dat to NODE1
     copy:
@@ -1753,7 +1777,7 @@
 
   - name: Transaction Test
     fail:
-     msg: "Expected a warning message about missing argument, but returned {{ deploy_contract.stdout }}"
+     msg: "Expected an error message about missing argument, but returned {{ deploy_contract.stdout }}"
     when: inventory_hostname in groups['NODE1'] and deploy_contract.stderr_lines[0][:22] != "flag needs an argument"
     ignore_errors: true
 

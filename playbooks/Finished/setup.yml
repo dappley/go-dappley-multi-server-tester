@@ -3,6 +3,7 @@
 - hosts: all
   become: true
 
+  tasks:
   ## Create go-dappley directory
   - name: Check directory exists
     stat:
