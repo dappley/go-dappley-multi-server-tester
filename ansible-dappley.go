@@ -20,35 +20,35 @@ func main() {
 	flag.StringVar(&senderPasswd, "senderPasswd", "<Sender Password>", "Email password of the addressee.")
 	flag.Parse()
 
-	send_playbooks := []string{"./playbooks/send/invalid_address.yml",
-						  "./playbooks/send/invalid_amount.yml",
-						  "./playbooks/send/invalid_data.yml",
-						  "./playbooks/send/invalid_file.yml",
-						  "./playbooks/send/invalid_gas_limit.yml",
-						  "./playbooks/send/invalid_gas_price.yml",
-						  "./playbooks/send/invalid_tip.yml",
-						  "./playbooks/send/missing_flag.yml",
-						  "./playbooks/send/wrong_node.yml",
-						  "./playbooks/send/multi_transaction_no_tip.yml",
-						  "./playbooks/send/multi_transaction_with_tip.yml",
-						  "./playbooks/send/single_transaction_no_tip.yml",
-						  "./playbooks/send/single_transaction_with_tip.yml"}
+	createAccount_playbooks := []string{"empty_password",
+										"invalid_password"}
 
-	sendFromMiner_playbooks := []string{"./playbooks/sendFromMiner/invalid_address.yml",
-										"./playbooks/sendFromMiner/invalid_amount.yml",
-										"./playbooks/sendFromMiner/missing_flag.yml",
-										"./playbooks/sendFromMiner/single_transaction_from_miner.yml"}
+	getBalance_playbooks    := []string{"invalid_address",
+										"missing_argument"}
 
-	createAccount_playbooks := []string{"./playbooks/createAccount/empty_password.yml",
-										"./playbooks/createAccount/invalid_password.yml"}
+	listAddresses_playbooks := []string{"invalid_password"}
 
-	getBalance_playbooks := []string{"./playbooks/getBalance/invalid_address.yml",
-									 "./playbooks/getBalance/missing_argument.yml"}
+	smartContract_playbooks := []string{"smart_contract_gas_1",
+										"smart_contract_gas_2"}
 
-	listAddresses_playbooks := []string{"./playbooks/listAddresses/invalid_password.yml"}
+	sendFromMiner_playbooks := []string{"missing_flag",
+										"invalid_amount",
+										"invalid_address",
+										"single_transaction_from_miner"}
 
-	smartContract_playbooks := []string{"./playbooks/smartContract/smart_contract_gas_1.yml",
-										"./playbooks/smartContract/smart_contract_gas_2.yml"}
+	send_playbooks          := []string{"wrong_node",
+										"invalid_tip",
+										"missing_flag",
+										"invalid_file",
+										"invalid_data",
+										"invalid_amount",
+										"invalid_address",
+										"invalid_gas_limit",
+										"invalid_gas_price",
+										"single_transaction_no_tip",
+										"single_transaction_with_tip",
+										"multi_transaction_no_tip",
+										"multi_transaction_with_tip"}
 
 	if function == "update" {
 		update()
@@ -57,13 +57,12 @@ func main() {
 	} else if function == "ssh_command" {
 		ssh_command()
 	} else if function == "update_address" {
-		//playbooks := add_directory(file_list, true)
-		Update_address(send_playbooks)
-		Update_address(sendFromMiner_playbooks)
-		Update_address(createAccount_playbooks)
-		Update_address(getBalance_playbooks)
-		Update_address(listAddresses_playbooks)
-		Update_address(smartContract_playbooks)
+		Update_address(add_directory(send_playbooks, "send"))
+		Update_address(add_directory(getBalance_playbooks, "getBalance"))
+		Update_address(add_directory(sendFromMiner_playbooks, "sendFromMiner"))
+		Update_address(add_directory(createAccount_playbooks, "createAccount"))
+		Update_address(add_directory(listAddresses_playbooks, "listAddresses"))
+		Update_address(add_directory(smartContract_playbooks, "smartContract"))
 	} else if function == "send_result" {
 		//test_results := add_directory(file_list, false)
 		//SendTestResult(recipient, senderEmail, senderPasswd, test_results)
@@ -241,16 +240,11 @@ func ssh_command() {
 }
 
 //Adds directory and the suffix to the file list and return the updated list
-func add_directory(file_list []string, is_playbook bool) []string {
-	var fileNames []string
-	if is_playbook {
-		for _, fileName := range file_list {
-			fileNames = append(fileNames, "./playbooks/" + fileName + ".yml")
-		}
-	} else {
-		for _, fileName := range file_list {
-			fileNames = append(fileNames, "./test_results/" + fileName + ".txt")
-		}
+func add_directory(playbooks []string, directory string) []string {
+	var updated_playbooks []string
+	for _, playbook := range playbooks {
+		updated_playbooks = append(updated_playbooks, "./playbooks/" + directory + "/" + playbook + ".yml")
 	}
-	return fileNames
+
+	return updated_playbooks
 }
