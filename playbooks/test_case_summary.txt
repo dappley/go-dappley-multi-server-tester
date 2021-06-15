@@ -100,7 +100,25 @@ CreateAccount Test Cases:
 
 
 GetBalance Test Cases:
+    - Invalid address
+        1. Get balance from an invalid address
+        2. Get balance from a valid address without accounts.dat
 
-- No flag
-- No argument
-- Get invalid address's balance
+    - Missing arguments
+        1. No arguments
+        2. No flag
+
+
+ListAddress Test Cases:
+    - Invalid password
+        1. ListAddress when there is no accounts.dat
+        2. ListAddress with -privateKey when there is no accounts.dat
+        3. ListAddress with incorrect password
+
+
+Smart Contract Test Cases:
+    - Smart contract gas 1
+        1. Smart contract deployment with gas price of 1
+
+    - Smart contract gas 2
+        1. Smart contract deployment with gas price of 2

@@ -34,13 +34,21 @@ func main() {
 						  "./playbooks/send/single_transaction_no_tip.yml",
 						  "./playbooks/send/single_transaction_with_tip.yml"}
 
-	sendFromMiner_playbooks := []string{"invalid_address.yml",
-										"invalid_amount.yml",
-										"missing_flag.yml",
-										"single_transaction_from_miner.yml"}
+	sendFromMiner_playbooks := []string{"./playbooks/sendFromMiner/invalid_address.yml",
+										"./playbooks/sendFromMiner/invalid_amount.yml",
+										"./playbooks/sendFromMiner/missing_flag.yml",
+										"./playbooks/sendFromMiner/single_transaction_from_miner.yml"}
 
-	createAccount_playbooks := []string{"empty_password.yml",
-										"invalid_password.yml"}
+	createAccount_playbooks := []string{"./playbooks/createAccount/empty_password.yml",
+										"./playbooks/createAccount/invalid_password.yml"}
+
+	getBalance_playbooks := []string{"./playbooks/getBalance/invalid_address.yml",
+									 "./playbooks/getBalance/missing_argument.yml"}
+
+	listAddresses_playbooks := []string{"./playbooks/listAddresses/invalid_password.yml"}
+
+	smartContract_playbooks := []string{"./playbooks/smartContract/smart_contract_gas_1.yml",
+										"./playbooks/smartContract/smart_contract_gas_2.yml"}
 
 	if function == "update" {
 		update()
@@ -53,6 +61,9 @@ func main() {
 		Update_address(send_playbooks)
 		Update_address(sendFromMiner_playbooks)
 		Update_address(createAccount_playbooks)
+		Update_address(getBalance_playbooks)
+		Update_address(listAddresses_playbooks)
+		Update_address(smartContract_playbooks)
 	} else if function == "send_result" {
 		//test_results := add_directory(file_list, false)
 		//SendTestResult(recipient, senderEmail, senderPasswd, test_results)

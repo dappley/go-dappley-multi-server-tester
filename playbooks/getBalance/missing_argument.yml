@@ -74,20 +74,20 @@
     delay: 10
 
 
-#################### Get blanace from an invalid address ####################
-  - name: Check invalid address's balance
-    shell: ./cli getBalance -address {{ invalid_address }}
+#################### No argument ####################
+  - name: No argument
+    shell: ./cli getBalance -address
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: test_result
 
   - debug:
-      msg: '{{ test_result.stdout }}'
+      msg: '{{ test_result.stderr }}'
 
   - name: Test
     fail:
-     msg: "Expected the command to fail but returned {{ test_result.stdout }}"
-    when: test_result.stdout_lines[0][7:] != "address is not valid"
+     msg: "Expected the command to fail but returned {{ test_result.stderr }}"
+    when: test_result.stderr_lines[0][:22] != "flag needs an argument"
     ignore_errors: true
 
   - name: Wait 10 seconds to complete transaction
@@ -109,27 +109,6 @@
     fail:
      msg: "Expected the command to fail but returned {{ test_result.stdout }}"
     when: test_result.stdout_lines[0][:5] != "Usage"
-    ignore_errors: true
-
-  - name: Wait 10 seconds to complete transaction
-    wait_for:
-      timeout: 10
-
-
-#################### No argument ####################
-  - name: No argument
-    shell: ./cli getBalance -address
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: test_result
-
-  - debug:
-      msg: '{{ test_result.stderr }}'
-
-  - name: Test
-    fail:
-     msg: "Expected the command to fail but returned {{ test_result.stderr }}"
-    when: test_result.stderr_lines[0][:22] != "flag needs an argument"
     ignore_errors: true
 
   - name: Wait 10 seconds to complete transaction
