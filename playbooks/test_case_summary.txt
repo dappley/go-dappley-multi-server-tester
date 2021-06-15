@@ -122,3 +122,15 @@ Smart Contract Test Cases:
 
     - Smart contract gas 2
         1. Smart contract deployment with gas price of 2
+
+
+#TODO
+- getBlocks
+- getBlockchainInfo
+- getPeerInfo
+- addPeer
+- addProducer
+- estimateGas
+- gasPrice
+- contractQuery
+- help
