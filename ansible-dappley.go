@@ -37,12 +37,16 @@ func main() {
 	test_file := []string{"./playbooks/send/invalid_address.yml",
 						  "./playbooks/send/invalid_amount.yml",
 						  "./playbooks/send/invalid_data.yml",
-						  "./playbooks/send/invalid_tip.yml",
 						  "./playbooks/send/invalid_file.yml",
 						  "./playbooks/send/invalid_gas_limit.yml",
 						  "./playbooks/send/invalid_gas_price.yml",
+						  "./playbooks/send/invalid_tip.yml",
 						  "./playbooks/send/missing_flag.yml",
-						  "./playbooks/send/wrong_node.yml"}
+						  "./playbooks/send/wrong_node.yml",
+						  "./playbooks/send/multi_transaction_no_tip.yml",
+						  "./playbooks/send/multi_transaction_with_tip.yml",
+						  "./playbooks/send/single_transaction_no_tip.yml",
+						  "./playbooks/send/single_transaction_with_tip.yml"}
 
 	if function == "update" {
 		update()

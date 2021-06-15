@@ -1,0 +1,51 @@
+#################### No address or amount arguments ####################
+  - name: No address
+    shell: ./cli sendFromMiner -amount -to
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: deploy_contract
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Test
+    fail:
+      msg: Expected the transaction to fail, but returned {{ deploy_contract.stderr }}
+    when: inventory_hostname in groups['NODE1'] and deploy_contract.stderr_lines[0][-11:] != "parse error"
+    ignore_errors: true
+
+  - name: Wait 10 seconds for transaction to complete
+    wait_for:
+      timeout: 10
+
+#################### No flag ####################
+  - name: No flag
+    shell: ./cli sendFromMiner
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: deploy_contract
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Test
+    fail:
+      msg: Expected the transaction to fail, but returned {{ deploy_contract.stderr }}
+    when: inventory_hostname in groups['NODE1'] and deploy_contract.stdout_lines[0][:5] != "Usage"
+    ignore_errors: true
+
+  - name: Wait 10 seconds for transaction to complete
+    wait_for:
+      timeout: 10
+
+  ## Terminate playbook
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 10
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+
+  - name: Remove /go-dappley/dapp/bin Node1
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
+    when: inventory_hostname in groups['NODE1']
