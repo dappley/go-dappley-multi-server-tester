@@ -20,21 +20,7 @@ func main() {
 	flag.StringVar(&senderPasswd, "senderPasswd", "<Sender Password>", "Email password of the addressee.")
 	flag.Parse()
 
-	file_list := []string{"setup",
-						  "accounts_generator",
-						  "update_seed_port",
-						  "sendFromMiner",
-						  "getBalance",
-						  "create_n_list_accounts",
-						  "single_transaction_no_tip",
-						  "single_transaction_with_tip",
-						  "multi_transaction_no_tip",
-						  "multi_transaction_with_tip",
-						  "smart_contract_gas_1",
-						  "smart_contract_gas_2",
-						  "send"}
-
-	test_file := []string{"./playbooks/send/invalid_address.yml",
+	send_playbooks := []string{"./playbooks/send/invalid_address.yml",
 						  "./playbooks/send/invalid_amount.yml",
 						  "./playbooks/send/invalid_data.yml",
 						  "./playbooks/send/invalid_file.yml",
@@ -48,6 +34,14 @@ func main() {
 						  "./playbooks/send/single_transaction_no_tip.yml",
 						  "./playbooks/send/single_transaction_with_tip.yml"}
 
+	sendFromMiner_playbooks := []string{"invalid_address.yml",
+										"invalid_amount.yml",
+										"missing_flag.yml",
+										"single_transaction_from_miner.yml"}
+
+	createAccount_playbooks := []string{"empty_password.yml",
+										"invalid_password.yml"}
+
 	if function == "update" {
 		update()
 	} else if function == "initialize" {
@@ -56,10 +50,12 @@ func main() {
 		ssh_command()
 	} else if function == "update_address" {
 		//playbooks := add_directory(file_list, true)
-		Update_address(test_file)
+		Update_address(send_playbooks)
+		Update_address(sendFromMiner_playbooks)
+		Update_address(createAccount_playbooks)
 	} else if function == "send_result" {
-		test_results := add_directory(file_list, false)
-		SendTestResult(recipient, senderEmail, senderPasswd, test_results)
+		//test_results := add_directory(file_list, false)
+		//SendTestResult(recipient, senderEmail, senderPasswd, test_results)
 	} else if function == "terminate" {
 		terminate()
 	} else {

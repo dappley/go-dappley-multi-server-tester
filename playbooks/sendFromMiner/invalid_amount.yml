@@ -324,6 +324,7 @@
       target: build
       file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
 
+
 #################### Launch Blockchain ####################
   - name: Launch NODE1
     shell: ./dapp -f conf/node1.conf

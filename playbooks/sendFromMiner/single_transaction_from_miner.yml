@@ -39,7 +39,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 60
+    async: 80
     poll: 0
 
   - name: Launch NODE2
@@ -47,7 +47,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 60
+    async: 80
     poll: 0
 
   - name: Launch NODE3
@@ -55,7 +55,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 60
+    async: 80
     poll: 0
 
   - name: Launch NODE4
@@ -63,7 +63,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 60
+    async: 80
     poll: 0
 
   - name: Launch NODE5
@@ -71,7 +71,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 60
+    async: 80
     poll: 0
 
   - name: Wait 10 seconds for blockchain
@@ -86,6 +86,38 @@
     until: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int > (10)|int
     retries: 20
     delay: 10
+
+
+#################### Check account balance ####################
+  - name: Check account1 balance
+    shell: ./cli getBalance -address {{ account1 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account1Balance
+
+  - debug:
+      msg: '{{ account1Balance.stdout }}'
+
+  - name: Account1 balance test
+    fail:
+     msg: "Expected the account balance to be 0, but returned {{ account1Balance.stdout_lines[0][16:] }}"
+    ignore_errors: true
+    when: account1Balance.stdout_lines[0][16:]|int != 0|int
+
+  - name: Check account2 balance
+    shell: ./cli getBalance -address {{ account2 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account2Balance
+
+  - debug:
+      msg: '{{ account2Balance.stdout }}'
+
+  - name: Account2 balance test
+    fail:
+     msg: "Expected the account balance to be 0, but returned {{ account2Balance.stdout_lines[0][16:] }}"
+    ignore_errors: true
+    when: account2Balance.stdout_lines[0][16:]|int != 0|int
 
 
 #################### Add balance to account ####################

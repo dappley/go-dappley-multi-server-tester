@@ -9,15 +9,14 @@
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin"
 
   tasks:
-  ## Build go-dappley
+#################### Build go-dappley ####################
   - name: Make build
     make:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
       target: build
       file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
 
-  ## -------------------------------------------
-  ## Launch Node1
+#################### Launch Node1 ####################
   - name: Launch node1
     shell: ./dapp -f conf/node1.conf
     args:
@@ -58,8 +57,7 @@
     async: 80
     poll: 0
 
-  ## -------------------------------------------
-  ## Launch Node2
+#################### Launch Node2 ####################
   - name: Launch node1
     shell: ./dapp -f conf/node1.conf
     args:
@@ -100,8 +98,7 @@
     async: 80
     poll: 0
 
-  ## -------------------------------------------
-  ## Launch Node3
+#################### Launch Node3 ####################
   - name: Launch node1
     shell: ./dapp -f conf/node1.conf
     args:
@@ -142,8 +139,7 @@
     async: 80
     poll: 0
 
-  ## -------------------------------------------
-  ## Launch Node4
+#################### Launch Node4 ####################
   - name: Launch node1
     shell: ./dapp -f conf/node1.conf
     args:
@@ -184,8 +180,7 @@
     async: 80
     poll: 0
 
-  ## -------------------------------------------
-  ## Launch Node5
+#################### Launch Node5 ####################
   - name: Launch node1
     shell: ./dapp -f conf/node1.conf
     args:
@@ -230,7 +225,6 @@
     wait_for:
       timeout: 10
 
-  ## Wait till blockchain reaches height of 10
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
     args:
@@ -243,7 +237,7 @@
   - debug:
       msg: "Blockchain height: {{ blockchainHeight.stdout_lines[1][17:]|replace(',','') }}"
 
-  ## Create accounts.dat
+#################### Create accounts.dat ####################
   - name: Create accounts.dat
     ansible.builtin.expect:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
@@ -343,14 +337,11 @@
       flat: yes
     when: inventory_hostname in groups['NODE5']
 
-#################### Closing ####################
-
-  ## Wait for the tasks to terminate
+#################### Terminate ####################
   - name: Wait till async tasks terminate
     wait_for:
       timeout: 30
 
-  ## Remove the db files and account.dat
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
     args:

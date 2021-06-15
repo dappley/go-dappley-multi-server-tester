@@ -4,7 +4,7 @@
   become: true
 
   tasks:
-  ## Create go-dappley directory
+#################### Create go-dappley directory ####################
   - name: Check directory exists
     stat:
       path: /home/ubuntu/go
@@ -14,13 +14,13 @@
     shell: mkdir go go/src go/pkg go/bin go/src/github.com go/src/github.com/dappley
     when: go_directory.stat.exists == false
 
-  ## Clone go-dappley to directory
+#################### Clone go-dappley to directory ####################
   - name: Clone the go-dappley repository
     ansible.builtin.git:
       repo: https://github.com/dappley/go-dappley.git
       dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/
 
-  ## Update server environment
+#################### Update server environment ####################
   - name: Update apt
     apt:
       update_cache: yes
@@ -37,7 +37,7 @@
     apt:
       name: make
 
-  ## Install && configure golang
+#################### Install && configure golang ####################
   - name: Download go.zip
     get_url:
       url: https://golang.org/dl/go1.16.3.linux-amd64.tar.gz

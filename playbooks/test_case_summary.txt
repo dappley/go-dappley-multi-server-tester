@@ -1,0 +1,106 @@
+Send Test Cases:
+    - Invalid Address
+        1. From an invalid address
+        2. No from address
+        3. To an invalid address
+        4. No to address
+        5. From and to an invalid address
+        6. No from and to address
+
+    - Invalid Amount
+        1. Send more than the account1 balance
+        2. Send negative value
+        3. Send zero amount
+        4. No amount
+        5. Amount is string
+        6. Amount is special characters
+
+    - Invalid Tip
+        1. Negative tip amount
+        2. Over balance tip
+        3. Equal to balance
+        4. Zero tip amount
+        5. No tip
+
+    - Invalid Data
+        1. No address in data [ ,"500"]
+        2. No address in data ["500"]
+        3. No amount in data ["account_2_address", ]
+        4. No amount in data ["account_2_address"]
+        5. Negative amount in data
+        6. More than miner balance
+        7. Amount in data is string
+        8. Amount in data is special characters
+        9. Invalid arguments
+        10. Invalid address in data
+        11. Empty address in data
+        12. Empty amount in data
+        13. No data
+
+    - Invalid File
+        1. Invalid file
+        2. No argument
+
+    - Invalid Gas Limit
+        1. Over balance gas limit
+        2. Zero gas limit
+        3. Insufficient gas limit
+        4. Negative gas limit
+        5. Gas limit is string
+        6. Gas limit is special chracter
+        7. No gas limit
+
+    - Invalid Gas Price
+        1. Over balance gas price
+        2. Zero gas price
+        3. Negative gas price
+        4. String gas price
+        5. Special character gas price
+        6. No gas price
+
+    - Missing Flag
+        1. No flag
+        2. -from and -gasPrice only
+        3. -from, -gasPrice and -amount
+
+    - Send from wrong node
+        1. Deploy transaction from the node without the account.dat file
+
+
+SendFromMiner Test Cases:
+    - Invalid amount
+        1. Send more than miner's balance
+        2. Send negative amount
+        3. Send zero amount
+        4. Send string 
+        5. Send special characters
+        6. Send no amount
+
+    - Invalid argument
+        1. Send to an invalid address
+        2. Send to an address without accounts.dat
+        3. Send to no address
+
+    - Missing flags
+        1. No address or amount arguments
+        2. No flags
+
+
+CreateAccount Test Cases:
+    - Empty password
+        1. First input is empty
+        2. Second input is empty
+        3. Both inputs are empty
+
+    - Invalid password
+        1. Unmatching passwords
+        2. Integer password
+        3. Special characters in password
+        4. Empty space password
+
+
+GetBalance Test Cases:
+
+- No flag
+- No argument
+- Get invalid address's balance
