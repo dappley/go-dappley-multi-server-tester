@@ -10,6 +10,7 @@ import (
 	"strings"
 	"os/exec"
 	"io/ioutil"
+	"path/filepath"
 )
 
 func main() {
@@ -20,36 +21,6 @@ func main() {
 	flag.StringVar(&senderPasswd, "senderPasswd", "<Sender Password>", "Email password of the addressee.")
 	flag.Parse()
 
-	createAccount_playbooks := []string{"empty_password",
-										"invalid_password"}
-
-	getBalance_playbooks    := []string{"invalid_address",
-										"missing_argument"}
-
-	listAddresses_playbooks := []string{"invalid_password"}
-
-	smartContract_playbooks := []string{"smart_contract_gas_1",
-										"smart_contract_gas_2"}
-
-	sendFromMiner_playbooks := []string{"missing_flag",
-										"invalid_amount",
-										"invalid_address",
-										"single_transaction_from_miner"}
-
-	send_playbooks          := []string{"wrong_node",
-										"invalid_tip",
-										"missing_flag",
-										"invalid_file",
-										"invalid_data",
-										"invalid_amount",
-										"invalid_address",
-										"invalid_gas_limit",
-										"invalid_gas_price",
-										"single_transaction_no_tip",
-										"single_transaction_with_tip",
-										"multi_transaction_no_tip",
-										"multi_transaction_with_tip"}
-
 	if function == "update" {
 		update()
 	} else if function == "initialize" {
@@ -57,17 +28,15 @@ func main() {
 	} else if function == "ssh_command" {
 		ssh_command()
 	} else if function == "update_address" {
-		Update_address(add_directory(send_playbooks, "send"))
-		Update_address(add_directory(getBalance_playbooks, "getBalance"))
-		Update_address(add_directory(sendFromMiner_playbooks, "sendFromMiner"))
-		Update_address(add_directory(createAccount_playbooks, "createAccount"))
-		Update_address(add_directory(listAddresses_playbooks, "listAddresses"))
-		Update_address(add_directory(smartContract_playbooks, "smartContract"))
+		Update_address(allFiles("playbooks"))
 	} else if function == "send_result" {
-		//test_results := add_directory(file_list, false)
-		//SendTestResult(recipient, senderEmail, senderPasswd, test_results)
+		test_results := allFiles("testresults")
+		SendTestResult(recipient, senderEmail, senderPasswd, test_results)
 	} else if function == "terminate" {
 		terminate()
+	} else if function == "test" {
+		fmt.Println(allFiles("playbooks"))
+		fmt.Println(allFiles("test_results"))
 	} else {
 		fmt.Println("Function Invalid!")
 	}
@@ -239,12 +208,22 @@ func ssh_command() {
 	}
 }
 
-//Adds directory and the suffix to the file list and return the updated list
-func add_directory(playbooks []string, directory string) []string {
-	var updated_playbooks []string
-	for _, playbook := range playbooks {
-		updated_playbooks = append(updated_playbooks, "./playbooks/" + directory + "/" + playbook + ".yml")
-	}
+func allFiles(directory string) []string {
+    var files []string
 
-	return updated_playbooks
+    root := directory
+    err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+		if path[len(path)-4:] == ".yml" || path[len(path)-4:] == ".txt" {
+			files = append(files, "./" + path)
+		}
+        return nil
+    })
+    if err != nil {
+        panic(err)
+    }
+    // for _, file := range files {
+    //     fmt.Println(file)
+	// }
+	
+	return files
 }

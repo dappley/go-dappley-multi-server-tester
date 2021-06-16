@@ -8,22 +8,19 @@ import (
 	"gopkg.in/gomail.v2"
 )
 
-//Send email
 func SendTestResult(recipient string, senderEmail string, senderPasswd string, test_results []string) {
 	emailContents := createEmail(test_results)
-	send(recipient, emailContents, test_results, senderEmail, senderPasswd)
+	send(recipient, emailContents, senderEmail, senderPasswd)
 }
 
-func send(recipient string, emailBody string, attachment []string, senderEmail string, senderPasswd string) {
+func send(recipient string, emailBody string, senderEmail string, senderPasswd string) {
 	//send the email
 	mail := gomail.NewMessage()
 	mail.SetHeader("From", senderEmail)
 	mail.SetHeader("To",   recipient)
 	mail.SetHeader("Subject", "Ansible Test Result")
 	mail.SetBody("text", emailBody)
-	for _, fileName := range attachment {
-		mail.Attach(fileName)
-	}
+	mail.Attach("test_results.zip")
 
 	deliver := gomail.NewDialer("smtp.gmail.com", 587, senderEmail, senderPasswd)
 
