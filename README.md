@@ -53,6 +53,12 @@ pipeline {
                 sh 'go build'
             }
         }
+        stage('Create Directories') {
+            steps {
+                sh 'mkdir test_results test_results/createAccount test_results/getBalance test_results/listAddresses test_results/send test_results/sendFromMiner test_results/setup test_results/smartContract'
+                sh 'mkdir /var/lib/jenkins/workspace/go-dappley-ansible-accounts /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node1 /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node2 /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node3 /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node4 /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node5'
+            }
+        }
         stage('Update Hosts') {
             steps {
                 sh './ansible-dappley -function update'
@@ -65,51 +71,77 @@ pipeline {
         }
         stage('Setup Host Nodes') {
             steps {
-                sh 'ansible-playbook setup.yml > setup.txt'
+                sh 'ansible-playbook ./playbooks/setup/setup.yml > ./test_results/setup/setup.txt'
             }
         }
-        stage('Send From Miner') {
+        stage('Generate Accoounts') {
             steps {
-                sh 'ansible-playbook sendFromMiner.yml > sendFromMiner.txt'
+                sh 'ansible-playbook ./playbooks/setup/accounts_generator.yml > ./test_results/setup/accounts_generator.txt'
             }
         }
-        stage('Single Transaction No Tip') {
+        stage('Update Seeds and Ports') {
             steps {
-                sh 'ansible-playbook single_transaction_no_tip.yml > single_transaction_no_tip.txt'
+                sh 'ansible-playbook ./playbooks/setup/update_seed_port.yml > ./test_results/setup/update_seed_port.txt'
             }
         }
-        stage('Single Transaction With Tip') {
+        stage('Update Playbooks') {
             steps {
-                sh 'ansible-playbook single_transaction_with_tip.yml > single_transaction_with_tip.txt'
+                sh './ansible-dappley -function update_address'
             }
         }
-        stage('Multi Transaction No Tip') {
+        stage('Send Playbooks') {
             steps {
-                sh 'ansible-playbook multi_transaction_no_tip.yml > multi_transaction_no_tip.txt'
+                sh 'ansible-playbook ./playbooks/send/wrong_node.yml > ./test_results/send/wrong_node.txt'
+                sh 'ansible-playbook ./playbooks/send/invalid_tip.yml > ./test_results/send/invalid_tip.txt'
+                sh 'ansible-playbook ./playbooks/send/missing_flag.yml > ./test_results/send/missing_flag.txt'
+                sh 'ansible-playbook ./playbooks/send/invalid_file.yml > ./test_results/send/invalid_file.txt'
+                sh 'ansible-playbook ./playbooks/send/invalid_data.yml > ./test_results/send/invalid_data.txt'
+                sh 'ansible-playbook ./playbooks/send/invalid_amount.yml > ./test_results/send/invalid_amount.txt'
+                sh 'ansible-playbook ./playbooks/send/invalid_address.yml > ./test_results/send/invalid_address.txt'
+                sh 'ansible-playbook ./playbooks/send/invalid_gas_limit.yml > ./test_results/send/invalid_gas_limit.txt'
+                sh 'ansible-playbook ./playbooks/send/invalid_gas_price.yml > ./test_results/send/invalid_gas_price.txt'
+                sh 'ansible-playbook ./playbooks/send/single_transaction_no_tip.yml > ./test_results/send/single_transaction_no_tip.txt'
+                sh 'ansible-playbook ./playbooks/send/single_transaction_with_tip.yml > ./test_results/send/single_transaction_with_tip.txt'
+                sh 'ansible-playbook ./playbooks/send/multi_transaction_no_tip.yml > ./test_results/send/multi_transaction_no_tip.txt'
+                sh 'ansible-playbook ./playbooks/send/multi_transaction_with_tip.yml > ./test_results/send/multi_transaction_with_tip.txt'
             }
         }
-        stage('Multi Transaction With Tip') {
+        stage('GetBalance Playbooks') {
             steps {
-                sh 'ansible-playbook multi_transaction_with_tip.yml > multi_transaction_with_tip.txt'
+                sh 'ansible-playbook ./playbooks/getBalance/invalid_address.yml > ./test_results/getBalance/invalid_address.txt'
+                sh 'ansible-playbook ./playbooks/getBalance/missing_argument.yml > ./test_results/getBalance/missing_argument.txt'
             }
         }
-        stage('Smart Contract Gas 1') {
+        stage('CreateAccount Playbooks') {
             steps {
-                sh 'ansible-playbook smart_contract_gas_1.yml > smart_contract_gas_1.txt'
+                sh 'ansible-playbook ./playbooks/createAccount/empty_password.yml > ./test_results/createAccount/empty_password.txt'
+                sh 'ansible-playbook ./playbooks/createAccount/invalid_password.yml > ./test_results/createAccount/invalid_password.txt'
+
             }
         }
-        stage('Smart Contract Gas 2') {
+        stage('ListAddresses Playbooks') {
             steps {
-                sh 'ansible-playbook smart_contract_gas_2.yml > smart_contract_gas_2.txt'
+                sh 'ansible-playbook ./playbooks/listAddresses/invalid_password.yml > ./test_results/listAddresses/invalid_password.txt'
             }
         }
-        stage('Test Send') {
+        stage('SendFromMiner Playbooks') {
             steps {
-                sh 'ansible-playbook send.yml > seend.txt'
+                sh 'ansible-playbook ./playbooks/sendFromMiner/missing_flag.yml > ./test_results/sendFromMiner/missing_flag.txt'
+                sh 'ansible-playbook ./playbooks/sendFromMiner/invalid_amount.yml > ./test_results/sendFromMiner/invalid_amount.txt'
+                sh 'ansible-playbook ./playbooks/sendFromMiner/invalid_address.yml > ./test_results/sendFromMiner/invalid_address.txt'
+                sh 'ansible-playbook ./playbooks/sendFromMiner/single_transaction_from_miner.yml > ./test_results/sendFromMiner/single_transaction_from_miner.txt'
+            }
+        }
+
+        stage('Smart Contract Playbooks') {
+            steps {
+                sh 'ansible-playbook ./playbooks/smartContract/smart_contract_gas_1.yml > ./test_results/smartContract/smart_contract_gas_1.txt'
+                sh 'ansible-playbook ./playbooks/smartContract/smart_contract_gas_2.yml > ./test_results/smartContract/smart_contract_gas_2.txt'
             }
         }
         stage('Send Report') {
             steps {
+                sh 'zip -r test_results.zip test_results'
                 sh './ansible-dappley -function send_result -recipient blockchainwarning@omnisolu.com -senderEmail blockchainwarning@omnisolu.com -senderPasswd gabroq-bucfe0-pubqiC'
             }
         }
@@ -121,6 +153,7 @@ pipeline {
         stage('Close') {
             steps {
                 sh 'rm -r *'
+                sh 'rm -r ../go-dappley-ansible-accounts'   
             }
         }
     }

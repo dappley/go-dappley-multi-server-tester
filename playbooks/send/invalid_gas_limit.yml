@@ -250,7 +250,7 @@
 #################### Terminate ####################
   - name: Wait till async tasks terminate
     wait_for:
-      timeout: 20
+      timeout: 30
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
@@ -511,7 +511,7 @@
 #################### Terminate ####################
   - name: Wait till async tasks terminate
     wait_for:
-      timeout: 20
+      timeout: 30
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
@@ -772,7 +772,7 @@
 #################### Terminate ####################
   - name: Wait till async tasks terminate
     wait_for:
-      timeout: 20
+      timeout: 30
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
@@ -1037,7 +1037,7 @@
 #################### Terminate ####################
   - name: Wait till async tasks terminate
     wait_for:
-      timeout: 20
+      timeout: 30
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
@@ -1298,7 +1298,7 @@
 #################### Terminate ####################
   - name: Wait till async tasks terminate
     wait_for:
-      timeout: 20
+      timeout: 30
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
@@ -1560,7 +1560,7 @@
 #################### Terminate ####################
   - name: Wait till async tasks terminate
     wait_for:
-      timeout: 20
+      timeout: 30
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
@@ -1821,7 +1821,7 @@
 #################### Terminate ####################
   - name: Wait till async tasks terminate
     wait_for:
-      timeout: 20
+      timeout: 30
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin

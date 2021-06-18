@@ -23,20 +23,22 @@ func main() {
 
 	if function == "update" {
 		update()
+
 	} else if function == "initialize" {
 		initialize()
+
 	} else if function == "ssh_command" {
 		ssh_command()
+
 	} else if function == "update_address" {
 		Update_address(allFiles("playbooks"))
+
 	} else if function == "send_result" {
-		test_results := allFiles("testresults")
-		SendTestResult(recipient, senderEmail, senderPasswd, test_results)
+		SendTestResult(recipient, senderEmail, senderPasswd, allFiles("testresults"))
+	
 	} else if function == "terminate" {
 		terminate()
-	} else if function == "test" {
-		fmt.Println(allFiles("playbooks"))
-		fmt.Println(allFiles("test_results"))
+
 	} else {
 		fmt.Println("Function Invalid!")
 	}
@@ -114,8 +116,8 @@ func initialize() {
 		initializing := true
 		fmt.Println("Initializing " + instance_id + "...")
 		for initializing {
-			terminate_instance := "aws ec2 describe-instance-status --instance-ids " + instance_id
-			args := strings.Split(terminate_instance, " ")
+			initialize_instance := "aws ec2 describe-instance-status --instance-ids " + instance_id
+			args := strings.Split(initialize_instance, " ")
 			cmd := exec.Command(args[0], args[1:]...)
 			output, err := cmd.CombinedOutput()
 			if err != nil {
