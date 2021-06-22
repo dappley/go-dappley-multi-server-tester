@@ -1,0 +1,1176 @@
+---
+
+- hosts: all
+  become: true
+  become_user: ubuntu
+  environment:
+    GOPATH: "/home/ubuntu/go"
+    GOROOT: "/usr/local/go"
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin"
+  vars:
+    account1: account_1_address
+    invalid_address: thisistheaddressofaninvalidaddress
+
+  tasks:
+#################### Make build ####################
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+#################### Launch Blockchain ####################
+  - name: Launch NODE1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 70
+    poll: 0
+
+  - name: Wait 10 seconds for blockchain
+    wait_for:
+      timeout: 10
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
+    retries: 20
+    delay: 10
+
+
+#################### maxCount is 0 ####################
+  - name: maxCount is 0
+    shell: ./cli getBlocks -startBlockHashes 10 -maxCount 0
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
+
+  - name: Test
+    fail:
+      msg: "Expected correct usage message but returned {{ test_result.stdout }}"
+    when: test_result.stdout_lines[1][10:] != "cli getBlocks -startBlockHashes 10 -maxCount 5"
+    ignore_errors: true
+
+
+#################### Terminate ####################
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 20
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+
+
+
+#################### Make build ####################
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+#################### Launch Blockchain ####################
+  - name: Launch NODE1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 70
+    poll: 0
+
+  - name: Wait 10 seconds for blockchain
+    wait_for:
+      timeout: 10
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
+    retries: 20
+    delay: 10
+
+
+#################### maxCount is negative ####################
+  - name: maxCount is negative
+    shell: ./cli getBlocks -startBlockHashes 10 -maxCount -1
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
+
+  - name: Test
+    fail:
+      msg: "Expected correct usage message but returned {{ test_result.stdout }}"
+    when: test_result.stdout_lines[1][10:] != "cli getBlocks -startBlockHashes 10 -maxCount 5"
+    ignore_errors: true
+
+
+#################### Terminate ####################
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 20
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+
+
+#################### Make build ####################
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+#################### Launch Blockchain ####################
+  - name: Launch NODE1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 70
+    poll: 0
+
+  - name: Wait 10 seconds for blockchain
+    wait_for:
+      timeout: 10
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
+    retries: 20
+    delay: 10
+
+
+#################### maxCount is string ####################
+  - name: maxCount is string
+    shell: ./cli getBlocks -startBlockHashes 10 -maxCount five
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
+
+  - name: Test
+    fail:
+      msg: "Expected an error message about the string input, but returned {{ test_result }}"
+    when: test_result.stderr_lines[0][:-13] != "invalid value \"five\" for flag -maxCount"
+    ignore_errors: true
+
+
+#################### Terminate ####################
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 20
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+
+
+#################### Make build ####################
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+#################### Launch Blockchain ####################
+  - name: Launch NODE1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 70
+    poll: 0
+
+  - name: Wait 10 seconds for blockchain
+    wait_for:
+      timeout: 10
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
+    retries: 20
+    delay: 10
+
+
+#################### maxCount is special character  ####################
+  - name: maxCount is special character
+    shell: ./cli getBlocks -startBlockHashes 10 -maxCount ~`!@#$%^&*()_-+=
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
+    ignore_errors: true
+
+  - name: Test
+    fail:
+      msg: "Cli returns critical error when the -maxCount argument is special characters!"
+    when: test_result.failed
+    ignore_errors: true
+
+
+#################### Terminate ####################
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 20
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+
+
+
+#################### Make build ####################
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+#################### Launch Blockchain ####################
+  - name: Launch NODE1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 70
+    poll: 0
+
+  - name: Wait 10 seconds for blockchain
+    wait_for:
+      timeout: 10
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
+    retries: 20
+    delay: 10
+
+
+#################### maxCount is empty ####################
+  - name: maxCount is empty
+    shell: ./cli getBlocks -startBlockHashes 10 -maxCount
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
+
+  - name: Test
+    fail:
+      msg: "Expected an error message about the missing -maxCount argument, but returned {{ test_result }}"
+    when: test_result.stderr_lines[0][:-11] != "flag needs an argument"
+    ignore_errors: true
+
+
+#################### Terminate ####################
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 20
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+
+
+#################### Make build ####################
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+#################### Launch Blockchain ####################
+  - name: Launch NODE1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 70
+    poll: 0
+
+  - name: Wait 10 seconds for blockchain
+    wait_for:
+      timeout: 10
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
+    retries: 20
+    delay: 10
+
+
+#################### startBlockHashes is invalid ####################
+  - name: startBlockHashes is invalid
+    shell: ./cli getBlocks -startBlockHashes thisisaninvalidhashvalueusedtotestthegetblocksmethoingodappley21 -maxCount 1
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
+
+  - name: Test
+    fail:
+      msg: "Expected an error message about the invalid byte, but returned {{ test_result }}"
+    when: test_result.stdout_lines[0][21:33] != "invalid byte"
+    ignore_errors: true
+
+
+#################### Terminate ####################
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 20
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+
+
+#################### Make build ####################
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+#################### Launch Blockchain ####################
+  - name: Launch NODE1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 70
+    poll: 0
+
+  - name: Wait 10 seconds for blockchain
+    wait_for:
+      timeout: 10
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
+    retries: 20
+    delay: 10
+
+
+#################### startBlockHashes is valid but doesn't exist ####################
+  - name: startBlockHashes is valid but doesn't exist
+    shell: ./cli getBlocks -startBlockHashes d9029922520f8cc491e01c281f3cf648336c6c7bf3d36abc992698774fe8363e -maxCount 1
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
+
+  - name: Test
+    fail:
+      msg: "Expected to get the first block of the blockchain, but returned {{ test_result }}"
+    when: test_result.stdout_lines[7][16:] != "1"
+    ignore_errors: true
+
+
+#################### Terminate ####################
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 20
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+
+
+#################### Make build ####################
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+#################### Launch Blockchain ####################
+  - name: Launch NODE1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 70
+    poll: 0
+
+  - name: Wait 10 seconds for blockchain
+    wait_for:
+      timeout: 10
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
+    retries: 20
+    delay: 10
+
+
+#################### startBlockHashes is 0 ####################
+  - name: startBlockHashes is 0
+    shell: ./cli getBlocks -startBlockHashes 0 -maxCount 1
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
+
+  - name: Test
+    fail:
+      msg: "Expected an error message about the odd length hex string, but returned {{ test_result }}"
+    when: test_result.stdout_lines[0][-21:] != "odd length hex string"
+    ignore_errors: true
+
+
+#################### Terminate ####################
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 20
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+
+
+#################### Make build ####################
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+#################### Launch Blockchain ####################
+  - name: Launch NODE1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 70
+    poll: 0
+
+  - name: Wait 10 seconds for blockchain
+    wait_for:
+      timeout: 10
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
+    retries: 20
+    delay: 10
+
+
+#################### startBlockHashes is negative ####################
+  - name: startBlockHashes is negative
+    shell: ./cli getBlocks -startBlockHashes -1 -maxCount 1
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
+
+  - name: Test
+    fail:
+      msg: "Expected an error message about the invalid byte, but returned {{ test_result }}"
+    when: test_result.stdout_lines[0][21:33] != "invalid byte"
+    ignore_errors: true
+
+
+#################### Terminate ####################
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 20
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+
+
+#################### Make build ####################
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+#################### Launch Blockchain ####################
+  - name: Launch NODE1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 70
+    poll: 0
+
+  - name: Wait 10 seconds for blockchain
+    wait_for:
+      timeout: 10
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
+    retries: 20
+    delay: 10
+
+
+#################### startBlockHashes is a random string ####################
+  - name: startBlockHashes is a random string
+    shell: ./cli getBlocks -startBlockHashes hello -maxCount 1
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
+
+  - name: Test
+    fail:
+      msg: "Expected an error message about the invalid byte, but returned {{ test_result }}"
+    when: test_result.stdout_lines[0][21:33] != "invalid byte"
+    ignore_errors: true
+
+
+#################### Terminate ####################
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 20
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+
+
+#################### Make build ####################
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+#################### Launch Blockchain ####################
+  - name: Launch NODE1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 70
+    poll: 0
+
+  - name: Wait 10 seconds for blockchain
+    wait_for:
+      timeout: 10
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
+    retries: 20
+    delay: 10
+
+
+#################### startBlockHashes is special character ####################
+  - name: startBlockHashes is special character
+    shell: ./cli getBlocks -startBlockHashes ~`!@#$%^&*()_-+= -maxCount 1
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
+    ignore_errors: true
+
+  - name: Test
+    fail:
+      msg: "Cli returns critical error when the -startBlockHashes argument is special characters!"
+    when: test_result.failed
+    ignore_errors: true
+
+
+#################### Terminate ####################
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 30
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+
+
+#################### Make build ####################
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+#################### Launch Blockchain ####################
+  - name: Launch NODE1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 70
+    poll: 0
+
+  - name: Wait 10 seconds for blockchain
+    wait_for:
+      timeout: 10
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
+    retries: 20
+    delay: 10
+
+
+#################### startBlockHashes is empty ####################
+  - name: startBlockHashes is empty
+    shell: ./cli getBlocks -maxCount 1 -startBlockHashes
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
+
+  - name: Test
+    fail:
+      msg: "Expected an error message about the missing -maxCount argument, but returned {{ test_result }}"
+    when: test_result.stderr_lines[0][:-19] != "flag needs an argument"
+    ignore_errors: true
+
+
+#################### Terminate ####################
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 20
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+
+
+
+# #################### Make build ####################
+#   - name: Make build
+#     make:
+#       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+#       target: build
+#       file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+# #################### Launch Blockchain ####################
+#   - name: Launch NODE1
+#     shell: ./dapp -f conf/node1.conf
+#     args:
+#       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+#     when: inventory_hostname in groups['NODE1']
+#     async: 70
+#     poll: 0
+
+#   - name: Launch NODE2
+#     shell: ./dapp -f conf/node2.conf
+#     args:
+#       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+#     when: inventory_hostname in groups['NODE2']
+#     async: 70
+#     poll: 0
+
+#   - name: Launch NODE3
+#     shell: ./dapp -f conf/node3.conf
+#     args:
+#       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+#     when: inventory_hostname in groups['NODE3']
+#     async: 70
+#     poll: 0
+
+#   - name: Launch NODE4
+#     shell: ./dapp -f conf/node4.conf
+#     args:
+#       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+#     when: inventory_hostname in groups['NODE4']
+#     async: 70
+#     poll: 0
+
+#   - name: Launch NODE5
+#     shell: ./dapp -f conf/node5.conf
+#     args:
+#       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+#     when: inventory_hostname in groups['NODE5']
+#     async: 70
+#     poll: 0
+
+#   - name: Wait 10 seconds for blockchain
+#     wait_for:
+#       timeout: 10
+
+#   - name: Wait til the blockchain reaches height of 10
+#     shell: ./cli getBlockchainInfo
+#     args:
+#       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+#     register: blockchainHeight
+#     until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
+#     retries: 20
+#     delay: 10
+
+
+# #################### maxCount is greater than the blockheight ####################
+#   - name: Get current block height
+#     shell: ./cli getBlockchainInfo
+#     args:
+#       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+#     register: curr_tailBlock
+
+#   # - debug:
+#   #     msg: '{{ curr_tailBlock.stdout_lines[1][17:-1]|int }}'
+
+#   # - debug:
+#   #     msg: '{{ curr_tailBlock.stdout_lines[1][17:-1]|int + 10|int }}'
+
+#   - name: getBlocks
+#     shell: ./cli getBlocks -startBlockHashes 10 -maxCount {{ curr_tailBlock.stdout_lines[1][17:-1]|int + 10|int }}
+#     args:
+#       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+#     register: test_result
+
+#   - debug:
+#       msg: '{{ test_result }}'
+
+#   # - name: Test
+#   #   fail:
+#   #     msg: "Expected but returned."
+#   #   when: 
+#   #   ignore_errors: true
+
+
+# #################### Terminate ####################
+#   - name: Wait till async tasks terminate
+#     wait_for:
+#       timeout: 20
+
+#   - name: Remove /go-dappley/bin All Nodes
+#     shell: rm -r bin
+#     args:
+#       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/

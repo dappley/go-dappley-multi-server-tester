@@ -124,13 +124,24 @@ Smart Contract Test Cases:
         1. Smart contract deployment with gas price of 2
 
 
-#TODO
-- getBlocks
-- getBlockchainInfo
-- getPeerInfo
-- addPeer
-- addProducer
+Get Blocks & BlockchainInfo Test Cases:
+    - Compare blockchainInfo & blocks returning value
+
+    - Invalid Input
+        1. maxCount is 0
+        2. maxCount is negative
+        4. maxCount is string
+        5. maxCount is special character
+        6. maxCount is empty
+        7. startBlockHashes is invalid
+        8. startBlockHashes is valid but doesn't exist
+        9. startBlockHashes is 0
+        10. startBlockHashes is negative
+        11. startBlockHashes is random string
+        12. startBlockHashes is special character
+        13. startBlockHashes is emtpy
+
 - estimateGas
-- gasPrice
-- contractQuery
-- help
+
+Add Producer Test Cases:
+    - Later
