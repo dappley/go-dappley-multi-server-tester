@@ -1,0 +1,136 @@
+---
+
+- hosts: all
+  become: true
+  become_user: ubuntu
+  environment:
+    GOPATH: "/home/ubuntu/go"
+    GOROOT: "/usr/local/go"
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin"
+  vars:
+    account1: account_1_address
+    invalid_address: thisistheaddressofaninvalidaddress
+
+  tasks:
+#################### Send Accounts.dat ####################
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+#################### Launch Blockchain ####################
+  - name: Launch NODE1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 70
+    poll: 0
+
+  - name: Wait 10 seconds for blockchain
+    wait_for:
+      timeout: 10
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
+    retries: 20
+    delay: 10
+
+
+#################### Get current block height ####################
+  - name: Get current block height
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: prev_tailBlock
+
+
+#################### Wait until next block ####################
+  - name: Wait til the blockchain reaches next height
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: next_tailBlock
+    until: (next_tailBlock.stdout_lines[1][17:-1])|int == (prev_tailBlock.stdout_lines[1][17:-1])|int + (1)|int
+    retries: 100
+    delay: 1
+
+  - debug:
+      msg: "Blockchain height: {{ next_tailBlock.stdout_lines[1][17:-1] }}"
+
+
+#################### Get current block height ####################
+  - name: Get current block height
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: new_tailBlock
+
+
+#################### getBlocks ####################
+  - name: getBlocks
+    shell: ./cli getBlocks -startBlockHashes {{ prev_tailBlock.stdout_lines[9][20:-1]}} -maxCount 1
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: getBlocks
+
+  - name: Test Height
+    fail:
+      msg: "Expected the block height to be {{ new_tailBlock.stdout_lines[1][17:-1] }}, but returned {{ getBlocks.stdout_lines[7][16:] }}"
+    when: getBlocks.stdout_lines[7][16:]|int != new_tailBlock.stdout_lines[1][17:-1]|int
+    ignore_errors: true
+
+  - name: Test Hash
+    fail:
+      msg: "Expected the hash value to be {{ new_tailBlock.stdout_lines[9][20:-1] }}, but returned {{ getBlocks.stdout_lines[3][15:-2] }}"
+    when: getBlocks.stdout_lines[3][15:-2] != new_tailBlock.stdout_lines[9][20:-1]
+    ignore_errors: true
+
+
+#################### Terminate ####################
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 20
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
