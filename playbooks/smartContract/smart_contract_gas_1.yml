@@ -85,9 +85,6 @@
     retries: 20
     delay: 10
 
-  - debug:
-      msg: "Blockchain height: {{ blockchainHeight.stdout_lines[1][17:]|replace(',','') }}"
-
 
 #################### SendFromMiner to account1  ####################
   - name: Send money to account1

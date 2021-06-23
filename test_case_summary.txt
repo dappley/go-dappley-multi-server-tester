@@ -141,7 +141,68 @@ Get Blocks & BlockchainInfo Test Cases:
         12. startBlockHashes is special character
         13. startBlockHashes is emtpy
 
-- estimateGas
+EstimateGas Test Cases:
+    - Estimate gas price and deploy smart contract witht the estimated gasLimit
+
+    - Invalid address
+        1. from address is invalid
+        2. from address is valid but no accounts.dat
+        3. from address is empty
+
+    - Invalid smartContract
+        1. smart contract address is invalid
+        2. smart contract address is valid but does not exist
+        3. smart contract address is empty
+
+   - Invalid amount
+        1. amount is 0
+        2. amount is negative
+        3. amount more than the balance 
+        4. amount is string
+        5. amount is special character
+        6. amount is empty
+
+    - Invalid tip
+        1. tip is 0
+        2. tip is negative
+        3. tip more than the balance 
+        4. tip is string
+        5. tip is special character
+        6. tip is empty
+
+    - Invalid gasLimit
+        1. gasLimit is 0
+        2. gasLimit is negative
+        3. gasLimit is more than the balance
+        4. gasLimit is insufficient
+        5. gasLimit is string
+        6. gasLimit is special character
+        7. gasLimit is equal to balance
+        8. gasLimit is empty
+
+    - Invalid gasPrice
+        1. gasPrice is 0
+        2. gasPrice is negative
+        3. gasPrice is more than the balance
+        4. gasPrice is string
+        5. gasPrice is special character
+        6. gasPrice is empty
+
+    - Invalid data
+        1. data amount is 0
+        2. data amount is negative
+        3. data amount is over balance
+        4. data amount is string
+        5. data amount is special character
+        6. data amount is empty 1
+        7. data amount is empty 2
+        8. data address is invalid
+        9. data address is valid but doesn't exist
+        10. data address is empty 1
+        11. data address is empty 2
+        12. data arguments are invalid
+        13. data is empty
+
 
 Add Producer Test Cases:
     - Later
