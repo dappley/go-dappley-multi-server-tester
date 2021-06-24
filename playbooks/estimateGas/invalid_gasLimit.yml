@@ -167,9 +167,9 @@
     ignore_errors: true
 
 
-#################### Estimate Gas - amount is 0 ####################
-  - name: Estimate Gas - amount is 0
-    shell: ./cli estimateGas -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 0 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["account_2_address","5000"]}'
+#################### Estimate Gas - gasLimit is 0 ####################
+  - name: Estimate Gas - gasLimit is 0
+    shell: ./cli estimateGas -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 10 -tip 0 -gasLimit 0 -gasPrice 1 -data '{"function":"record","args":["account_2_address","5000"]}'
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: estimate_gas
@@ -181,8 +181,8 @@
 
   - name: Test
     fail:
-      msg: "Expected the gas estimation to be aapproved, but returned {{ estimate_gas }}"
-    when: inventory_hostname in groups['NODE1'] and estimate_gas.failed
+      msg: "Expected an error message about insufficient gasLimit, but returned {{ estimate_gas }}"
+    when: inventory_hostname in groups['NODE1'] and estimate_gas.stdout_lines[0][:18] == "Gas estimiated num"
     ignore_errors: true
 
 
@@ -399,473 +399,9 @@
     ignore_errors: true
 
 
-#################### Estimate Gas - amount is negative ####################
-  - name: Estimate Gas - amount is negative
-    shell: ./cli estimateGas -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount -10 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["account_2_address","5000"]}'
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: estimate_gas
-    when: inventory_hostname in groups['NODE1']
-
-  - debug:
-      msg: '{{ estimate_gas }}'
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Test
-    fail:
-      msg: "Expected an error message about the insufficient balance, but returned {{ estimate_gas }}"
-    when: inventory_hostname in groups['NODE1'] and estimate_gas.stdout_lines[0][12:] != "the balance is insufficient"
-    ignore_errors: true
-
-
-#################### Check account1 && account2 balance ####################
-  - name: Check account1 balance
-    shell: ./cli getBalance -address {{ account1 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account1Balance_2
-
-  - debug:
-      msg: 'Account1 balance: {{ account1Balance_2.stdout_lines[0][16:] }}'
-
-  - name: Account1 balance test
-    fail:
-     msg: "Expected the value to stay unchanged, but returned {{ account1Balance_2.stdout_lines[0][16:] }}."
-    ignore_errors: true
-    when: account1Balance_2.stdout_lines[0][16:]|int != account1Balance_1.stdout_lines[0][16:]|int
-
-  - name: Check account2 balance
-    shell: ./cli getBalance -address {{ account2 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account2Balance_2
-
-  - debug:
-      msg: 'Account2 blanace: {{ account2Balance_2.stdout_lines[0][16:] }}'
-
-  - name: Account2 balance test
-    fail:
-     msg: "Expected the value to stay unchanged, but returned {{ account2Balance_2.stdout_lines[0][16:] }}"
-    when: account2Balance_1.stdout_lines[0][16:]|int != account2Balance_2.stdout_lines[0][16:]|int
-    ignore_errors: true
-
-
-#################### Terminate playbook ####################
-  - name: Wait till async tasks terminate
-    wait_for:
-      timeout: 20
-
-  - name: Remove /go-dappley/bin All Nodes
-    shell: rm -r bin
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
-
-  - name: Remove /go-dappley/dapp/bin Node1
-    shell: rm -r bin
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Remove /go-dappley/dapp/bin Node2
-    shell: rm -r bin
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
-    when: inventory_hostname in groups['NODE2']
-
-
-
-
-
-#################### Send account.dat file to Node1 && Node2 ####################
-  - name: Accounts.dat to Node1
-    copy:
-      src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node1/accounts.dat
-      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Accounts.dat to Node2
-    copy:
-      src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node2/accounts.dat
-      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
-    when: inventory_hostname in groups['NODE2']
-
-  - name: Make build
-    make:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-      target: build
-      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
-
-
-#################### Launch blockchain ####################
-  - name: Launch node1
-    shell: ./dapp -f conf/node1.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE1']
-    async: 90
-    poll: 0
-
-  - name: Launch node2
-    shell: ./dapp -f conf/node2.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE2']
-    async: 90
-    poll: 0
-
-  - name: Launch node3
-    shell: ./dapp -f conf/node3.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE3']
-    async: 90
-    poll: 0
-
-  - name: Launch node4
-    shell: ./dapp -f conf/node4.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE4']
-    async: 90
-    poll: 0
-
-  - name: Launch node5
-    shell: ./dapp -f conf/node5.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE5']
-    async: 90
-    poll: 0
-
-  - name: Wait 10 seconds to launch blockchain
-    wait_for:
-      timeout: 10
-
-  - name: Wait til the blockchain reaches height of 10
-    shell: ./cli getBlockchainInfo
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: blockchainHeight
-    until: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int > (10)|int
-    retries: 20
-    delay: 10
-
-
-#################### SendFromMiner to account1  ####################
-  - name: Send money to account1
-    shell: ./cli sendFromMiner -to {{ account1 }} -amount 100000
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Wait 10 seconds to complete transaction
-    wait_for:
-      timeout: 10
-
-  - name: Check account1 balance
-    shell: ./cli getBalance -address {{ account1 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account1Balance
-
-  - debug:
-      msg: 'Account1 balance: {{ account1Balance.stdout_lines[0][16:] }}'
-
-  - name: Check account2 balance
-    shell: ./cli getBalance -address {{ account2 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account2Balance
-
-  - debug:
-      msg: 'Account2 blanace: {{ account2Balance.stdout_lines[0][16:] }}'
-
-
-#################### Create smart contract ####################
-  - name: Create smart contract
-    shell: ./cli send -from {{ account1 }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -file ../jslib/step_recorder.js
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: smart_contract
-    when: inventory_hostname in groups['NODE1']
-
-  - debug:
-      msg: '{{ smart_contract.stdout_lines[0][18:] }}'
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Wait 10 seconds to complete transaction
-    wait_for:
-      timeout: 10
-
-
-#################### Check account1 && account2 balance ####################
-  - name: Check account1 balance
-    shell: ./cli getBalance -address {{ account1 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account1Balance_1
-
-  - debug:
-      msg: 'Account1 balance: {{ account1Balance_1.stdout_lines[0][16:] }}'
-
-  - name: Account1 balance test
-    fail:
-     msg: "Expected the value to be less than 99900 and greater than 69900, but returned {{ account1Balance_1.stdout_lines[0][16:] }}."
-    ignore_errors: true
-    when: not account1Balance_1.stdout_lines[0][16:]|int < (100000 - 100)|int and account1Balance.stdout_lines[0][16:]|int > (100000 - 30000 - 100)|int
-
-
-  - name: Check account2 balance
-    shell: ./cli getBalance -address {{ account2 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account2Balance_1
-
-  - debug:
-      msg: 'Account2 blanace: {{ account2Balance_1.stdout_lines[0][16:] }}'
-
-  - name: Account2 balance test
-    fail:
-     msg: "Expected 0 but returned {{ account2Balance_1.stdout_lines[0][16:] }}"
-    when: account2Balance_1.stdout_lines[0][16:]|int != 0|int
-    ignore_errors: true
-
-
-#################### Estimate Gas - amount is over balance ####################
-  - name: Estimate Gas - amount is over balance
-    shell: ./cli estimateGas -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 100000 -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["account_2_address","5000"]}'
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: estimate_gas
-    when: inventory_hostname in groups['NODE1']
-
-  - debug:
-      msg: '{{ estimate_gas }}'
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Test
-    fail:
-      msg: "Expected an error message about the insufficient balance, but returned {{ estimate_gas }}"
-    when: inventory_hostname in groups['NODE1'] and estimate_gas.stdout_lines[0][12:] == "the balance is insufficient"
-    ignore_errors: true
-
-
-#################### Check account1 && account2 balance ####################
-  - name: Check account1 balance
-    shell: ./cli getBalance -address {{ account1 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account1Balance_2
-
-  - debug:
-      msg: 'Account1 balance: {{ account1Balance_2.stdout_lines[0][16:] }}'
-
-  - name: Account1 balance test
-    fail:
-     msg: "Expected the value to stay unchanged, but returned {{ account1Balance_2.stdout_lines[0][16:] }}."
-    ignore_errors: true
-    when: account1Balance_2.stdout_lines[0][16:]|int != account1Balance_1.stdout_lines[0][16:]|int
-
-  - name: Check account2 balance
-    shell: ./cli getBalance -address {{ account2 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account2Balance_2
-
-  - debug:
-      msg: 'Account2 blanace: {{ account2Balance_2.stdout_lines[0][16:] }}'
-
-  - name: Account2 balance test
-    fail:
-     msg: "Expected the value to stay unchanged, but returned {{ account2Balance_2.stdout_lines[0][16:] }}"
-    when: account2Balance_1.stdout_lines[0][16:]|int != account2Balance_2.stdout_lines[0][16:]|int
-    ignore_errors: true
-
-
-#################### Terminate playbook ####################
-  - name: Wait till async tasks terminate
-    wait_for:
-      timeout: 20
-
-  - name: Remove /go-dappley/bin All Nodes
-    shell: rm -r bin
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
-
-  - name: Remove /go-dappley/dapp/bin Node1
-    shell: rm -r bin
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Remove /go-dappley/dapp/bin Node2
-    shell: rm -r bin
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
-    when: inventory_hostname in groups['NODE2']
-
-
-
-
-
-#################### Send account.dat file to Node1 && Node2 ####################
-  - name: Accounts.dat to Node1
-    copy:
-      src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node1/accounts.dat
-      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Accounts.dat to Node2
-    copy:
-      src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node2/accounts.dat
-      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
-    when: inventory_hostname in groups['NODE2']
-
-  - name: Make build
-    make:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-      target: build
-      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
-
-
-#################### Launch blockchain ####################
-  - name: Launch node1
-    shell: ./dapp -f conf/node1.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE1']
-    async: 90
-    poll: 0
-
-  - name: Launch node2
-    shell: ./dapp -f conf/node2.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE2']
-    async: 90
-    poll: 0
-
-  - name: Launch node3
-    shell: ./dapp -f conf/node3.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE3']
-    async: 90
-    poll: 0
-
-  - name: Launch node4
-    shell: ./dapp -f conf/node4.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE4']
-    async: 90
-    poll: 0
-
-  - name: Launch node5
-    shell: ./dapp -f conf/node5.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE5']
-    async: 90
-    poll: 0
-
-  - name: Wait 10 seconds to launch blockchain
-    wait_for:
-      timeout: 10
-
-  - name: Wait til the blockchain reaches height of 10
-    shell: ./cli getBlockchainInfo
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: blockchainHeight
-    until: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int > (10)|int
-    retries: 20
-    delay: 10
-
-
-#################### SendFromMiner to account1  ####################
-  - name: Send money to account1
-    shell: ./cli sendFromMiner -to {{ account1 }} -amount 100000
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Wait 10 seconds to complete transaction
-    wait_for:
-      timeout: 10
-
-  - name: Check account1 balance
-    shell: ./cli getBalance -address {{ account1 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account1Balance
-
-  - debug:
-      msg: 'Account1 balance: {{ account1Balance.stdout_lines[0][16:] }}'
-
-  - name: Check account2 balance
-    shell: ./cli getBalance -address {{ account2 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account2Balance
-
-  - debug:
-      msg: 'Account2 blanace: {{ account2Balance.stdout_lines[0][16:] }}'
-
-
-#################### Create smart contract ####################
-  - name: Create smart contract
-    shell: ./cli send -from {{ account1 }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -file ../jslib/step_recorder.js
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: smart_contract
-    when: inventory_hostname in groups['NODE1']
-
-  - debug:
-      msg: '{{ smart_contract.stdout_lines[0][18:] }}'
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Wait 10 seconds to complete transaction
-    wait_for:
-      timeout: 10
-
-
-#################### Check account1 && account2 balance ####################
-  - name: Check account1 balance
-    shell: ./cli getBalance -address {{ account1 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account1Balance_1
-
-  - debug:
-      msg: 'Account1 balance: {{ account1Balance_1.stdout_lines[0][16:] }}'
-
-  - name: Account1 balance test
-    fail:
-     msg: "Expected the value to be less than 99900 and greater than 69900, but returned {{ account1Balance_1.stdout_lines[0][16:] }}."
-    ignore_errors: true
-    when: not account1Balance_1.stdout_lines[0][16:]|int < (100000 - 100)|int and account1Balance.stdout_lines[0][16:]|int > (100000 - 30000 - 100)|int
-
-
-  - name: Check account2 balance
-    shell: ./cli getBalance -address {{ account2 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account2Balance_1
-
-  - debug:
-      msg: 'Account2 blanace: {{ account2Balance_1.stdout_lines[0][16:] }}'
-
-  - name: Account2 balance test
-    fail:
-     msg: "Expected 0 but returned {{ account2Balance_1.stdout_lines[0][16:] }}"
-    when: account2Balance_1.stdout_lines[0][16:]|int != 0|int
-    ignore_errors: true
-
-
-#################### Estimate Gas - amount is string ####################
-  - name: Estimate Gas - amount is string
-    shell: ./cli estimateGas -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount five -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["account_2_address","5000"]}'
+#################### Estimate Gas - gasLimit is negative ####################
+  - name: Estimate Gas - gasLimit is negative
+    shell: ./cli estimateGas -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 10 -tip 0 -gasLimit -30000 -gasPrice 1 -data '{"function":"record","args":["account_2_address","5000"]}'
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: estimate_gas
@@ -878,474 +414,7 @@
   - name: Test
     fail:
       msg: "Expected an error message about the invalid value, but returned {{ estimate_gas }}"
-    when: inventory_hostname in groups['NODE1'] and estimate_gas.stderr_lines[0][:-13] != "invalid value \"five\" for flag -amount"
-    ignore_errors: true
-
-
-#################### Check account1 && account2 balance ####################
-  - name: Check account1 balance
-    shell: ./cli getBalance -address {{ account1 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account1Balance_2
-
-  - debug:
-      msg: 'Account1 balance: {{ account1Balance_2.stdout_lines[0][16:] }}'
-
-  - name: Account1 balance test
-    fail:
-     msg: "Expected the value to stay unchanged, but returned {{ account1Balance_2.stdout_lines[0][16:] }}."
-    ignore_errors: true
-    when: account1Balance_2.stdout_lines[0][16:]|int != account1Balance_1.stdout_lines[0][16:]|int
-
-  - name: Check account2 balance
-    shell: ./cli getBalance -address {{ account2 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account2Balance_2
-
-  - debug:
-      msg: 'Account2 blanace: {{ account2Balance_2.stdout_lines[0][16:] }}'
-
-  - name: Account2 balance test
-    fail:
-     msg: "Expected the value to stay unchanged, but returned {{ account2Balance_2.stdout_lines[0][16:] }}"
-    when: account2Balance_1.stdout_lines[0][16:]|int != account2Balance_2.stdout_lines[0][16:]|int
-    ignore_errors: true
-
-
-#################### Terminate playbook ####################
-  - name: Wait till async tasks terminate
-    wait_for:
-      timeout: 20
-
-  - name: Remove /go-dappley/bin All Nodes
-    shell: rm -r bin
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
-
-  - name: Remove /go-dappley/dapp/bin Node1
-    shell: rm -r bin
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Remove /go-dappley/dapp/bin Node2
-    shell: rm -r bin
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
-    when: inventory_hostname in groups['NODE2']
-
-
-
-
-
-
-#################### Send account.dat file to Node1 && Node2 ####################
-  - name: Accounts.dat to Node1
-    copy:
-      src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node1/accounts.dat
-      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Accounts.dat to Node2
-    copy:
-      src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node2/accounts.dat
-      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
-    when: inventory_hostname in groups['NODE2']
-
-  - name: Make build
-    make:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-      target: build
-      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
-
-
-#################### Launch blockchain ####################
-  - name: Launch node1
-    shell: ./dapp -f conf/node1.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE1']
-    async: 90
-    poll: 0
-
-  - name: Launch node2
-    shell: ./dapp -f conf/node2.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE2']
-    async: 90
-    poll: 0
-
-  - name: Launch node3
-    shell: ./dapp -f conf/node3.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE3']
-    async: 90
-    poll: 0
-
-  - name: Launch node4
-    shell: ./dapp -f conf/node4.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE4']
-    async: 90
-    poll: 0
-
-  - name: Launch node5
-    shell: ./dapp -f conf/node5.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE5']
-    async: 90
-    poll: 0
-
-  - name: Wait 10 seconds to launch blockchain
-    wait_for:
-      timeout: 10
-
-  - name: Wait til the blockchain reaches height of 10
-    shell: ./cli getBlockchainInfo
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: blockchainHeight
-    until: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int > (10)|int
-    retries: 20
-    delay: 10
-
-
-#################### SendFromMiner to account1  ####################
-  - name: Send money to account1
-    shell: ./cli sendFromMiner -to {{ account1 }} -amount 100000
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Wait 10 seconds to complete transaction
-    wait_for:
-      timeout: 10
-
-  - name: Check account1 balance
-    shell: ./cli getBalance -address {{ account1 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account1Balance
-
-  - debug:
-      msg: 'Account1 balance: {{ account1Balance.stdout_lines[0][16:] }}'
-
-  - name: Check account2 balance
-    shell: ./cli getBalance -address {{ account2 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account2Balance
-
-  - debug:
-      msg: 'Account2 blanace: {{ account2Balance.stdout_lines[0][16:] }}'
-
-
-#################### Create smart contract ####################
-  - name: Create smart contract
-    shell: ./cli send -from {{ account1 }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -file ../jslib/step_recorder.js
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: smart_contract
-    when: inventory_hostname in groups['NODE1']
-
-  - debug:
-      msg: '{{ smart_contract.stdout_lines[0][18:] }}'
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Wait 10 seconds to complete transaction
-    wait_for:
-      timeout: 10
-
-
-#################### Check account1 && account2 balance ####################
-  - name: Check account1 balance
-    shell: ./cli getBalance -address {{ account1 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account1Balance_1
-
-  - debug:
-      msg: 'Account1 balance: {{ account1Balance_1.stdout_lines[0][16:] }}'
-
-  - name: Account1 balance test
-    fail:
-     msg: "Expected the value to be less than 99900 and greater than 69900, but returned {{ account1Balance_1.stdout_lines[0][16:] }}."
-    ignore_errors: true
-    when: not account1Balance_1.stdout_lines[0][16:]|int < (100000 - 100)|int and account1Balance.stdout_lines[0][16:]|int > (100000 - 30000 - 100)|int
-
-
-  - name: Check account2 balance
-    shell: ./cli getBalance -address {{ account2 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account2Balance_1
-
-  - debug:
-      msg: 'Account2 blanace: {{ account2Balance_1.stdout_lines[0][16:] }}'
-
-  - name: Account2 balance test
-    fail:
-     msg: "Expected 0 but returned {{ account2Balance_1.stdout_lines[0][16:] }}"
-    when: account2Balance_1.stdout_lines[0][16:]|int != 0|int
-    ignore_errors: true
-
-
-#################### Estimate Gas - amount is special character ####################
-  - name: Estimate Gas - amount is special character
-    shell: ./cli estimateGas -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount ~`!@#$%^&*()_+=- -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["account_2_address","5000"]}'
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: estimate_gas
-    when: inventory_hostname in groups['NODE1']
-    ignore_errors: true
-
-  - debug:
-      msg: '{{ estimate_gas }}'
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Test
-    fail:
-      msg: "Program returns a critical error when the -amount argument is special characters!"
-    when: inventory_hostname in groups['NODE1'] and estimate_gas.failed
-    ignore_errors: true
-
-
-#################### Check account1 && account2 balance ####################
-  - name: Check account1 balance
-    shell: ./cli getBalance -address {{ account1 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account1Balance_2
-
-  - debug:
-      msg: 'Account1 balance: {{ account1Balance_2.stdout_lines[0][16:] }}'
-
-  - name: Account1 balance test
-    fail:
-     msg: "Expected the value to stay unchanged, but returned {{ account1Balance_2.stdout_lines[0][16:] }}."
-    ignore_errors: true
-    when: account1Balance_2.stdout_lines[0][16:]|int != account1Balance_1.stdout_lines[0][16:]|int
-
-  - name: Check account2 balance
-    shell: ./cli getBalance -address {{ account2 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account2Balance_2
-
-  - debug:
-      msg: 'Account2 blanace: {{ account2Balance_2.stdout_lines[0][16:] }}'
-
-  - name: Account2 balance test
-    fail:
-     msg: "Expected the value to stay unchanged, but returned {{ account2Balance_2.stdout_lines[0][16:] }}"
-    when: account2Balance_1.stdout_lines[0][16:]|int != account2Balance_2.stdout_lines[0][16:]|int
-    ignore_errors: true
-
-
-#################### Terminate playbook ####################
-  - name: Wait till async tasks terminate
-    wait_for:
-      timeout: 20
-
-  - name: Remove /go-dappley/bin All Nodes
-    shell: rm -r bin
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
-
-  - name: Remove /go-dappley/dapp/bin Node1
-    shell: rm -r bin
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Remove /go-dappley/dapp/bin Node2
-    shell: rm -r bin
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
-    when: inventory_hostname in groups['NODE2']
-
-
-
-
-
-
-#################### Send account.dat file to Node1 && Node2 ####################
-  - name: Accounts.dat to Node1
-    copy:
-      src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node1/accounts.dat
-      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Accounts.dat to Node2
-    copy:
-      src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node2/accounts.dat
-      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
-    when: inventory_hostname in groups['NODE2']
-
-  - name: Make build
-    make:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-      target: build
-      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
-
-
-#################### Launch blockchain ####################
-  - name: Launch node1
-    shell: ./dapp -f conf/node1.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE1']
-    async: 90
-    poll: 0
-
-  - name: Launch node2
-    shell: ./dapp -f conf/node2.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE2']
-    async: 90
-    poll: 0
-
-  - name: Launch node3
-    shell: ./dapp -f conf/node3.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE3']
-    async: 90
-    poll: 0
-
-  - name: Launch node4
-    shell: ./dapp -f conf/node4.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE4']
-    async: 90
-    poll: 0
-
-  - name: Launch node5
-    shell: ./dapp -f conf/node5.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE5']
-    async: 90
-    poll: 0
-
-  - name: Wait 10 seconds to launch blockchain
-    wait_for:
-      timeout: 10
-
-  - name: Wait til the blockchain reaches height of 10
-    shell: ./cli getBlockchainInfo
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: blockchainHeight
-    until: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int > (10)|int
-    retries: 20
-    delay: 10
-
-
-#################### SendFromMiner to account1  ####################
-  - name: Send money to account1
-    shell: ./cli sendFromMiner -to {{ account1 }} -amount 100000
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Wait 10 seconds to complete transaction
-    wait_for:
-      timeout: 10
-
-  - name: Check account1 balance
-    shell: ./cli getBalance -address {{ account1 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account1Balance
-
-  - debug:
-      msg: 'Account1 balance: {{ account1Balance.stdout_lines[0][16:] }}'
-
-  - name: Check account2 balance
-    shell: ./cli getBalance -address {{ account2 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account2Balance
-
-  - debug:
-      msg: 'Account2 blanace: {{ account2Balance.stdout_lines[0][16:] }}'
-
-
-#################### Create smart contract ####################
-  - name: Create smart contract
-    shell: ./cli send -from {{ account1 }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -file ../jslib/step_recorder.js
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: smart_contract
-    when: inventory_hostname in groups['NODE1']
-
-  - debug:
-      msg: '{{ smart_contract.stdout_lines[0][18:] }}'
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Wait 10 seconds to complete transaction
-    wait_for:
-      timeout: 10
-
-
-#################### Check account1 && account2 balance ####################
-  - name: Check account1 balance
-    shell: ./cli getBalance -address {{ account1 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account1Balance_1
-
-  - debug:
-      msg: 'Account1 balance: {{ account1Balance_1.stdout_lines[0][16:] }}'
-
-  - name: Account1 balance test
-    fail:
-     msg: "Expected the value to be less than 99900 and greater than 69900, but returned {{ account1Balance_1.stdout_lines[0][16:] }}."
-    ignore_errors: true
-    when: not account1Balance_1.stdout_lines[0][16:]|int < (100000 - 100)|int and account1Balance.stdout_lines[0][16:]|int > (100000 - 30000 - 100)|int
-
-
-  - name: Check account2 balance
-    shell: ./cli getBalance -address {{ account2 }}
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account2Balance_1
-
-  - debug:
-      msg: 'Account2 blanace: {{ account2Balance_1.stdout_lines[0][16:] }}'
-
-  - name: Account2 balance test
-    fail:
-     msg: "Expected 0 but returned {{ account2Balance_1.stdout_lines[0][16:] }}"
-    when: account2Balance_1.stdout_lines[0][16:]|int != 0|int
-    ignore_errors: true
-
-
-#################### Estimate Gas - amount is empty ####################
-  - name: Estimate Gas - amount is empty
-    shell: ./cli estimateGas -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["account_2_address","5000"]}' -amount
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: estimate_gas
-    when: inventory_hostname in groups['NODE1']
-
-  - debug:
-      msg: '{{ estimate_gas }}'
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Test
-    fail:
-      msg: "Expected an error message about the missing argument, but returned {{ estimate_gas }}"
-    when: inventory_hostname in groups['NODE1'] and estimate_gas.stderr_lines[0][:-9] != "flag needs an argument"
+    when: inventory_hostname in groups['NODE1'] and estimate_gas.stderr_lines[0][:-13] != "invalid value \"-30000\" for flag -gasLimit"
     ignore_errors: true
 
 
@@ -1562,9 +631,9 @@
     ignore_errors: true
 
 
-#################### Estimate Gas - amount is equal to the balance ####################
-  - name: Estimate Gas - amount is equal to the balance
-    shell: ./cli estimateGas -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount {{ account1Balance_1.stdout_lines[0][16:] }} -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["account_2_address","5000"]}'
+#################### Estimate Gas - gasLimit is over balance ####################
+  - name: Estimate Gas - gasLimit is over balance
+    shell: ./cli estimateGas -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 10 -tip 0 -gasLimit 300000 -gasPrice 1 -data '{"function":"record","args":["account_2_address","5000"]}'
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: estimate_gas
@@ -1578,6 +647,1168 @@
     fail:
       msg: "Expected an error message about the insufficient balance, but returned {{ estimate_gas }}"
     when: inventory_hostname in groups['NODE1'] and estimate_gas.stdout_lines[0][:18] == "Gas estimiated num"
+    ignore_errors: true
+
+
+#################### Check account1 && account2 balance ####################
+  - name: Check account1 balance
+    shell: ./cli getBalance -address {{ account1 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account1Balance_2
+
+  - debug:
+      msg: 'Account1 balance: {{ account1Balance_2.stdout_lines[0][16:] }}'
+
+  - name: Account1 balance test
+    fail:
+     msg: "Expected the value to stay unchanged, but returned {{ account1Balance_2.stdout_lines[0][16:] }}."
+    ignore_errors: true
+    when: account1Balance_2.stdout_lines[0][16:]|int != account1Balance_1.stdout_lines[0][16:]|int
+
+  - name: Check account2 balance
+    shell: ./cli getBalance -address {{ account2 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account2Balance_2
+
+  - debug:
+      msg: 'Account2 blanace: {{ account2Balance_2.stdout_lines[0][16:] }}'
+
+  - name: Account2 balance test
+    fail:
+     msg: "Expected the value to stay unchanged, but returned {{ account2Balance_2.stdout_lines[0][16:] }}"
+    when: account2Balance_1.stdout_lines[0][16:]|int != account2Balance_2.stdout_lines[0][16:]|int
+    ignore_errors: true
+
+
+#################### Terminate playbook ####################
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 20
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+
+  - name: Remove /go-dappley/dapp/bin Node1
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Remove /go-dappley/dapp/bin Node2
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
+    when: inventory_hostname in groups['NODE2']
+
+
+
+
+
+#################### Send account.dat file to Node1 && Node2 ####################
+  - name: Accounts.dat to Node1
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node1/accounts.dat
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Accounts.dat to Node2
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node2/accounts.dat
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+#################### Launch blockchain ####################
+  - name: Launch node1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 90
+    poll: 0
+
+  - name: Launch node2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 90
+    poll: 0
+
+  - name: Launch node3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 90
+    poll: 0
+
+  - name: Launch node4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 90
+    poll: 0
+
+  - name: Launch node5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 90
+    poll: 0
+
+  - name: Wait 10 seconds to launch blockchain
+    wait_for:
+      timeout: 10
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int > (10)|int
+    retries: 20
+    delay: 10
+
+
+#################### SendFromMiner to account1  ####################
+  - name: Send money to account1
+    shell: ./cli sendFromMiner -to {{ account1 }} -amount 100000
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Wait 10 seconds to complete transaction
+    wait_for:
+      timeout: 10
+
+  - name: Check account1 balance
+    shell: ./cli getBalance -address {{ account1 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account1Balance
+
+  - debug:
+      msg: 'Account1 balance: {{ account1Balance.stdout_lines[0][16:] }}'
+
+  - name: Check account2 balance
+    shell: ./cli getBalance -address {{ account2 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account2Balance
+
+  - debug:
+      msg: 'Account2 blanace: {{ account2Balance.stdout_lines[0][16:] }}'
+
+
+#################### Create smart contract ####################
+  - name: Create smart contract
+    shell: ./cli send -from {{ account1 }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -file ../jslib/step_recorder.js
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: smart_contract
+    when: inventory_hostname in groups['NODE1']
+
+  - debug:
+      msg: '{{ smart_contract.stdout_lines[0][18:] }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Wait 10 seconds to complete transaction
+    wait_for:
+      timeout: 10
+
+
+#################### Check account1 && account2 balance ####################
+  - name: Check account1 balance
+    shell: ./cli getBalance -address {{ account1 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account1Balance_1
+
+  - debug:
+      msg: 'Account1 balance: {{ account1Balance_1.stdout_lines[0][16:] }}'
+
+  - name: Account1 balance test
+    fail:
+     msg: "Expected the value to be less than 99900 and greater than 69900, but returned {{ account1Balance_1.stdout_lines[0][16:] }}."
+    ignore_errors: true
+    when: not account1Balance_1.stdout_lines[0][16:]|int < (100000 - 100)|int and account1Balance.stdout_lines[0][16:]|int > (100000 - 30000 - 100)|int
+
+
+  - name: Check account2 balance
+    shell: ./cli getBalance -address {{ account2 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account2Balance_1
+
+  - debug:
+      msg: 'Account2 blanace: {{ account2Balance_1.stdout_lines[0][16:] }}'
+
+  - name: Account2 balance test
+    fail:
+     msg: "Expected 0 but returned {{ account2Balance_1.stdout_lines[0][16:] }}"
+    when: account2Balance_1.stdout_lines[0][16:]|int != 0|int
+    ignore_errors: true
+
+
+#################### Estimate Gas - gasLimit is insufficient ####################
+  - name: Estimate Gas - gasLimit is insufficient
+    shell: ./cli estimateGas -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 10 -tip 0 -gasLimit 1000 -gasPrice 1 -data '{"function":"record","args":["account_2_address","5000"]}'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: estimate_gas
+    when: inventory_hostname in groups['NODE1']
+
+  - debug:
+      msg: '{{ estimate_gas }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Test
+    fail:
+      msg: "Expected an error message about the insufficient gasLimit, but returned {{ estimate_gas }}"
+    when: inventory_hostname in groups['NODE1'] and estimate_gas.stdout_lines[0][:18] == "Gas estimiated num"
+    ignore_errors: true
+
+
+#################### Check account1 && account2 balance ####################
+  - name: Check account1 balance
+    shell: ./cli getBalance -address {{ account1 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account1Balance_2
+
+  - debug:
+      msg: 'Account1 balance: {{ account1Balance_2.stdout_lines[0][16:] }}'
+
+  - name: Account1 balance test
+    fail:
+     msg: "Expected the value to stay unchanged, but returned {{ account1Balance_2.stdout_lines[0][16:] }}."
+    ignore_errors: true
+    when: account1Balance_2.stdout_lines[0][16:]|int != account1Balance_1.stdout_lines[0][16:]|int
+
+  - name: Check account2 balance
+    shell: ./cli getBalance -address {{ account2 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account2Balance_2
+
+  - debug:
+      msg: 'Account2 blanace: {{ account2Balance_2.stdout_lines[0][16:] }}'
+
+  - name: Account2 balance test
+    fail:
+     msg: "Expected the value to stay unchanged, but returned {{ account2Balance_2.stdout_lines[0][16:] }}"
+    when: account2Balance_1.stdout_lines[0][16:]|int != account2Balance_2.stdout_lines[0][16:]|int
+    ignore_errors: true
+
+
+#################### Terminate playbook ####################
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 20
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+
+  - name: Remove /go-dappley/dapp/bin Node1
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Remove /go-dappley/dapp/bin Node2
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
+    when: inventory_hostname in groups['NODE2']
+
+
+
+
+
+#################### Send account.dat file to Node1 && Node2 ####################
+  - name: Accounts.dat to Node1
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node1/accounts.dat
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Accounts.dat to Node2
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node2/accounts.dat
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+#################### Launch blockchain ####################
+  - name: Launch node1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 90
+    poll: 0
+
+  - name: Launch node2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 90
+    poll: 0
+
+  - name: Launch node3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 90
+    poll: 0
+
+  - name: Launch node4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 90
+    poll: 0
+
+  - name: Launch node5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 90
+    poll: 0
+
+  - name: Wait 10 seconds to launch blockchain
+    wait_for:
+      timeout: 10
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int > (10)|int
+    retries: 20
+    delay: 10
+
+
+#################### SendFromMiner to account1  ####################
+  - name: Send money to account1
+    shell: ./cli sendFromMiner -to {{ account1 }} -amount 100000
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Wait 10 seconds to complete transaction
+    wait_for:
+      timeout: 10
+
+  - name: Check account1 balance
+    shell: ./cli getBalance -address {{ account1 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account1Balance
+
+  - debug:
+      msg: 'Account1 balance: {{ account1Balance.stdout_lines[0][16:] }}'
+
+  - name: Check account2 balance
+    shell: ./cli getBalance -address {{ account2 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account2Balance
+
+  - debug:
+      msg: 'Account2 blanace: {{ account2Balance.stdout_lines[0][16:] }}'
+
+
+#################### Create smart contract ####################
+  - name: Create smart contract
+    shell: ./cli send -from {{ account1 }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -file ../jslib/step_recorder.js
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: smart_contract
+    when: inventory_hostname in groups['NODE1']
+
+  - debug:
+      msg: '{{ smart_contract.stdout_lines[0][18:] }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Wait 10 seconds to complete transaction
+    wait_for:
+      timeout: 10
+
+
+#################### Check account1 && account2 balance ####################
+  - name: Check account1 balance
+    shell: ./cli getBalance -address {{ account1 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account1Balance_1
+
+  - debug:
+      msg: 'Account1 balance: {{ account1Balance_1.stdout_lines[0][16:] }}'
+
+  - name: Account1 balance test
+    fail:
+     msg: "Expected the value to be less than 99900 and greater than 69900, but returned {{ account1Balance_1.stdout_lines[0][16:] }}."
+    ignore_errors: true
+    when: not account1Balance_1.stdout_lines[0][16:]|int < (100000 - 100)|int and account1Balance.stdout_lines[0][16:]|int > (100000 - 30000 - 100)|int
+
+
+  - name: Check account2 balance
+    shell: ./cli getBalance -address {{ account2 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account2Balance_1
+
+  - debug:
+      msg: 'Account2 blanace: {{ account2Balance_1.stdout_lines[0][16:] }}'
+
+  - name: Account2 balance test
+    fail:
+     msg: "Expected 0 but returned {{ account2Balance_1.stdout_lines[0][16:] }}"
+    when: account2Balance_1.stdout_lines[0][16:]|int != 0|int
+    ignore_errors: true
+
+
+#################### Estimate Gas - gasLimit is string ####################
+  - name: Estimate Gas - gasLimit is string
+    shell: ./cli estimateGas -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 10 -tip 0 -gasLimit five -gasPrice 1 -data '{"function":"record","args":["account_2_address","5000"]}'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: estimate_gas
+    when: inventory_hostname in groups['NODE1']
+
+  - debug:
+      msg: '{{ estimate_gas }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Test
+    fail:
+      msg: "Expected an error message about the invalid -gasLimit input, but returned {{ estimate_gas }}"
+    when: inventory_hostname in groups['NODE1'] and estimate_gas.stderr_lines[0][:-13] != "invalid value \"five\" for flag -gasLimit"
+    ignore_errors: true
+
+
+#################### Check account1 && account2 balance ####################
+  - name: Check account1 balance
+    shell: ./cli getBalance -address {{ account1 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account1Balance_2
+
+  - debug:
+      msg: 'Account1 balance: {{ account1Balance_2.stdout_lines[0][16:] }}'
+
+  - name: Account1 balance test
+    fail:
+     msg: "Expected the value to stay unchanged, but returned {{ account1Balance_2.stdout_lines[0][16:] }}."
+    ignore_errors: true
+    when: account1Balance_2.stdout_lines[0][16:]|int != account1Balance_1.stdout_lines[0][16:]|int
+
+  - name: Check account2 balance
+    shell: ./cli getBalance -address {{ account2 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account2Balance_2
+
+  - debug:
+      msg: 'Account2 blanace: {{ account2Balance_2.stdout_lines[0][16:] }}'
+
+  - name: Account2 balance test
+    fail:
+     msg: "Expected the value to stay unchanged, but returned {{ account2Balance_2.stdout_lines[0][16:] }}"
+    when: account2Balance_1.stdout_lines[0][16:]|int != account2Balance_2.stdout_lines[0][16:]|int
+    ignore_errors: true
+
+
+#################### Terminate playbook ####################
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 20
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+
+  - name: Remove /go-dappley/dapp/bin Node1
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Remove /go-dappley/dapp/bin Node2
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
+    when: inventory_hostname in groups['NODE2']
+
+
+
+
+
+
+#################### Send account.dat file to Node1 && Node2 ####################
+  - name: Accounts.dat to Node1
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node1/accounts.dat
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Accounts.dat to Node2
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node2/accounts.dat
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+#################### Launch blockchain ####################
+  - name: Launch node1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 90
+    poll: 0
+
+  - name: Launch node2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 90
+    poll: 0
+
+  - name: Launch node3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 90
+    poll: 0
+
+  - name: Launch node4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 90
+    poll: 0
+
+  - name: Launch node5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 90
+    poll: 0
+
+  - name: Wait 10 seconds to launch blockchain
+    wait_for:
+      timeout: 10
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int > (10)|int
+    retries: 20
+    delay: 10
+
+
+#################### SendFromMiner to account1  ####################
+  - name: Send money to account1
+    shell: ./cli sendFromMiner -to {{ account1 }} -amount 100000
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Wait 10 seconds to complete transaction
+    wait_for:
+      timeout: 10
+
+  - name: Check account1 balance
+    shell: ./cli getBalance -address {{ account1 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account1Balance
+
+  - debug:
+      msg: 'Account1 balance: {{ account1Balance.stdout_lines[0][16:] }}'
+
+  - name: Check account2 balance
+    shell: ./cli getBalance -address {{ account2 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account2Balance
+
+  - debug:
+      msg: 'Account2 blanace: {{ account2Balance.stdout_lines[0][16:] }}'
+
+
+#################### Create smart contract ####################
+  - name: Create smart contract
+    shell: ./cli send -from {{ account1 }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -file ../jslib/step_recorder.js
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: smart_contract
+    when: inventory_hostname in groups['NODE1']
+
+  - debug:
+      msg: '{{ smart_contract.stdout_lines[0][18:] }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Wait 10 seconds to complete transaction
+    wait_for:
+      timeout: 10
+
+
+#################### Check account1 && account2 balance ####################
+  - name: Check account1 balance
+    shell: ./cli getBalance -address {{ account1 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account1Balance_1
+
+  - debug:
+      msg: 'Account1 balance: {{ account1Balance_1.stdout_lines[0][16:] }}'
+
+  - name: Account1 balance test
+    fail:
+     msg: "Expected the value to be less than 99900 and greater than 69900, but returned {{ account1Balance_1.stdout_lines[0][16:] }}."
+    ignore_errors: true
+    when: not account1Balance_1.stdout_lines[0][16:]|int < (100000 - 100)|int and account1Balance.stdout_lines[0][16:]|int > (100000 - 30000 - 100)|int
+
+
+  - name: Check account2 balance
+    shell: ./cli getBalance -address {{ account2 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account2Balance_1
+
+  - debug:
+      msg: 'Account2 blanace: {{ account2Balance_1.stdout_lines[0][16:] }}'
+
+  - name: Account2 balance test
+    fail:
+     msg: "Expected 0 but returned {{ account2Balance_1.stdout_lines[0][16:] }}"
+    when: account2Balance_1.stdout_lines[0][16:]|int != 0|int
+    ignore_errors: true
+
+
+#################### Estimate Gas - gasLimit is special character ####################
+  - name: Estimate Gas - gasLimit is special character
+    shell: ./cli estimateGas -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 10 -tip 0 -gasLimit ~`!@#$%^&*()_+=- -gasPrice 1 -data '{"function":"record","args":["account_2_address","5000"]}'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: estimate_gas
+    when: inventory_hostname in groups['NODE1']
+    ignore_errors: true
+
+  - debug:
+      msg: '{{ estimate_gas }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Test
+    fail:
+      msg: "Program returns a critical error when the -gasLimit argument is special characters!"
+    when: inventory_hostname in groups['NODE1'] and estimate_gas.failed
+    ignore_errors: true
+
+
+#################### Check account1 && account2 balance ####################
+  - name: Check account1 balance
+    shell: ./cli getBalance -address {{ account1 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account1Balance_2
+
+  - debug:
+      msg: 'Account1 balance: {{ account1Balance_2.stdout_lines[0][16:] }}'
+
+  - name: Account1 balance test
+    fail:
+     msg: "Expected the value to stay unchanged, but returned {{ account1Balance_2.stdout_lines[0][16:] }}."
+    ignore_errors: true
+    when: account1Balance_2.stdout_lines[0][16:]|int != account1Balance_1.stdout_lines[0][16:]|int
+
+  - name: Check account2 balance
+    shell: ./cli getBalance -address {{ account2 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account2Balance_2
+
+  - debug:
+      msg: 'Account2 blanace: {{ account2Balance_2.stdout_lines[0][16:] }}'
+
+  - name: Account2 balance test
+    fail:
+     msg: "Expected the value to stay unchanged, but returned {{ account2Balance_2.stdout_lines[0][16:] }}"
+    when: account2Balance_1.stdout_lines[0][16:]|int != account2Balance_2.stdout_lines[0][16:]|int
+    ignore_errors: true
+
+
+#################### Terminate playbook ####################
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 20
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+
+  - name: Remove /go-dappley/dapp/bin Node1
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Remove /go-dappley/dapp/bin Node2
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
+    when: inventory_hostname in groups['NODE2']
+
+
+
+
+
+#################### Send account.dat file to Node1 && Node2 ####################
+  - name: Accounts.dat to Node1
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node1/accounts.dat
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Accounts.dat to Node2
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node2/accounts.dat
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+#################### Launch blockchain ####################
+  - name: Launch node1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 90
+    poll: 0
+
+  - name: Launch node2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 90
+    poll: 0
+
+  - name: Launch node3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 90
+    poll: 0
+
+  - name: Launch node4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 90
+    poll: 0
+
+  - name: Launch node5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 90
+    poll: 0
+
+  - name: Wait 10 seconds to launch blockchain
+    wait_for:
+      timeout: 10
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int > (10)|int
+    retries: 20
+    delay: 10
+
+
+#################### SendFromMiner to account1  ####################
+  - name: Send money to account1
+    shell: ./cli sendFromMiner -to {{ account1 }} -amount 100000
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Wait 10 seconds to complete transaction
+    wait_for:
+      timeout: 10
+
+  - name: Check account1 balance
+    shell: ./cli getBalance -address {{ account1 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account1Balance
+
+  - debug:
+      msg: 'Account1 balance: {{ account1Balance.stdout_lines[0][16:] }}'
+
+  - name: Check account2 balance
+    shell: ./cli getBalance -address {{ account2 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account2Balance
+
+  - debug:
+      msg: 'Account2 blanace: {{ account2Balance.stdout_lines[0][16:] }}'
+
+
+#################### Create smart contract ####################
+  - name: Create smart contract
+    shell: ./cli send -from {{ account1 }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -file ../jslib/step_recorder.js
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: smart_contract
+    when: inventory_hostname in groups['NODE1']
+
+  - debug:
+      msg: '{{ smart_contract.stdout_lines[0][18:] }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Wait 10 seconds to complete transaction
+    wait_for:
+      timeout: 10
+
+
+#################### Check account1 && account2 balance ####################
+  - name: Check account1 balance
+    shell: ./cli getBalance -address {{ account1 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account1Balance_1
+
+  - debug:
+      msg: 'Account1 balance: {{ account1Balance_1.stdout_lines[0][16:] }}'
+
+  - name: Account1 balance test
+    fail:
+     msg: "Expected the value to be less than 99900 and greater than 69900, but returned {{ account1Balance_1.stdout_lines[0][16:] }}."
+    ignore_errors: true
+    when: not account1Balance_1.stdout_lines[0][16:]|int < (100000 - 100)|int and account1Balance.stdout_lines[0][16:]|int > (100000 - 30000 - 100)|int
+
+
+  - name: Check account2 balance
+    shell: ./cli getBalance -address {{ account2 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account2Balance_1
+
+  - debug:
+      msg: 'Account2 blanace: {{ account2Balance_1.stdout_lines[0][16:] }}'
+
+  - name: Account2 balance test
+    fail:
+     msg: "Expected 0 but returned {{ account2Balance_1.stdout_lines[0][16:] }}"
+    when: account2Balance_1.stdout_lines[0][16:]|int != 0|int
+    ignore_errors: true
+
+
+#################### Estimate Gas - gasLimit is equal to balance ####################
+  - name: Estimate Gas - gasLimit is equal to balance
+    shell: ./cli estimateGas -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 10 -tip 0 -gasLimit {{ account1Balance_1.stdout_lines[0][16:] }} -gasPrice 1 -data '{"function":"record","args":["account_2_address","5000"]}'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: estimate_gas
+    when: inventory_hostname in groups['NODE1']
+
+  - debug:
+      msg: '{{ estimate_gas }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Test
+    fail:
+      msg: "Expected an error message about the insufficient balance, but returned {{ estimate_gas }}"
+    when: inventory_hostname in groups['NODE1'] and estimate_gas.stdout_lines[0][:18] == "Gas estimiated num"
+    ignore_errors: true
+
+
+#################### Check account1 && account2 balance ####################
+  - name: Check account1 balance
+    shell: ./cli getBalance -address {{ account1 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account1Balance_2
+
+  - debug:
+      msg: 'Account1 balance: {{ account1Balance_2.stdout_lines[0][16:] }}'
+
+  - name: Account1 balance test
+    fail:
+     msg: "Expected the value to stay unchanged, but returned {{ account1Balance_2.stdout_lines[0][16:] }}."
+    ignore_errors: true
+    when: account1Balance_2.stdout_lines[0][16:]|int != account1Balance_1.stdout_lines[0][16:]|int
+
+  - name: Check account2 balance
+    shell: ./cli getBalance -address {{ account2 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account2Balance_2
+
+  - debug:
+      msg: 'Account2 blanace: {{ account2Balance_2.stdout_lines[0][16:] }}'
+
+  - name: Account2 balance test
+    fail:
+     msg: "Expected the value to stay unchanged, but returned {{ account2Balance_2.stdout_lines[0][16:] }}"
+    when: account2Balance_1.stdout_lines[0][16:]|int != account2Balance_2.stdout_lines[0][16:]|int
+    ignore_errors: true
+
+
+#################### Terminate playbook ####################
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 20
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+
+  - name: Remove /go-dappley/dapp/bin Node1
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Remove /go-dappley/dapp/bin Node2
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
+    when: inventory_hostname in groups['NODE2']
+
+
+
+
+
+#################### Send account.dat file to Node1 && Node2 ####################
+  - name: Accounts.dat to Node1
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node1/accounts.dat
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Accounts.dat to Node2
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node2/accounts.dat
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+#################### Launch blockchain ####################
+  - name: Launch node1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 90
+    poll: 0
+
+  - name: Launch node2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 90
+    poll: 0
+
+  - name: Launch node3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 90
+    poll: 0
+
+  - name: Launch node4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 90
+    poll: 0
+
+  - name: Launch node5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 90
+    poll: 0
+
+  - name: Wait 10 seconds to launch blockchain
+    wait_for:
+      timeout: 10
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int > (10)|int
+    retries: 20
+    delay: 10
+
+
+#################### SendFromMiner to account1  ####################
+  - name: Send money to account1
+    shell: ./cli sendFromMiner -to {{ account1 }} -amount 100000
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Wait 10 seconds to complete transaction
+    wait_for:
+      timeout: 10
+
+  - name: Check account1 balance
+    shell: ./cli getBalance -address {{ account1 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account1Balance
+
+  - debug:
+      msg: 'Account1 balance: {{ account1Balance.stdout_lines[0][16:] }}'
+
+  - name: Check account2 balance
+    shell: ./cli getBalance -address {{ account2 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account2Balance
+
+  - debug:
+      msg: 'Account2 blanace: {{ account2Balance.stdout_lines[0][16:] }}'
+
+
+#################### Create smart contract ####################
+  - name: Create smart contract
+    shell: ./cli send -from {{ account1 }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -file ../jslib/step_recorder.js
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: smart_contract
+    when: inventory_hostname in groups['NODE1']
+
+  - debug:
+      msg: '{{ smart_contract.stdout_lines[0][18:] }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Wait 10 seconds to complete transaction
+    wait_for:
+      timeout: 10
+
+
+#################### Check account1 && account2 balance ####################
+  - name: Check account1 balance
+    shell: ./cli getBalance -address {{ account1 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account1Balance_1
+
+  - debug:
+      msg: 'Account1 balance: {{ account1Balance_1.stdout_lines[0][16:] }}'
+
+  - name: Account1 balance test
+    fail:
+     msg: "Expected the value to be less than 99900 and greater than 69900, but returned {{ account1Balance_1.stdout_lines[0][16:] }}."
+    ignore_errors: true
+    when: not account1Balance_1.stdout_lines[0][16:]|int < (100000 - 100)|int and account1Balance.stdout_lines[0][16:]|int > (100000 - 30000 - 100)|int
+
+
+  - name: Check account2 balance
+    shell: ./cli getBalance -address {{ account2 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account2Balance_1
+
+  - debug:
+      msg: 'Account2 blanace: {{ account2Balance_1.stdout_lines[0][16:] }}'
+
+  - name: Account2 balance test
+    fail:
+     msg: "Expected 0 but returned {{ account2Balance_1.stdout_lines[0][16:] }}"
+    when: account2Balance_1.stdout_lines[0][16:]|int != 0|int
+    ignore_errors: true
+
+
+#################### Estimate Gas - gasLimit is empty ####################
+  - name: Estimate Gas - gasLimit is empty
+    shell: ./cli estimateGas -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount 10 -tip 0 -gasPrice 1 -data '{"function":"record","args":["account_2_address","5000"]}' -gasLimit
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: estimate_gas
+    when: inventory_hostname in groups['NODE1']
+
+  - debug:
+      msg: '{{ estimate_gas }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Test
+    fail:
+      msg: "Expected an error message about the missing argument, but returned {{ estimate_gas }}"
+    when: inventory_hostname in groups['NODE1'] and estimate_gas.stderr_lines[0][:-11] != "flag needs an argument"
     ignore_errors: true
 
 

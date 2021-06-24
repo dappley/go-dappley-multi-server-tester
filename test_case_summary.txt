@@ -161,6 +161,7 @@ EstimateGas Test Cases:
         4. amount is string
         5. amount is special character
         6. amount is empty
+        7. amount is equal to balance
 
     - Invalid tip
         1. tip is 0
@@ -169,6 +170,7 @@ EstimateGas Test Cases:
         4. tip is string
         5. tip is special character
         6. tip is empty
+        7. tip is equal to balance
 
     - Invalid gasLimit
         1. gasLimit is 0
