@@ -199,7 +199,7 @@ EstimateGas Test Cases:
         6. data amount is empty 1
         7. data amount is empty 2
         8. data address is invalid
-        9. data address is valid but doesn't exist
+        9. data address is valid but no accounts.dat
         10. data address is empty 1
         11. data address is empty 2
         12. data arguments are invalid
