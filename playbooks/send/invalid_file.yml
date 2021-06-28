@@ -116,31 +116,31 @@
     shell: ./cli getBalance -address {{ account1 }}
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account1Balance
+    register: account1Balance_1
 
   - debug:
-      msg: '{{ account1Balance.stdout }}'
+      msg: '{{ account1Balance_1.stdout }}'
 
   - name: Account1 balance test
     fail:
-     msg: "Expected the account balance to be 100000, but returned {{ account1Balance.stdout_lines[0][16:] }}."
+     msg: "Expected the account balance to be 100000, but returned {{ account1Balance_1.stdout_lines[0][16:] }}."
     ignore_errors: true
-    when: account1Balance.stdout_lines[0][16:]|int != 100000|int
+    when: account1Balance_1.stdout_lines[0][16:]|int != 100000|int
 
   - name: Check account2 balance
     shell: ./cli getBalance -address {{ account2 }}
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account2Balance
+    register: account2Balance_1
 
   - debug:
-      msg: '{{ account2Balance.stdout }}'
+      msg: '{{ account2Balance_1.stdout }}'
 
   - name: Account2 balance test
     fail:
-     msg: "Expected the account balance to be 0, but returned {{ account2Balance.stdout_lines[0][16:] }}."
+     msg: "Expected the account balance to be 0, but returned {{ account2Balance_1.stdout_lines[0][16:] }}."
     ignore_errors: true
-    when: account2Balance.stdout_lines[0][16:]|int != 0|int
+    when: account2Balance_1.stdout_lines[0][16:]|int != 0|int
 
 
 #################### Create Smart Contract with an invalid file ####################
@@ -166,36 +166,36 @@
       timeout: 10
 
 
-#################### Check account balance ####################
+#################### Check account1 && account2 balance ####################
   - name: Check account1 balance
     shell: ./cli getBalance -address {{ account1 }}
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account1Balance_new
+    register: account1Balance_2
 
   - debug:
-      msg: '{{ account1Balance_new.stdout }}'
+      msg: 'Account1 balance: {{ account1Balance_2.stdout_lines[0][16:] }}'
 
   - name: Account1 balance test
     fail:
-     msg: "Expected the account balance to be {{ account1Balance.stdout_lines[0][16:] }}, but returned {{ account1Balance_new.stdout_lines[0][16:] }}."
+     msg: "Expected the value to be {{ account1Balance_1.stdout_lines[0][16:]|int }}, but returned {{ account1Balance_2.stdout_lines[0][16:] }}."
     ignore_errors: true
-    when: account1Balance_new.stdout_lines[0][16:]|int != account1Balance.stdout_lines[0][16:]|int
+    when: account1Balance_2.stdout_lines[0][16:]|int != account1Balance_1.stdout_lines[0][16:]|int
 
   - name: Check account2 balance
     shell: ./cli getBalance -address {{ account2 }}
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account2Balance_new
+    register: account2Balance_2
 
   - debug:
-      msg: '{{ account2Balance_new.stdout }}'
+      msg: 'Account2 blanace: {{ account2Balance_2.stdout_lines[0][16:] }}'
 
   - name: Account2 balance test
     fail:
-     msg: "Expected the account balance to be {{ account2Balance.stdout_lines[0][16:] }}, but returned {{ account2Balance_new.stdout_lines[0][16:] }}."
+     msg: "Expected {{ account2Balance_1.stdout_lines[0][16:]|int }} but returned {{ account2Balance_2.stdout_lines[0][16:] }}"
+    when: account2Balance_2.stdout_lines[0][16:]|int != account2Balance_1.stdout_lines[0][16:]|int
     ignore_errors: true
-    when: account2Balance_new.stdout_lines[0][16:]|int != account2Balance.stdout_lines[0][16:]|int
 
 
 #################### Terminate ####################
@@ -328,31 +328,31 @@
     shell: ./cli getBalance -address {{ account1 }}
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account1Balance
+    register: account1Balance_1
 
   - debug:
-      msg: '{{ account1Balance.stdout }}'
+      msg: '{{ account1Balance_1.stdout }}'
 
   - name: Account1 balance test
     fail:
-     msg: "Expected the account balance to be 100000, but returned {{ account1Balance.stdout_lines[0][16:] }}."
+     msg: "Expected the account balance to be 100000, but returned {{ account1Balance_1.stdout_lines[0][16:] }}."
     ignore_errors: true
-    when: account1Balance.stdout_lines[0][16:]|int != 100000|int
+    when: account1Balance_1.stdout_lines[0][16:]|int != 100000|int
 
   - name: Check account2 balance
     shell: ./cli getBalance -address {{ account2 }}
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account2Balance
+    register: account2Balance_1
 
   - debug:
-      msg: '{{ account2Balance.stdout }}'
+      msg: '{{ account2Balance_1.stdout }}'
 
   - name: Account2 balance test
     fail:
-     msg: "Expected the account balance to be 0, but returned {{ account2Balance.stdout_lines[0][16:] }}."
+     msg: "Expected the account balance to be 0, but returned {{ account2Balance_1.stdout_lines[0][16:] }}."
     ignore_errors: true
-    when: account2Balance.stdout_lines[0][16:]|int != 0|int
+    when: account2Balance_1.stdout_lines[0][16:]|int != 0|int
 
 
 #################### Create Smart Contract without the file argument ####################
@@ -378,36 +378,36 @@
       timeout: 10
 
 
-#################### Check account balance ####################
+#################### Check account1 && account2 balance ####################
   - name: Check account1 balance
     shell: ./cli getBalance -address {{ account1 }}
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account1Balance_new
+    register: account1Balance_2
 
   - debug:
-      msg: '{{ account1Balance_new.stdout }}'
+      msg: 'Account1 balance: {{ account1Balance_2.stdout_lines[0][16:] }}'
 
   - name: Account1 balance test
     fail:
-     msg: "Expected the account balance to be {{ account1Balance.stdout_lines[0][16:] }}, but returned {{ account1Balance_new.stdout_lines[0][16:] }}."
+     msg: "Expected the value to be {{ account1Balance_1.stdout_lines[0][16:]|int }}, but returned {{ account1Balance_2.stdout_lines[0][16:] }}."
     ignore_errors: true
-    when: account1Balance_new.stdout_lines[0][16:]|int != account1Balance.stdout_lines[0][16:]|int
+    when: account1Balance_2.stdout_lines[0][16:]|int != account1Balance_1.stdout_lines[0][16:]|int
 
   - name: Check account2 balance
     shell: ./cli getBalance -address {{ account2 }}
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: account2Balance_new
+    register: account2Balance_2
 
   - debug:
-      msg: '{{ account2Balance_new.stdout }}'
+      msg: 'Account2 blanace: {{ account2Balance_2.stdout_lines[0][16:] }}'
 
   - name: Account2 balance test
     fail:
-     msg: "Expected the account balance to be {{ account2Balance.stdout_lines[0][16:] }}, but returned {{ account2Balance_new.stdout_lines[0][16:] }}."
+     msg: "Expected {{ account2Balance_1.stdout_lines[0][16:]|int }} but returned {{ account2Balance_2.stdout_lines[0][16:] }}"
+    when: account2Balance_2.stdout_lines[0][16:]|int != account2Balance_1.stdout_lines[0][16:]|int
     ignore_errors: true
-    when: account2Balance_new.stdout_lines[0][16:]|int != account2Balance.stdout_lines[0][16:]|int
 
 
 #################### Terminate ####################
