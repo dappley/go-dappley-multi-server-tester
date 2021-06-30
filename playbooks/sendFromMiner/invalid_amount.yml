@@ -15,7 +15,7 @@
 #################### Send Accounts.dat ####################
   - name: Copy accounts.dat to NODE1
     copy:
-      src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node1/accounts.dat
+      src: ./accounts/node1/accounts.dat
       dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
     when: inventory_hostname in groups['NODE1']
 
@@ -172,7 +172,7 @@
 #################### Send Accounts.dat ####################
   - name: Copy accounts.dat to NODE1
     copy:
-      src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node1/accounts.dat
+      src: ./accounts/node1/accounts.dat
       dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
     when: inventory_hostname in groups['NODE1']
 
@@ -314,7 +314,7 @@
 #################### Send Accounts.dat ####################
   - name: Copy accounts.dat to NODE1
     copy:
-      src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node1/accounts.dat
+      src: ./accounts/node1/accounts.dat
       dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
     when: inventory_hostname in groups['NODE1']
 
@@ -457,7 +457,7 @@
 #################### Send Accounts.dat ####################
   - name: Copy accounts.dat to NODE1
     copy:
-      src: /var/lib/jenkins/workspace/go-dappley-ansible-accounts/node1/accounts.dat
+      src: ./accounts/node1/accounts.dat
       dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
     when: inventory_hostname in groups['NODE1']
 

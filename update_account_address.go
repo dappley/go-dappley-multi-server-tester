@@ -12,7 +12,7 @@ import (
 func Update_address(playbooks []string) {
 	var account_addresses []string
 	for i := 1; i <= 5; i++ {
-		account_address, err := ioutil.ReadFile("../go-dappley-ansible-accounts/node" + strconv.Itoa(i) + "/account_address.txt")
+		account_address, err := ioutil.ReadFile("./accounts/node" + strconv.Itoa(i) + "/account_address.txt")
 		if err != nil {
 			fmt.Println("Failed to read account" + strconv.Itoa(i) + "'s address!")
 			continue
