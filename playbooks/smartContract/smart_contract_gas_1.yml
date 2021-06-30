@@ -15,13 +15,13 @@
 #################### Send account.dat file to Node1 && Node2 ####################
   - name: Accounts.dat to Node1
     copy:
-      src: ./accounts/node1/accounts.dat
+      src: /var/lib/jenkins/workspace/go-dappley-ansible/accounts/node1/accounts.dat
       dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
     when: inventory_hostname in groups['NODE1']
 
   - name: Accounts.dat to Node2
     copy:
-      src: ./accounts/node2/accounts.dat
+      src: /var/lib/jenkins/workspace/go-dappley-ansible/accounts/node2/accounts.dat
       dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
     when: inventory_hostname in groups['NODE2']
 
