@@ -1,0 +1,110 @@
+---
+
+- hosts: all
+  become: true
+  become_user: ubuntu
+  environment:
+    GOPATH: "/home/ubuntu/go"
+    GOROOT: "/usr/local/go"
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin"
+  vars:
+    peerID1: peer_ID_1
+    peerID2: peer_ID_2
+    peerID3: peer_ID_3
+    peerID4: peer_ID_4
+    peerID5: peer_ID_5
+
+  tasks:
+#################### Make build ####################
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+#################### Launch Blockchain ####################
+  - name: Launch NODE1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 60
+    poll: 0
+
+  - name: Launch NODE2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 60
+    poll: 0
+
+  - name: Launch NODE3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 60
+    poll: 0
+
+  - name: Launch NODE4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 60
+    poll: 0
+
+  - name: Launch NODE5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 60
+    poll: 0
+
+  - name: Wait 10 seconds for blockchain
+    wait_for:
+      timeout: 10
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
+    retries: 20
+    delay: 10
+
+
+#################### Check PeerID ####################
+  - name: Check PeerID Node1
+    shell: grep -rnw '.' -e '{{ peerID1 }}'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/dapp/log
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Check PeerID Node2
+    shell: grep -rnw '.' -e '{{ peerID2 }}'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/dapp/log
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Check PeerID Node3
+    shell: grep -rnw '.' -e '{{ peerID3 }}'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/dapp/log
+    when: inventory_hostname in groups['NODE3']
+
+  - name: Check PeerID Node4
+    shell: grep -rnw '.' -e '{{ peerID4 }}'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/dapp/log
+    when: inventory_hostname in groups['NODE4']
+
+  - name: Check PeerID Node5
+    shell: grep -rnw '.' -e '{{ peerID5 }}'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/dapp/log
+    when: inventory_hostname in groups['NODE5']

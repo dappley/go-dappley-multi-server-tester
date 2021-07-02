@@ -11,6 +11,8 @@ import (
 
 func Update_address(playbooks []string) {
 	var account_addresses []string
+	var peer_ids []string
+
 	for i := 1; i <= 5; i++ {
 		account_address, err := ioutil.ReadFile("./accounts/node" + strconv.Itoa(i) + "/account_address.txt")
 		if err != nil {
@@ -18,6 +20,15 @@ func Update_address(playbooks []string) {
 			continue
 		}
 		account_addresses = append(account_addresses, string(account_address))
+	}
+
+	for i := 1; i <= 5; i++ {
+		peer_id, err := ioutil.ReadFile("./accounts/node" + strconv.Itoa(i) + "/node" + strconv.Itoa(i) + "_peerID.txt")
+		if err != nil {
+			fmt.Println("Failed to read node" + strconv.Itoa(i) + "'s peerID!")
+			continue
+		}
+		peer_ids = append(peer_ids, string(peer_id))
 	}
 
 	for _, playbook := range playbooks {
@@ -50,6 +61,26 @@ func Update_address(playbooks []string) {
 
 			} else if strings.Contains(line, "account_5_address") {
 				updated_line := strings.ReplaceAll(line, "account_5_address", account_addresses[4][:34]) + "\n"
+				updated_playbook += updated_line
+
+			} else if strings.Contains(line, "peer_ID_1") {
+				updated_line := strings.ReplaceAll(line, "peer_ID_1", peer_ids[0]) + "\n"
+				updated_playbook += updated_line
+
+			} else if strings.Contains(line, "peer_ID_2") {
+				updated_line := strings.ReplaceAll(line, "peer_ID_2", peer_ids[1]) + "\n"
+				updated_playbook += updated_line
+
+			} else if strings.Contains(line, "peer_ID_3") {
+				updated_line := strings.ReplaceAll(line, "peer_ID_3", peer_ids[2]) + "\n"
+				updated_playbook += updated_line
+
+			} else if strings.Contains(line, "peer_ID_4") {
+				updated_line := strings.ReplaceAll(line, "peer_ID_4", peer_ids[3]) + "\n"
+				updated_playbook += updated_line
+
+			} else if strings.Contains(line, "peer_ID_5") {
+				updated_line := strings.ReplaceAll(line, "peer_ID_5", peer_ids[4]) + "\n"
 				updated_playbook += updated_line
 
 			} else {

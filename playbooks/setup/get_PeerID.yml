@@ -1,0 +1,273 @@
+---
+
+- hosts: all
+  become: true
+  become_user: ubuntu
+  environment:
+    GOPATH: "/home/ubuntu/go"
+    GOROOT: "/usr/local/go"
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin"
+
+  tasks:
+#################### Make build ####################
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+#################### Launch Blockchain ####################
+  - name: Launch NODE1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 60
+    poll: 0
+
+  - name: Launch NODE2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 60
+    poll: 0
+
+  - name: Launch NODE3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 60
+    poll: 0
+
+  - name: Launch NODE4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 60
+    poll: 0
+
+  - name: Launch NODE5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 60
+    poll: 0
+
+  - name: Wait 10 seconds for blockchain
+    wait_for:
+      timeout: 10
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
+    retries: 20
+    delay: 10
+
+
+#################### Get PeerIDs ####################
+  - name: getPeerInfo from NODE1
+    shell: ./cli getPeerInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    when: inventory_hostname in groups['NODE1']
+    register: PeerID
+
+  - debug:
+      msg: '{{ PeerID.stdout_lines }}'
+    when: inventory_hostname in groups['NODE1']
+
+
+#################### Check Node2 Peer ID ####################
+  - name: Check Node2 Peer ID
+    shell: echo '{{ PeerID.stdout_lines[1][7:-1] }}' > node2_peerID.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[2][-6:-1] == "12342"
+
+  - name: Check Node2 Peer ID
+    shell: echo '{{ PeerID.stdout_lines[6][7:-1] }}' > node2_peerID.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[7][-6:-1] == "12342"
+
+  - name: Check Node2 Peer ID
+    shell: echo '{{ PeerID.stdout_lines[11][7:-1] }}' > node2_peerID.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[12][-6:-1] == "12342"
+
+  - name: Check Node2 Peer ID
+    shell: echo '{{ PeerID.stdout_lines[16][7:-1] }}' > node2_peerID.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[17][-6:-1] == "12342"
+
+  - name: Move Peer ID to Jenkins
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log/node2_peerID.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/accounts/node2/
+      flat: yes
+    when: inventory_hostname in groups['NODE1']
+
+#################### Check Node3 Peer ID ####################
+  - name: Check Node3 Peer ID
+    shell: echo '{{ PeerID.stdout_lines[1][7:-1] }}' > node3_peerID.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[2][-6:-1] == "12343"
+
+  - name: Check Node3 Peer ID
+    shell: echo '{{ PeerID.stdout_lines[6][7:-1] }}' > node3_peerID.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[7][-6:-1] == "12343"
+
+  - name: Check Node3 Peer ID
+    shell: echo '{{ PeerID.stdout_lines[11][7:-1] }}' > node3_peerID.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[12][-6:-1] == "12343"
+
+  - name: Check Node3 Peer ID
+    shell: echo '{{ PeerID.stdout_lines[16][7:-1] }}' > node3_peerID.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[17][-6:-1] == "12343"
+
+  - name: Move Peer ID to Jenkins
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log/node3_peerID.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/accounts/node3/
+      flat: yes
+    when: inventory_hostname in groups['NODE1']
+
+
+#################### Check Node4 Peer ID ####################
+  - name: Check Node4 Peer ID
+    shell: echo '{{ PeerID.stdout_lines[1][7:-1] }}' > node4_peerID.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[2][-6:-1] == "12344"
+
+  - name: Check Node4 Peer ID
+    shell: echo '{{ PeerID.stdout_lines[6][7:-1] }}' > node4_peerID.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[7][-6:-1] == "12344"
+
+  - name: Check Node4 Peer ID
+    shell: echo '{{ PeerID.stdout_lines[11][7:-1] }}' > node4_peerID.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[12][-6:-1] == "12344"
+
+  - name: Check Node4 Peer ID
+    shell: echo '{{ PeerID.stdout_lines[16][7:-1] }}' > node4_peerID.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[17][-6:-1] == "12344"
+
+  - name: Move Peer ID to Jenkins
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log/node4_peerID.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/accounts/node4/
+      flat: yes
+    when: inventory_hostname in groups['NODE1']
+
+
+#################### Check Node5 Peer ID ####################
+  - name: Check Node5 Peer ID
+    shell: echo '{{ PeerID.stdout_lines[1][7:-1] }}' > node5_peerID.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[2][-6:-1] == "12345"
+
+  - name: Check Node5 Peer ID
+    shell: echo '{{ PeerID.stdout_lines[6][7:-1] }}' > node5_peerID.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[7][-6:-1] == "12345"
+
+  - name: Check Node5 Peer ID
+    shell: echo '{{ PeerID.stdout_lines[11][7:-1] }}' > node5_peerID.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[12][-6:-1] == "12345"
+
+  - name: Check Node5 Peer ID
+    shell: echo '{{ PeerID.stdout_lines[16][7:-1] }}' > node5_peerID.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[17][-6:-1] == "12345"
+
+  - name: Move Peer ID to Jenkins
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log/node5_peerID.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/accounts/node5/
+      flat: yes
+    when: inventory_hostname in groups['NODE1']
+
+
+#################### Get PeerIDs ####################
+  - name: getPeerInfo from NODE2
+    shell: ./cli getPeerInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    when: inventory_hostname in groups['NODE2']
+    register: PeerID
+
+  - debug:
+      msg: '{{ PeerID.stdout_lines }}'
+    when: inventory_hostname in groups['NODE2']
+
+
+#################### Check Node1 Peer ID ####################
+  - name: Check Node1 Peer ID
+    shell: echo '{{ PeerID.stdout_lines[1][7:-1] }}' > node1_peerID.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE2'] and PeerID.stdout_lines[2][-6:-1] == "12341"
+
+  - name: Check Node1 Peer ID
+    shell: echo '{{ PeerID.stdout_lines[6][7:-1] }}' > node1_peerID.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE2'] and PeerID.stdout_lines[7][-6:-1] == "12341"
+
+  - name: Check Node1 Peer ID
+    shell: echo '{{ PeerID.stdout_lines[11][7:-1] }}' > node1_peerID.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE2'] and PeerID.stdout_lines[12][-6:-1] == "12341"
+
+  - name: Check Node1 Peer ID
+    shell: echo '{{ PeerID.stdout_lines[16][7:-1] }}' > node1_peerID.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE2'] and PeerID.stdout_lines[17][-6:-1] == "12341"
+
+  - name: Move Peer ID to Jenkins
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log/node1_peerID.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/accounts/node1/
+      flat: yes
+    when: inventory_hostname in groups['NODE2']
+
+
+#################### Terminate ####################
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 20
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
