@@ -22,7 +22,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 80
+    async: 70
     poll: 0
 
   - name: Launch node2
@@ -30,7 +30,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 80
+    async: 70
     poll: 0
 
   - name: Launch node3
@@ -38,7 +38,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 80
+    async: 70
     poll: 0
 
   - name: Launch node4
@@ -46,7 +46,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 80
+    async: 70
     poll: 0
 
   - name: Launch node5
@@ -54,7 +54,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 80
+    async: 70
     poll: 0
 
 #################### Launch Node2 ####################
@@ -63,7 +63,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 80
+    async: 70
     poll: 0
 
   - name: Launch node2
@@ -71,7 +71,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 80
+    async: 70
     poll: 0
 
   - name: Launch node3
@@ -79,7 +79,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 80
+    async: 70
     poll: 0
 
   - name: Launch node4
@@ -87,7 +87,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 80
+    async: 70
     poll: 0
 
   - name: Launch node5
@@ -95,7 +95,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 80
+    async: 70
     poll: 0
 
 #################### Launch Node3 ####################
@@ -104,7 +104,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 80
+    async: 70
     poll: 0
 
   - name: Launch node2
@@ -112,7 +112,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 80
+    async: 70
     poll: 0
 
   - name: Launch node3
@@ -120,7 +120,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 80
+    async: 70
     poll: 0
 
   - name: Launch node4
@@ -128,7 +128,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 80
+    async: 70
     poll: 0
 
   - name: Launch node5
@@ -136,7 +136,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 80
+    async: 70
     poll: 0
 
 #################### Launch Node4 ####################
@@ -145,7 +145,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 80
+    async: 70
     poll: 0
 
   - name: Launch node2
@@ -153,7 +153,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 80
+    async: 70
     poll: 0
 
   - name: Launch node3
@@ -161,7 +161,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 80
+    async: 70
     poll: 0
 
   - name: Launch node4
@@ -169,7 +169,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 80
+    async: 70
     poll: 0
 
   - name: Launch node5
@@ -177,7 +177,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 80
+    async: 70
     poll: 0
 
 #################### Launch Node5 ####################
@@ -186,7 +186,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 80
+    async: 70
     poll: 0
 
   - name: Launch node2
@@ -194,7 +194,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 80
+    async: 70
     poll: 0
 
   - name: Launch node3
@@ -202,7 +202,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 80
+    async: 70
     poll: 0
 
   - name: Launch node4
@@ -210,7 +210,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 80
+    async: 70
     poll: 0
 
   - name: Launch node5
@@ -218,7 +218,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 80
+    async: 70
     poll: 0
 
   - name: Wait 10 seconds to launch blockchain
@@ -340,7 +340,7 @@
 #################### Terminate ####################
   - name: Wait till async tasks terminate
     wait_for:
-      timeout: 30
+      timeout: 20
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
