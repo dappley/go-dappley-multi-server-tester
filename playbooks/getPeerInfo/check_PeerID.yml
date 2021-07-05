@@ -78,7 +78,7 @@
     delay: 10
 
 
-#################### Check PeerID ####################
+#################### Check PeerID node1 ####################
   - name: Check PeerID Node1
     shell: grep -rnw '.' -e '{{ peerID1 }}'
     args:
@@ -86,10 +86,18 @@
     when: inventory_hostname in groups['NODE1']
     register: peerID_check_node1
 
-  - debug:
-      msg: '{{ register: peerID_check_node1 }}'
-    when: inventory_hostname in groups['NODE1']
+  # - debug:
+  #     msg: '{{ peerID_check_node1 }}'
+  #   when: inventory_hostname in groups['NODE1']
 
+  - name: Test node1 PeerID
+    fail:
+      msg: Expected to find the peerID {{ peerID1 }} in the log file, but peer ID is not found!"
+    when: inventory_hostname in groups['NODE1'] and peerID_check_node1.stdout == ""
+    ignore_errors: true
+
+
+#################### Check PeerID node2 ####################
   - name: Check PeerID Node2
     shell: grep -rnw '.' -e '{{ peerID2 }}'
     args:
@@ -97,10 +105,18 @@
     when: inventory_hostname in groups['NODE2']
     register: peerID_check_node2
 
-  - debug:
-      msg: '{{ peerID_check_node2 }}'
-    when: inventory_hostname in groups['NODE2']
+  # - debug:
+  #     msg: '{{ peerID_check_node2 }}'
+  #   when: inventory_hostname in groups['NODE2']
 
+  - name: Test node2 PeerID
+    fail:
+      msg: Expected to find the peerID {{ peerID2 }} in the log file, but peer ID is not found!"
+    when: inventory_hostname in groups['NODE2'] and peerID_check_node2.stdout == ""
+    ignore_errors: true
+
+
+#################### Check PeerID node3 ####################
   - name: Check PeerID Node3
     shell: grep -rnw '.' -e '{{ peerID3 }}'
     args:
@@ -108,10 +124,18 @@
     when: inventory_hostname in groups['NODE3']
     register: peerID_check_node3
 
-  - debug:
-      msg: '{{ peerID_check_node3 }}'
-    when: inventory_hostname in groups['NODE3']
+  # - debug:
+  #     msg: '{{ peerID_check_node3 }}'
+  #   when: inventory_hostname in groups['NODE3']
 
+  - name: Test node3 PeerID
+    fail:
+      msg: Expected to find the peerID {{ peerID3 }} in the log file, but peer ID is not found!"
+    when: inventory_hostname in groups['NODE3'] and peerID_check_node3.stdout == ""
+    ignore_errors: true
+
+
+#################### Check PeerID node4 ####################
   - name: Check PeerID Node4
     shell: grep -rnw '.' -e '{{ peerID4 }}'
     args:
@@ -119,10 +143,18 @@
     when: inventory_hostname in groups['NODE4']
     register: peerID_check_node4
 
-  - debug:
-      msg: '{{ peerID_check_node4 }}'
-    when: inventory_hostname in groups['NODE4']
+  # - debug:
+  #     msg: '{{ peerID_check_node4 }}'
+  #   when: inventory_hostname in groups['NODE4']
 
+  - name: Test node4 PeerID
+    fail:
+      msg: Expected to find the peerID {{ peerID4 }} in the log file, but peer ID is not found!"
+    when: inventory_hostname in groups['NODE4'] and peerID_check_node4.stdout == ""
+    ignore_errors: true
+
+
+#################### Check PeerID node5 ####################
   - name: Check PeerID Node5
     shell: grep -rnw '.' -e '{{ peerID5 }}'
     args:
@@ -130,9 +162,15 @@
     when: inventory_hostname in groups['NODE5']
     register: peerID_check_node5
 
-  - debug:
-      msg: '{{ peerID_check_node5 }}'
-    when: inventory_hostname in groups['NODE5']
+  # - debug:
+  #     msg: '{{ peerID_check_node5 }}'
+  #   when: inventory_hostname in groups['NODE5']
+
+  - name: Test node5 PeerID
+    fail:
+      msg: Expected to find the peerID {{ peerID5 }} in the log file, but peer ID is not found!"
+    when: inventory_hostname in groups['NODE5'] and peerID_check_node5.stdout == ""
+    ignore_errors: true
 
 
 #################### Terminate ####################
@@ -144,10 +182,4 @@
     shell: rm -r bin
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
-    ignore_errors: true
-
-  - name: Remove /go-dappley/dapp/bin Node
-    shell: rm -r bin
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
     ignore_errors: true
