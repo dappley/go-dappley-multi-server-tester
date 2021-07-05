@@ -1,0 +1,169 @@
+---
+
+- hosts: all
+  become: true
+  become_user: ubuntu
+  environment:
+    GOPATH: "/home/ubuntu/go"
+    GOROOT: "/usr/local/go"
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin"
+  vars:
+    invalid_address: thisistheaddressofaninvalidaddress
+
+  tasks:
+#################### Send Accounts.dat ####################
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+#################### Launch Blockchain ####################
+  - name: Launch NODE1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 70
+    poll: 0
+
+  - name: Launch NODE5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 70
+    poll: 0
+
+  - name: Wait 10 seconds for blockchain
+    wait_for:
+      timeout: 10
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int > (10)|int
+    retries: 20
+    delay: 10
+
+
+#################### Address is invalid ####################
+  - name: Address is invalid
+    shell: ./cli addProducer -address {{ invalid_address }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
+
+  - debug:
+      msg: '{{ test_result.stdout }}'
+
+  - name: Test
+    fail:
+     msg: "Expected an error message about the invalid address, but returned {{ test_result.stdout }}"
+    when: test_result.stdout[7:] != "address is invalid"
+    ignore_errors: true
+
+
+#################### Address is integer ####################
+  - name: Address is integer
+    shell: ./cli addProducer -address 12345678910111213
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
+
+  - debug:
+      msg: '{{ test_result.stdout }}'
+
+  - name: Test
+    fail:
+     msg: "Expected an error message about the invalid address, but returned {{ test_result.stdout }}"
+    when: test_result.stdout[7:] != "address is invalid"
+    ignore_errors: true
+
+
+#################### Address is special characters ####################
+  - name: Address is special characters
+    shell: ./cli addProducer -address ~`!@#$%^&*()_-+=
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
+    ignore_errors: true
+
+  - debug:
+      msg: '{{ test_result }}'
+
+  - name: Test
+    fail:
+     msg: "Program returns a critical error when the inuput is special characters"
+    when: test_result.failed
+    ignore_errors: true
+
+
+#################### Address is empty ####################
+  - name: Address is empty
+    shell: ./cli addProducer -address
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
+
+  - debug:
+      msg: '{{ test_result.stderr_lines }}'
+
+  - name: Test
+    fail:
+     msg: "Expected an error message about the missing argument but returned {{ test_result }}"
+    when: test_result.stderr_lines[0][:-10] != "flag needs an argument"
+    ignore_errors: true
+
+#################### Missing flag ####################
+  - name: No flag
+    shell: ./cli addProducer
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
+
+  - debug:
+      msg: '{{ test_result }}'
+
+  - name: Test
+    fail:
+      msg: "Expected an error message about the missing flag, but returned {{ test_result }}"
+    when: test_result.stdout_lines[0][:5] != "Usage"
+    ignore_errors: true
+
+#################### Terminate ####################
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 20
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/

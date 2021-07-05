@@ -206,5 +206,17 @@ EstimateGas Test Cases:
         13. data is empty
 
 
+Get Peer Info Test Case:
+    - Check if the peer ID exists in the log file on each server.
+
+
 Add Producer Test Cases:
-    - Later
+    - Invalid address
+        1. address is invalid
+        2. address is integer
+        3. address is special string
+        4. address is empty
+    
+    - Add producer when max producer number is already reached
+
+    - Add producer
