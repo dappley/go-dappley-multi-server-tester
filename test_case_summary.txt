@@ -214,7 +214,7 @@ Add Producer Test Cases:
     - Invalid address
         1. address is invalid
         2. address is integer
-        3. address is special string
+        3. address is special characters
         4. address is empty
     
     - Add producer when max producer number is already reached
