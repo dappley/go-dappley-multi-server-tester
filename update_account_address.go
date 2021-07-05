@@ -64,23 +64,23 @@ func Update_address(playbooks []string) {
 				updated_playbook += updated_line
 
 			} else if strings.Contains(line, "peer_ID_1") {
-				updated_line := strings.ReplaceAll(line, "peer_ID_1", peer_ids[0]) + "\n"
+				updated_line := strings.ReplaceAll(line, "peer_ID_1", peer_ids[0]) // + "\n"
 				updated_playbook += updated_line
 
 			} else if strings.Contains(line, "peer_ID_2") {
-				updated_line := strings.ReplaceAll(line, "peer_ID_2", peer_ids[1]) + "\n"
+				updated_line := strings.ReplaceAll(line, "peer_ID_2", peer_ids[1]) // + "\n"
 				updated_playbook += updated_line
 
 			} else if strings.Contains(line, "peer_ID_3") {
-				updated_line := strings.ReplaceAll(line, "peer_ID_3", peer_ids[2]) + "\n"
+				updated_line := strings.ReplaceAll(line, "peer_ID_3", peer_ids[2]) // + "\n"
 				updated_playbook += updated_line
 
 			} else if strings.Contains(line, "peer_ID_4") {
-				updated_line := strings.ReplaceAll(line, "peer_ID_4", peer_ids[3]) + "\n"
+				updated_line := strings.ReplaceAll(line, "peer_ID_4", peer_ids[3]) // + "\n"
 				updated_playbook += updated_line
 
 			} else if strings.Contains(line, "peer_ID_5") {
-				updated_line := strings.ReplaceAll(line, "peer_ID_5", peer_ids[4]) + "\n"
+				updated_line := strings.ReplaceAll(line, "peer_ID_5", peer_ids[4]) // + "\n"
 				updated_playbook += updated_line
 
 			} else {

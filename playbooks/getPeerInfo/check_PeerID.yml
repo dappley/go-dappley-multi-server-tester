@@ -82,29 +82,72 @@
   - name: Check PeerID Node1
     shell: grep -rnw '.' -e '{{ peerID1 }}'
     args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/dapp/log
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE1']
+    register: peerID_check_node1
+
+  - debug:
+      msg: '{{ register: peerID_check_node1 }}'
     when: inventory_hostname in groups['NODE1']
 
   - name: Check PeerID Node2
     shell: grep -rnw '.' -e '{{ peerID2 }}'
     args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/dapp/log
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE2']
+    register: peerID_check_node2
+
+  - debug:
+      msg: '{{ peerID_check_node2 }}'
     when: inventory_hostname in groups['NODE2']
 
   - name: Check PeerID Node3
     shell: grep -rnw '.' -e '{{ peerID3 }}'
     args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/dapp/log
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE3']
+    register: peerID_check_node3
+
+  - debug:
+      msg: '{{ peerID_check_node3 }}'
     when: inventory_hostname in groups['NODE3']
 
   - name: Check PeerID Node4
     shell: grep -rnw '.' -e '{{ peerID4 }}'
     args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/dapp/log
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
+    when: inventory_hostname in groups['NODE4']
+    register: peerID_check_node4
+
+  - debug:
+      msg: '{{ peerID_check_node4 }}'
     when: inventory_hostname in groups['NODE4']
 
   - name: Check PeerID Node5
     shell: grep -rnw '.' -e '{{ peerID5 }}'
     args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/dapp/log
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
     when: inventory_hostname in groups['NODE5']
+    register: peerID_check_node5
+
+  - debug:
+      msg: '{{ peerID_check_node5 }}'
+    when: inventory_hostname in groups['NODE5']
+
+
+#################### Terminate ####################
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 20
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+    ignore_errors: true
+
+  - name: Remove /go-dappley/dapp/bin Node
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
+    ignore_errors: true
