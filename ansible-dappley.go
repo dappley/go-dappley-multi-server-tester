@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"fmt"
+	"log"
 	"flag"
 	"bufio"
 	"errors"
@@ -14,7 +15,8 @@ import (
 )
 
 func main() {
-	var function, recipient, senderEmail, senderPasswd string
+	var number, function, recipient, senderEmail, senderPasswd string
+	flag.StringVar(&number, "number", "999999", "Number of the ec2 instances to be terminated.")
 	flag.StringVar(&function, "function", "<Function Name>", "Name of the function that will be run.")
 	flag.StringVar(&recipient, "recipient", "<Recipient Email>", "Email of the recipient.")
 	flag.StringVar(&senderEmail, "senderEmail", "<Sender Email>", "Email of the addressee.")
@@ -37,7 +39,7 @@ func main() {
 		SendTestResult(recipient, senderEmail, senderPasswd, allFiles("testresults"))
 	
 	} else if function == "terminate" {
-		terminate()
+		terminate(number)
 
 	} else {
 		fmt.Println("Function Invalid!")
@@ -152,8 +154,15 @@ func initialize() {
 }
 
 //Termiante all servers via aws cli command
-func terminate() {
+func terminate(number string) {
+	var updated_instance_list string
 	fileName := "instance_ids"
+
+	to_terminate, err := strconv.Atoi(number)
+	if err != nil {
+		panic(err)
+	}
+
 	instance_byte, err := ioutil.ReadFile(fileName)
 	if err != nil {
 		fmt.Println("Failed to read", fileName, "!")
@@ -161,9 +170,12 @@ func terminate() {
 	}
 
 	scanner := bufio.NewScanner(strings.NewReader(string(instance_byte)))
-	for i := 1; scanner.Scan() && i <= 5; i++ {
+	for scanner.Scan() {
 		instance_id := scanner.Text()
-
+		if to_terminate == 0 {
+			updated_instance_list += instance_id
+			continue
+		}
 		terminate_instance := "aws ec2 terminate-instances --instance-ids " + instance_id
 		args := strings.Split(terminate_instance, " ")
 		cmd := exec.Command(args[0], args[1:]...)
@@ -173,6 +185,13 @@ func terminate() {
 		}
 		fmt.Printf("%s\n", output)
 		fmt.Println(terminate_instance)
+
+		to_terminate -= 1
+	}
+
+	err = ioutil.WriteFile(fileName, []byte(updated_instance_list), 0644)
+	if err != nil {
+		log.Fatalln(err)
 	}
 }
 
