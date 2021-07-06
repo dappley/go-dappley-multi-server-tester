@@ -173,7 +173,7 @@ func terminate(number string) {
 	for scanner.Scan() {
 		instance_id := scanner.Text()
 		if to_terminate == 0 {
-			updated_instance_list += instance_id
+			updated_instance_list += instance_id + "\n"
 			continue
 		}
 		terminate_instance := "aws ec2 terminate-instances --instance-ids " + instance_id
