@@ -24,13 +24,13 @@ func main() {
 	flag.Parse()
 
 	if function == "update" {
-		update()
+		update(number)
 
 	} else if function == "initialize" {
-		initialize()
+		initialize(number)
 
 	} else if function == "ssh_command" {
-		ssh_command()
+		ssh_command(number)
 
 	} else if function == "update_address" {
 		Update_address(allFiles("playbooks"))
@@ -47,7 +47,11 @@ func main() {
 }
 
 //Adds the server information to the hosts and instance_ids file
-func update() {
+func update(number string) {
+	instances_to_update, err := strconv.Atoi(number)
+	if err != nil {
+		panic(err)
+	}
 	//Create txt files for server info
 	host_file, err := os.Create("hosts")
 	if err != nil {
@@ -61,7 +65,7 @@ func update() {
 		return
 	}
 
-	for i := 1; i <= 5; i++ {
+	for i := 1; i <= instances_to_update; i++ {
 		var private_ips, instance_ids string
 		fileName := "node" + strconv.Itoa(i) + ".txt"
 		
@@ -104,7 +108,11 @@ func update() {
 }
 
 //Runs until all servers are initialized
-func initialize() {
+func initialize(number string) {
+	instances_to_initialize, err := strconv.Atoi(number)
+	if err != nil {
+		panic(err)
+	}
 	fileName := "instance_ids"
 	instance_byte, err := ioutil.ReadFile(fileName)
 	if err != nil {
@@ -113,7 +121,7 @@ func initialize() {
 	}
 
 	scanner := bufio.NewScanner(strings.NewReader(string(instance_byte)))
-	for i := 1; scanner.Scan() && i <= 5; i++ {
+	for i := 1; scanner.Scan() && i <= instances_to_initialize; i++ {
 		instance_id := scanner.Text()
 		initializing := true
 		fmt.Println("Initializing " + instance_id + "...")
@@ -196,7 +204,12 @@ func terminate(number string) {
 }
 
 //Prints out the ssh command for all servers
-func ssh_command() {	
+func ssh_command(number string) {
+	number_of_instances, err := strconv.Atoi(number)
+	if err != nil {
+		panic(err)
+	}
+
 	instance_byte, err := ioutil.ReadFile("instance_ids")
 	if err != nil {
 		fmt.Println("Failed to read instance_ids!")
@@ -204,7 +217,7 @@ func ssh_command() {
 	}
 
 	scanner := bufio.NewScanner(strings.NewReader(string(instance_byte)))
-	for i := 1; scanner.Scan() && i <= 5; i++ {
+	for i := 1; scanner.Scan() && i <= number_of_instances; i++ {
 		instance_id := scanner.Text()
 
 		describe_instance := "aws ec2 describe-instances --instance-ids " + instance_id
