@@ -50,45 +50,45 @@
 
 
 #################### Update cli ports on All nodes ####################
-  - name: Update node1 cli port
-    ansible.builtin.replace:
-      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
-      regexp: 'port: 50050'
-      replace: 'port: 50051'
-    when: inventory_hostname in groups['NODE1']
+  # - name: Update node1 cli port
+  #   ansible.builtin.replace:
+  #     path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
+  #     regexp: 'port: 50051'
+  #     replace: 'port: 50051'
+  #   when: inventory_hostname in groups['NODE1']
 
   - name: Update node2 cli port
     ansible.builtin.replace:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
-      regexp: 'port: 50050'
+      regexp: 'port: 50051'
       replace: 'port: 50052'
     when: inventory_hostname in groups['NODE2']
 
   - name: Update node3 cli port
     ansible.builtin.replace:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
-      regexp: 'port: 50050'
+      regexp: 'port: 50051'
       replace: 'port: 50053'
     when: inventory_hostname in groups['NODE3']
 
   - name: Update node4 cli port
     ansible.builtin.replace:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
-      regexp: 'port: 50050'
+      regexp: 'port: 50051'
       replace: 'port: 50054'
     when: inventory_hostname in groups['NODE4']
 
   - name: Update node5 cli port
     ansible.builtin.replace:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
-      regexp: 'port: 50050'
+      regexp: 'port: 50051'
       replace: 'port: 50055'
     when: inventory_hostname in groups['NODE5']
 
-  - name: Update node5 cli port
+  - name: Update node6 cli port
     ansible.builtin.replace:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
-      regexp: 'port: 50050'
+      regexp: 'port: 50051'
       replace: 'port: 50056'
     when: inventory_hostname in groups['NODE6']
 
