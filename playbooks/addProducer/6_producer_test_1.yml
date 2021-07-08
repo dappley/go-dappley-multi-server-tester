@@ -1,0 +1,139 @@
+---
+
+- hosts: all
+  become: true
+  become_user: ubuntu
+  environment:
+    GOPATH: "/home/ubuntu/go"
+    GOROOT: "/usr/local/go"
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin"
+
+  tasks:
+#################### Send Accounts.dat ####################
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+#################### Launch Blockchain ####################
+  - name: Launch NODE1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 80
+    poll: 0
+
+  - name: Launch NODE2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 80
+    poll: 0
+
+  - name: Launch NODE3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 80
+    poll: 0
+
+  - name: Launch NODE4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 80
+    poll: 0
+
+  - name: Launch NODE5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 80
+    poll: 0
+
+  - name: Launch NODE6
+    shell: ./dapp -f conf/node6.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE6']
+    async: 80
+    poll: 0
+
+  - name: Wait 10 seconds for blockchain
+    wait_for:
+      timeout: 10
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int > (10)|int
+    retries: 20
+    delay: 10
+
+
+#################### Check producers ####################
+  - name: Check Blockchain
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: BlockchainInfo
+
+  - debug:
+      msg: '{{ BlockchainInfo }}'
+
+
+#################### Check 4 producers ####################
+  - debug:
+      msg: '{{ BlockchainInfo.stdout_lines[2] }}'
+
+  - debug:
+      msg: '{{ BlockchainInfo.stdout_lines[3] }}'
+
+  - debug:
+      msg: '{{ BlockchainInfo.stdout_lines[4] }}'
+
+  - debug:
+      msg: '{{ BlockchainInfo.stdout_lines[5] }}'
+
+  - debug:
+      msg: '{{ BlockchainInfo.stdout_lines[6] }}'
+
+  - debug:
+      msg: '{{ BlockchainInfo.stdout_lines[7] }}'
+
+
+#################### Add producer ####################
+  # - name: Add producer when max number has been reached
+  #   shell: ./cli addProducer -address 1MeSBgufmzwpiJNLemUe1emxAussBnz7a7
+  #   args:
+  #     chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+  #   register: test_result
+
+  # - debug:
+  #     msg: '{{ test_result }}'
+
+  # - name: Test
+  #   fail:
+  #     msg: "Expected an error message about the maximum producer, but returned {{ test_result }}"
+  #   when: test_result.stdout != "Producer is added."
+  #   ignore_errors: true
+
+
+#################### Terminate ####################
+  - name: Wait till async tasks terminate
+    wait_for:
+      timeout: 30
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
