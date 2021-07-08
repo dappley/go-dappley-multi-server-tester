@@ -84,6 +84,17 @@
       timeout: 10
 
 
+#################### Check Blockchain ####################
+  - name: Check blockchain 6
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: Blockchain_Info
+
+  - debug:
+      msg: '{{ Blockchain_Info }}'
+
+
 #################### Terminate ####################
   - name: Wait till async tasks terminate
     wait_for:
