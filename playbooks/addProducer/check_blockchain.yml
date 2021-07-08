@@ -87,7 +87,7 @@
 #################### Terminate ####################
   - name: Wait till async tasks terminate
     wait_for:
-      timeout: 200
+      timeout: 60
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
