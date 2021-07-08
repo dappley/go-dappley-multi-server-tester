@@ -31,7 +31,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 80
+    async: 90
     poll: 0
 
   - name: Launch NODE3
@@ -39,7 +39,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 80
+    async: 90
     poll: 0
 
   - name: Launch NODE4
@@ -47,7 +47,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 80
+    async: 90
     poll: 0
 
   - name: Launch NODE5
@@ -55,7 +55,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 80
+    async: 90
     poll: 0
 
   - name: Launch NODE6
@@ -63,12 +63,12 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE6']
-    async: 80
+    async: 90
     poll: 0
 
-  - name: Wait 10 seconds for blockchain
+  - name: Wait 30 seconds for blockchain
     wait_for:
-      timeout: 10
+      timeout: 30
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
@@ -92,46 +92,197 @@
 
 
 #################### Check 4 producers ####################
-  - debug:
-      msg: '{{ BlockchainInfo.stdout_lines[2] }}'
+  - name: Check producer 1-1
+    fail:
+      msg: "Expected '[' but returned {{ BlockchainInfo.stdout_lines[2] }}"
+    when: BlockchainInfo.stdout_lines[2][-1:] != "["
+    ignore_errors: true
+
+  - name: Check producer 1-2
+    fail:
+      msg: "Expected 'dastXXWLe5pxbRYFhcyUq8T3wb5srWkHKa' but returned {{ BlockchainInfo.stdout_lines[3] }}"
+    when: BlockchainInfo.stdout_lines[3][5:-2] != "dastXXWLe5pxbRYFhcyUq8T3wb5srWkHKa"
+    ignore_errors: true
+
+  - name: Check producer 1-3
+    fail:
+      msg: "Expected 'dUuPPYshbBgkzUrgScEHWvdGbSxC8z4R12' but returned {{ BlockchainInfo.stdout_lines[4] }}"
+    when: BlockchainInfo.stdout_lines[4][5:-2] != "dUuPPYshbBgkzUrgScEHWvdGbSxC8z4R12"
+    ignore_errors: true
+
+  - name: Check producer 1-4
+    fail:
+      msg: "Expected 'dPGD4t6ibpmyKZnXH1TNbbPw98EDaaZq8C' but returned {{ BlockchainInfo.stdout_lines[5] }}"
+    when: BlockchainInfo.stdout_lines[5][5:-2] != "dPGD4t6ibpmyKZnXH1TNbbPw98EDaaZq8C"
+    ignore_errors: true
+
+  - name: Check producer 1-5
+    fail:
+      msg: "Expected 'dUa6gQkijmVqf7pk9cmRS6M9nMnU6b9Ssm' but returned {{ BlockchainInfo.stdout_lines[6] }}"
+    when: BlockchainInfo.stdout_lines[6][5:-1] != "dUa6gQkijmVqf7pk9cmRS6M9nMnU6b9Ssm"
+    ignore_errors: true
+
+  - name: Check producer 1-6
+    fail:
+      msg: "Expected ']' but returned {{ BlockchainInfo.stdout_lines[7] }}"
+    when: BlockchainInfo.stdout_lines[7][-2:-1] != "]"
+    ignore_errors: true
+
+
+################### Add producer ####################
+  - name: Add producer when max number has been reached
+    shell: ./cli addProducer -address dTSNWQeFNRJBEQEhuDJNdu219r389CSkh3
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
 
   - debug:
-      msg: '{{ BlockchainInfo.stdout_lines[3] }}'
+      msg: '{{ test_result }}'
+
+  - name: Test
+    fail:
+      msg: "Expected an error message about the maximum producer, but returned {{ test_result }}"
+    when: test_result.stdout != "Producer is added."
+    ignore_errors: true
+
+
+#################### Check producers ####################
+  - name: Check Blockchain
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: BlockchainInfo
 
   - debug:
-      msg: '{{ BlockchainInfo.stdout_lines[4] }}'
+      msg: '{{ BlockchainInfo }}'
+
+
+################### Check 5 producers ###################
+  - name: Check producer 2-1
+    fail:
+      msg: "Expected '[' but returned {{ BlockchainInfo.stdout_lines[2] }}"
+    when: BlockchainInfo.stdout_lines[2][-1:] != "["
+    ignore_errors: true
+
+  - name: Check producer 2-2
+    fail:
+      msg: "Expected 'dastXXWLe5pxbRYFhcyUq8T3wb5srWkHKa' but returned {{ BlockchainInfo.stdout_lines[3] }}"
+    when: BlockchainInfo.stdout_lines[3][5:-2] != "dastXXWLe5pxbRYFhcyUq8T3wb5srWkHKa"
+    ignore_errors: true
+
+  - name: Check producer 2-3
+    fail:
+      msg: "Expected 'dUuPPYshbBgkzUrgScEHWvdGbSxC8z4R12' but returned {{ BlockchainInfo.stdout_lines[4] }}"
+    when: BlockchainInfo.stdout_lines[4][5:-2] != "dUuPPYshbBgkzUrgScEHWvdGbSxC8z4R12"
+    ignore_errors: true
+
+  - name: Check producer 2-4
+    fail:
+      msg: "Expected 'dPGD4t6ibpmyKZnXH1TNbbPw98EDaaZq8C' but returned {{ BlockchainInfo.stdout_lines[5] }}"
+    when: BlockchainInfo.stdout_lines[5][5:-2] != "dPGD4t6ibpmyKZnXH1TNbbPw98EDaaZq8C"
+    ignore_errors: true
+
+  - name: Check producer 2-5
+    fail:
+      msg: "Expected 'dUa6gQkijmVqf7pk9cmRS6M9nMnU6b9Ssm' but returned {{ BlockchainInfo.stdout_lines[6] }}"
+    when: BlockchainInfo.stdout_lines[6][5:-2] != "dUa6gQkijmVqf7pk9cmRS6M9nMnU6b9Ssm"
+    ignore_errors: true
+
+  - name: Check producer 2-6
+    fail:
+      msg: "Expected 'dTSNWQeFNRJBEQEhuDJNdu219r389CSkh3' but returned {{ BlockchainInfo.stdout_lines[7] }}"
+    when: BlockchainInfo.stdout_lines[7][5:-1] != "dTSNWQeFNRJBEQEhuDJNdu219r389CSkh3"
+    ignore_errors: true
+
+  - name: Check producer 2-7
+    fail:
+      msg: "Expected ']' but returned {{ BlockchainInfo.stdout_lines[8] }}"
+    when: BlockchainInfo.stdout_lines[8][-2:-1] != "]"
+    ignore_errors: true
+
+
+################### Add producer ####################
+  - name: Add producer when max number has been reached
+    shell: ./cli addProducer -address dNY1BMqsJVMRDp16ohsBACerdw5JQ931Eh
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
 
   - debug:
-      msg: '{{ BlockchainInfo.stdout_lines[5] }}'
+      msg: '{{ test_result }}'
+
+  - name: Test
+    fail:
+      msg: "Expected an error message about the maximum producer, but returned {{ test_result }}"
+    when: test_result.stdout != "Producer is added."
+    ignore_errors: true
+
+
+#################### Check producers ####################
+  - name: Check Blockchain
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: BlockchainInfo
 
   - debug:
-      msg: '{{ BlockchainInfo.stdout_lines[6] }}'
-
-  - debug:
-      msg: '{{ BlockchainInfo.stdout_lines[7] }}'
+      msg: '{{ BlockchainInfo }}'
 
 
-#################### Add producer ####################
-  # - name: Add producer when max number has been reached
-  #   shell: ./cli addProducer -address 1MeSBgufmzwpiJNLemUe1emxAussBnz7a7
-  #   args:
-  #     chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-  #   register: test_result
+################### Check 6 producers ###################
+  - name: Check producer 3-1
+    fail:
+      msg: "Expected '[' but returned {{ BlockchainInfo.stdout_lines[2] }}"
+    when: BlockchainInfo.stdout_lines[2][-1:] != "["
+    ignore_errors: true
 
-  # - debug:
-  #     msg: '{{ test_result }}'
+  - name: Check producer 3-2
+    fail:
+      msg: "Expected 'dastXXWLe5pxbRYFhcyUq8T3wb5srWkHKa' but returned {{ BlockchainInfo.stdout_lines[3] }}"
+    when: BlockchainInfo.stdout_lines[3][5:-2] != "dastXXWLe5pxbRYFhcyUq8T3wb5srWkHKa"
+    ignore_errors: true
 
-  # - name: Test
-  #   fail:
-  #     msg: "Expected an error message about the maximum producer, but returned {{ test_result }}"
-  #   when: test_result.stdout != "Producer is added."
-  #   ignore_errors: true
+  - name: Check producer 3-3
+    fail:
+      msg: "Expected 'dUuPPYshbBgkzUrgScEHWvdGbSxC8z4R12' but returned {{ BlockchainInfo.stdout_lines[4] }}"
+    when: BlockchainInfo.stdout_lines[4][5:-2] != "dUuPPYshbBgkzUrgScEHWvdGbSxC8z4R12"
+    ignore_errors: true
+
+  - name: Check producer 3-4
+    fail:
+      msg: "Expected 'dPGD4t6ibpmyKZnXH1TNbbPw98EDaaZq8C' but returned {{ BlockchainInfo.stdout_lines[5] }}"
+    when: BlockchainInfo.stdout_lines[5][5:-2] != "dPGD4t6ibpmyKZnXH1TNbbPw98EDaaZq8C"
+    ignore_errors: true
+
+  - name: Check producer 3-5
+    fail:
+      msg: "Expected 'dUa6gQkijmVqf7pk9cmRS6M9nMnU6b9Ssm' but returned {{ BlockchainInfo.stdout_lines[6] }}"
+    when: BlockchainInfo.stdout_lines[6][5:-2] != "dUa6gQkijmVqf7pk9cmRS6M9nMnU6b9Ssm"
+    ignore_errors: true
+
+  - name: Check producer 3-6
+    fail:
+      msg: "Expected 'dTSNWQeFNRJBEQEhuDJNdu219r389CSkh3' but returned {{ BlockchainInfo.stdout_lines[7] }}"
+    when: BlockchainInfo.stdout_lines[7][5:-2] != "dTSNWQeFNRJBEQEhuDJNdu219r389CSkh3"
+    ignore_errors: true
+
+  - name: Check producer 3-7
+    fail:
+      msg: "Expected 'dNY1BMqsJVMRDp16ohsBACerdw5JQ931Eh' but returned {{ BlockchainInfo.stdout_lines[8] }}"
+    when: BlockchainInfo.stdout_lines[8][5:-1] != "dNY1BMqsJVMRDp16ohsBACerdw5JQ931Eh"
+    ignore_errors: true
+
+  - name: Check producer 3-8
+    fail:
+      msg: "Expected ']' but returned {{ BlockchainInfo.stdout_lines[9] }}"
+    when: BlockchainInfo.stdout_lines[9][-2:-1] != "]"
+    ignore_errors: true
 
 
 #################### Terminate ####################
   - name: Wait till async tasks terminate
     wait_for:
-      timeout: 30
+      timeout: 100
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
