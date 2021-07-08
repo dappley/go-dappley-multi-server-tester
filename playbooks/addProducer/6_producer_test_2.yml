@@ -9,6 +9,18 @@
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin"
 
   tasks:
+#################### 
+  - name: Wait a minute who are you?
+    wait_for:
+      timeout: 60
+
+  - name: Get blockchain height
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+
+
 #################### Check Blockchain ####################
   - name: Check blockchain 1
     shell: ./cli getBlockchainInfo
@@ -18,6 +30,12 @@
 
   - debug:
       msg: '{{ Blockchain_Info }}'
+
+  - name: Test
+    fail:
+      msg: Expected the blockchain height to remain the same at {{ blockchainHeight.stdout_lines[1][17:]|replace(',','') }}, but returned {{ Blockchain_Info.stdout_lines[1][17:]|replace(',','') }}
+    when: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int == (Blockchain_Info.stdout_lines[1][17:]|replace(',',''))|int
+    ignore_errors: true
 
   - name: Wait 10 seconds
     wait_for:
@@ -34,6 +52,12 @@
   - debug:
       msg: '{{ Blockchain_Info }}'
 
+  - name: Test
+    fail:
+      msg: Expected the blockchain height to remain the same at {{ blockchainHeight.stdout_lines[1][17:]|replace(',','') }}, but returned {{ Blockchain_Info.stdout_lines[1][17:]|replace(',','') }}
+    when: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int == (Blockchain_Info.stdout_lines[1][17:]|replace(',',''))|int
+    ignore_errors: true
+
   - name: Wait 10 seconds
     wait_for:
       timeout: 10
@@ -48,6 +72,12 @@
 
   - debug:
       msg: '{{ Blockchain_Info }}'
+
+  - name: Test
+    fail:
+      msg: Expected the blockchain height to remain the same at {{ blockchainHeight.stdout_lines[1][17:]|replace(',','') }}, but returned {{ Blockchain_Info.stdout_lines[1][17:]|replace(',','') }}
+    when: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int == (Blockchain_Info.stdout_lines[1][17:]|replace(',',''))|int
+    ignore_errors: true
 
   - name: Wait 10 seconds
     wait_for:
@@ -64,6 +94,12 @@
   - debug:
       msg: '{{ Blockchain_Info }}'
 
+  - name: Test
+    fail:
+      msg: Expected the blockchain height to remain the same at {{ blockchainHeight.stdout_lines[1][17:]|replace(',','') }}, but returned {{ Blockchain_Info.stdout_lines[1][17:]|replace(',','') }}
+    when: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int == (Blockchain_Info.stdout_lines[1][17:]|replace(',',''))|int
+    ignore_errors: true
+
   - name: Wait 10 seconds
     wait_for:
       timeout: 10
@@ -79,6 +115,12 @@
   - debug:
       msg: '{{ Blockchain_Info }}'
 
+  - name: Test
+    fail:
+      msg: Expected the blockchain height to remain the same at {{ blockchainHeight.stdout_lines[1][17:]|replace(',','') }}, but returned {{ Blockchain_Info.stdout_lines[1][17:]|replace(',','') }}
+    when: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int == (Blockchain_Info.stdout_lines[1][17:]|replace(',',''))|int
+    ignore_errors: true
+
   - name: Wait 10 seconds
     wait_for:
       timeout: 10
@@ -93,6 +135,12 @@
 
   - debug:
       msg: '{{ Blockchain_Info }}'
+
+  - name: Test
+    fail:
+      msg: Expected the blockchain height to remain the same at {{ blockchainHeight.stdout_lines[1][17:]|replace(',','') }}, but returned {{ Blockchain_Info.stdout_lines[1][17:]|replace(',','') }}
+    when: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int == (Blockchain_Info.stdout_lines[1][17:]|replace(',',''))|int
+    ignore_errors: true
 
 
 #################### Terminate ####################
