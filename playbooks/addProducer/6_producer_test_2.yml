@@ -34,7 +34,7 @@
   - name: Test
     fail:
       msg: Expected the blockchain height to remain the same at {{ blockchainHeight.stdout_lines[1][17:]|replace(',','') }}, but returned {{ Blockchain_Info.stdout_lines[1][17:]|replace(',','') }}
-    when: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int == (Blockchain_Info.stdout_lines[1][17:]|replace(',',''))|int
+    when: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int != (Blockchain_Info.stdout_lines[1][17:]|replace(',',''))|int
     ignore_errors: true
 
   - name: Wait 10 seconds
@@ -55,7 +55,7 @@
   - name: Test
     fail:
       msg: Expected the blockchain height to remain the same at {{ blockchainHeight.stdout_lines[1][17:]|replace(',','') }}, but returned {{ Blockchain_Info.stdout_lines[1][17:]|replace(',','') }}
-    when: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int == (Blockchain_Info.stdout_lines[1][17:]|replace(',',''))|int
+    when: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int != (Blockchain_Info.stdout_lines[1][17:]|replace(',',''))|int
     ignore_errors: true
 
   - name: Wait 10 seconds
@@ -76,7 +76,7 @@
   - name: Test
     fail:
       msg: Expected the blockchain height to remain the same at {{ blockchainHeight.stdout_lines[1][17:]|replace(',','') }}, but returned {{ Blockchain_Info.stdout_lines[1][17:]|replace(',','') }}
-    when: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int == (Blockchain_Info.stdout_lines[1][17:]|replace(',',''))|int
+    when: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int != (Blockchain_Info.stdout_lines[1][17:]|replace(',',''))|int
     ignore_errors: true
 
   - name: Wait 10 seconds
@@ -97,7 +97,7 @@
   - name: Test
     fail:
       msg: Expected the blockchain height to remain the same at {{ blockchainHeight.stdout_lines[1][17:]|replace(',','') }}, but returned {{ Blockchain_Info.stdout_lines[1][17:]|replace(',','') }}
-    when: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int == (Blockchain_Info.stdout_lines[1][17:]|replace(',',''))|int
+    when: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int != (Blockchain_Info.stdout_lines[1][17:]|replace(',',''))|int
     ignore_errors: true
 
   - name: Wait 10 seconds
@@ -118,7 +118,7 @@
   - name: Test
     fail:
       msg: Expected the blockchain height to remain the same at {{ blockchainHeight.stdout_lines[1][17:]|replace(',','') }}, but returned {{ Blockchain_Info.stdout_lines[1][17:]|replace(',','') }}
-    when: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int == (Blockchain_Info.stdout_lines[1][17:]|replace(',',''))|int
+    when: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int != (Blockchain_Info.stdout_lines[1][17:]|replace(',',''))|int
     ignore_errors: true
 
   - name: Wait 10 seconds
@@ -139,7 +139,7 @@
   - name: Test
     fail:
       msg: Expected the blockchain height to remain the same at {{ blockchainHeight.stdout_lines[1][17:]|replace(',','') }}, but returned {{ Blockchain_Info.stdout_lines[1][17:]|replace(',','') }}
-    when: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int == (Blockchain_Info.stdout_lines[1][17:]|replace(',',''))|int
+    when: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int != (Blockchain_Info.stdout_lines[1][17:]|replace(',',''))|int
     ignore_errors: true
 
 
