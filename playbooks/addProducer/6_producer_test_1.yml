@@ -23,7 +23,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 80
+    async: 90
     poll: 0
 
   - name: Launch NODE2
@@ -277,6 +277,9 @@
       msg: "Expected ']' but returned {{ BlockchainInfo.stdout_lines[9] }}"
     when: BlockchainInfo.stdout_lines[9][-2:-1] != "]"
     ignore_errors: true
+
+
+#################### Shutdown 2 servers ####################
 
 
 #################### Terminate ####################
