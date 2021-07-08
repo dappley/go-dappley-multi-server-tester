@@ -185,7 +185,6 @@ func terminate(number string) {
 	for host_scanner.Scan() {
 		line := host_scanner.Text()
 
-		fmt.Println(line)
 		if lines_to_remove == 0 {
 			updated_host_list += line + "\n"
 			continue
