@@ -27,7 +27,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 60
+    async: 70
     poll: 0
 
   - name: Launch NODE2
@@ -35,7 +35,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 60
+    async: 70
     poll: 0
 
   - name: Launch NODE3
@@ -43,7 +43,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 60
+    async: 70
     poll: 0
 
   - name: Launch NODE4
@@ -51,7 +51,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 60
+    async: 70
     poll: 0
 
   - name: Launch NODE5
@@ -59,7 +59,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 60
+    async: 70
     poll: 0
 
   - name: Wait 10 seconds for blockchain
@@ -100,9 +100,15 @@
 
 
 #################### Terminate ####################
-  - name: Wait till async tasks terminate
-    wait_for:
-      timeout: 20
+  - name: Wait til the blockchain terminates
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: blockchainHeight.stdout_lines[0][7:] == "server is not reachable!"
+    retries: 20
+    delay: 10
+    ignore_errors: true
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
@@ -128,7 +134,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 70
+    async: 80
     poll: 0
 
   - name: Launch NODE2
@@ -136,7 +142,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 70
+    async: 80
     poll: 0
 
   - name: Launch NODE3
@@ -144,7 +150,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 70
+    async: 80
     poll: 0
 
   - name: Launch NODE4
@@ -152,7 +158,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 70
+    async: 80
     poll: 0
 
   - name: Launch NODE5
@@ -160,7 +166,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 70
+    async: 80
     poll: 0
 
   - name: Wait 10 seconds for blockchain
@@ -235,9 +241,15 @@
 
 
 #################### Terminate ####################
-  - name: Wait till async tasks terminate
-    wait_for:
-      timeout: 20
+  - name: Wait til the blockchain terminates
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: blockchainHeight.stdout_lines[0][7:] == "server is not reachable!"
+    retries: 20
+    delay: 10
+    ignore_errors: true
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
@@ -263,7 +275,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 60
+    async: 70
     poll: 0
 
   - name: Launch NODE2
@@ -271,7 +283,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 60
+    async: 70
     poll: 0
 
   - name: Launch NODE3
@@ -279,7 +291,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 60
+    async: 70
     poll: 0
 
   - name: Launch NODE4
@@ -287,7 +299,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 60
+    async: 70
     poll: 0
 
   - name: Launch NODE5
@@ -295,7 +307,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 60
+    async: 70
     poll: 0
 
   - name: Wait 10 seconds for blockchain
@@ -332,9 +344,15 @@
 
 
 #################### Terminate ####################
-  - name: Wait till async tasks terminate
-    wait_for:
-      timeout: 20
+  - name: Wait til the blockchain terminates
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: blockchainHeight.stdout_lines[0][7:] == "server is not reachable!"
+    retries: 20
+    delay: 10
+    ignore_errors: true
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
