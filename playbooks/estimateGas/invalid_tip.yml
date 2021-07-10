@@ -218,9 +218,15 @@
 
 
 #################### Terminate playbook ####################
-  - name: Wait till async tasks terminate
-    wait_for:
-      timeout: 30
+  - name: Wait til the blockchain terminates
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: blockchainHeight.stdout_lines[0][7:] == "server is not reachable!"
+    retries: 20
+    delay: 10
+    ignore_errors: true
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
@@ -449,9 +455,15 @@
 
 
 #################### Terminate playbook ####################
-  - name: Wait till async tasks terminate
-    wait_for:
-      timeout: 30
+  - name: Wait til the blockchain terminates
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: blockchainHeight.stdout_lines[0][7:] == "server is not reachable!"
+    retries: 20
+    delay: 10
+    ignore_errors: true
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
@@ -680,9 +692,15 @@
 
 
 #################### Terminate playbook ####################
-  - name: Wait till async tasks terminate
-    wait_for:
-      timeout: 30
+  - name: Wait til the blockchain terminates
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: blockchainHeight.stdout_lines[0][7:] == "server is not reachable!"
+    retries: 20
+    delay: 10
+    ignore_errors: true
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
@@ -911,9 +929,15 @@
 
 
 #################### Terminate playbook ####################
-  - name: Wait till async tasks terminate
-    wait_for:
-      timeout: 30
+  - name: Wait til the blockchain terminates
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: blockchainHeight.stdout_lines[0][7:] == "server is not reachable!"
+    retries: 20
+    delay: 10
+    ignore_errors: true
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
@@ -1144,9 +1168,15 @@
 
 
 #################### Terminate playbook ####################
-  - name: Wait till async tasks terminate
-    wait_for:
-      timeout: 30
+  - name: Wait til the blockchain terminates
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: blockchainHeight.stdout_lines[0][7:] == "server is not reachable!"
+    retries: 20
+    delay: 10
+    ignore_errors: true
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
@@ -1376,9 +1406,15 @@
 
 
 #################### Terminate playbook ####################
-  - name: Wait till async tasks terminate
-    wait_for:
-      timeout: 30
+  - name: Wait til the blockchain terminates
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: blockchainHeight.stdout_lines[0][7:] == "server is not reachable!"
+    retries: 20
+    delay: 10
+    ignore_errors: true
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
@@ -1607,9 +1643,15 @@
 
 
 #################### Terminate playbook ####################
-  - name: Wait till async tasks terminate
-    wait_for:
-      timeout: 30
+  - name: Wait til the blockchain terminates
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: blockchainHeight.stdout_lines[0][7:] == "server is not reachable!"
+    retries: 20
+    delay: 10
+    ignore_errors: true
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
