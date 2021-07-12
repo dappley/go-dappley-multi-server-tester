@@ -74,7 +74,7 @@
 
   - name: Wait 10 seconds to launch blockchain
     wait_for:
-      timeout: 10
+      timeout: 20
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo

@@ -69,7 +69,7 @@
 
   - name: Wait 10 seconds for blockchain
     wait_for:
-      timeout: 10
+      timeout: 20
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
@@ -231,7 +231,7 @@
 
   - name: Wait 10 seconds for blockchain
     wait_for:
-      timeout: 10
+      timeout: 20
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
@@ -380,7 +380,7 @@
 
   - name: Wait 10 seconds for blockchain
     wait_for:
-      timeout: 10
+      timeout: 20
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
@@ -529,7 +529,7 @@
 
   - name: Wait 10 seconds for blockchain
     wait_for:
-      timeout: 10
+      timeout: 20
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo

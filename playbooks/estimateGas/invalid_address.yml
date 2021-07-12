@@ -75,9 +75,9 @@
     async: 90
     poll: 0
 
-  - name: Wait 10 seconds to launch blockchain
+  - name: Wait for blockchain initialization
     wait_for:
-      timeout: 10
+      timeout: 20
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
@@ -312,9 +312,9 @@
     async: 90
     poll: 0
 
-  - name: Wait 10 seconds to launch blockchain
+  - name: Wait for blockchain initialization
     wait_for:
-      timeout: 10
+      timeout: 20
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
@@ -549,9 +549,9 @@
     async: 90
     poll: 0
 
-  - name: Wait 10 seconds to launch blockchain
+  - name: Wait for blockchain initialization
     wait_for:
-      timeout: 10
+      timeout: 20
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
