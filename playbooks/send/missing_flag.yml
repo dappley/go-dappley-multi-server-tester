@@ -76,7 +76,7 @@
 
   - name: Wait for blockchain initialization
     wait_for:
-      timeout: 20
+      timeout: 30
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
@@ -293,7 +293,7 @@
 
   - name: Wait for blockchain initialization
     wait_for:
-      timeout: 20
+      timeout: 30
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
@@ -511,7 +511,7 @@
 
   - name: Wait for blockchain initialization
     wait_for:
-      timeout: 20
+      timeout: 30
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo

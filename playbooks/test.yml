@@ -75,6 +75,109 @@
   - debug:
       msg: '{{ blockchainHeight }}'
 
+  - name: register real root user to localhost facts
+    set_fact: stable="false"
+
+  - debug:
+      msg: '{{ stable }}'
+
+  # - name: Update status
+  #   all:
+  #     set_fact: stable="true"
+  #   when: blockchainHeight.failed
+
+  - debug:
+      msg: "{{ hostvars['NODE1']['stable'] }}"
+
+  - debug:
+      msg: "{{ hostvars['NODE2']['stable'] }}"
+
+  - debug:
+      msg: "{{ hostvars['NODE3']['stable'] }}"
+
+  - debug:
+      msg: "{{ hostvars['NODE4']['stable'] }}"
+
+  - debug:
+      msg: "{{ hostvars['NODE5']['stable'] }}"
+
+  - name: Wait for the blockchain to stablize
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight_2
+    until: blockchainHeight_2.stdout_lines[0][7:] == "server is not reachable!"
+    retries: 100
+    delay: 10
+    when: blockchainHeight.failed
+    ignore_errors: true
+
+  - debug:
+      msg: '{{ blockchainHeight_2 }}'
+
+  - name: Clear directory
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+    when: blockchainHeight.failed
+    ignore_errors: true
+
+  - name: Launch NODE1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1'] and blockchainHeight.failed
+    async: 90
+    poll: 0
+
+  - name: Launch NODE2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2'] and blockchainHeight.failed
+    async: 90
+    poll: 0
+
+  - name: Launch NODE3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3'] and blockchainHeight.failed
+    async: 90
+    poll: 0
+
+  - name: Launch NODE4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4'] and blockchainHeight.failed
+    async: 90
+    poll: 0
+
+  - name: Launch NODE5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5'] and blockchainHeight.failed
+    async: 90
+    poll: 0
+
+  - name: Wait for blockchain initialization
+    wait_for:
+      timeout: 20
+    when: blockchainHeight.failed
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
+    retries: 20
+    delay: 10
+    when: blockchainHeight.failed
+    ignore_errors: true
+
 
 #################### Terminate ####################
   - name: Wait til the blockchain terminates
