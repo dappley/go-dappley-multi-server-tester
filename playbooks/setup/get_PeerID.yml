@@ -58,7 +58,7 @@
     async: 70
     poll: 0
 
-  - name: Wait 10 seconds for blockchain
+  - name: Wait for blockchain initialization
     wait_for:
       timeout: 20
 
