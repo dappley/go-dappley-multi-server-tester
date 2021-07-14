@@ -63,7 +63,7 @@
 
   - name: Wait for blockchain initialization
     wait_for:
-      timeout: 30
+      timeout: 20
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
@@ -73,6 +73,119 @@
     until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
     retries: 20
     delay: 10
+    ignore_errors: true
+
+
+#################### Check NODE1 result ####################
+  - name: Create initialization result NODE1 - true
+    shell: echo true > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE1- false
+    shell: echo false > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and not blockchainHeight.failed
+
+
+#################### Check NODE2 result ####################
+  - name: Create initialization result NODE2 - true
+    shell: echo true > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE2 - false
+    shell: echo false > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and not blockchainHeight.failed
+
+
+#################### Check NODE3 result ####################
+  - name: Create initialization result NODE3 - true
+    shell: echo true > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE3 - false
+    shell: echo false > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and not blockchainHeight.failed
+
+
+#################### Check NODE4 result ####################
+  - name: Create initialization result NODE4 - true
+    shell: echo true > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE4 - false
+    shell: echo false > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and not blockchainHeight.failed
+
+
+#################### Check NODE5 result ####################
+  - name: Create initialization result NODE5 - true
+    shell: echo true > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE5 - false
+    shell: echo false > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and not blockchainHeight.failed
+
+
+#################### Move initialization result ####################
+  - name: Move playbook test result to Jenkins - NODE1
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      flat: yes
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Move playbook test result to Jenkins - NODE2
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      flat: yes
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Move playbook test result to Jenkins - NODE3
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      flat: yes
+    when: inventory_hostname in groups['NODE3']
+
+  - name: Move playbook test result to Jenkins - NODE4
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      flat: yes
+    when: inventory_hostname in groups['NODE4']
+
+  - name: Move playbook test result to Jenkins - NODE5
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      flat: yes
+    when: inventory_hostname in groups['NODE5']
+
+
+#################### Terminate playbook when initialization returns error ####################
+  - meta: end_play
+    when: blockchainHeight.failed
 
 
 #################### maxCount is 0 ####################
@@ -158,7 +271,7 @@
 
   - name: Wait for blockchain initialization
     wait_for:
-      timeout: 30
+      timeout: 20
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
@@ -168,6 +281,119 @@
     until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
     retries: 20
     delay: 10
+    ignore_errors: true
+
+
+#################### Check NODE1 result ####################
+  - name: Create initialization result NODE1 - true
+    shell: echo true > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE1- false
+    shell: echo false > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and not blockchainHeight.failed
+
+
+#################### Check NODE2 result ####################
+  - name: Create initialization result NODE2 - true
+    shell: echo true > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE2 - false
+    shell: echo false > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and not blockchainHeight.failed
+
+
+#################### Check NODE3 result ####################
+  - name: Create initialization result NODE3 - true
+    shell: echo true > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE3 - false
+    shell: echo false > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and not blockchainHeight.failed
+
+
+#################### Check NODE4 result ####################
+  - name: Create initialization result NODE4 - true
+    shell: echo true > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE4 - false
+    shell: echo false > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and not blockchainHeight.failed
+
+
+#################### Check NODE5 result ####################
+  - name: Create initialization result NODE5 - true
+    shell: echo true > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE5 - false
+    shell: echo false > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and not blockchainHeight.failed
+
+
+#################### Move initialization result ####################
+  - name: Move playbook test result to Jenkins - NODE1
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      flat: yes
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Move playbook test result to Jenkins - NODE2
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      flat: yes
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Move playbook test result to Jenkins - NODE3
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      flat: yes
+    when: inventory_hostname in groups['NODE3']
+
+  - name: Move playbook test result to Jenkins - NODE4
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      flat: yes
+    when: inventory_hostname in groups['NODE4']
+
+  - name: Move playbook test result to Jenkins - NODE5
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      flat: yes
+    when: inventory_hostname in groups['NODE5']
+
+
+#################### Terminate playbook when initialization returns error ####################
+  - meta: end_play
+    when: blockchainHeight.failed
 
 
 #################### maxCount is negative ####################
@@ -252,7 +478,7 @@
 
   - name: Wait for blockchain initialization
     wait_for:
-      timeout: 30
+      timeout: 20
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
@@ -262,6 +488,119 @@
     until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
     retries: 20
     delay: 10
+    ignore_errors: true
+
+
+#################### Check NODE1 result ####################
+  - name: Create initialization result NODE1 - true
+    shell: echo true > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE1- false
+    shell: echo false > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and not blockchainHeight.failed
+
+
+#################### Check NODE2 result ####################
+  - name: Create initialization result NODE2 - true
+    shell: echo true > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE2 - false
+    shell: echo false > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and not blockchainHeight.failed
+
+
+#################### Check NODE3 result ####################
+  - name: Create initialization result NODE3 - true
+    shell: echo true > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE3 - false
+    shell: echo false > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and not blockchainHeight.failed
+
+
+#################### Check NODE4 result ####################
+  - name: Create initialization result NODE4 - true
+    shell: echo true > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE4 - false
+    shell: echo false > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and not blockchainHeight.failed
+
+
+#################### Check NODE5 result ####################
+  - name: Create initialization result NODE5 - true
+    shell: echo true > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE5 - false
+    shell: echo false > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and not blockchainHeight.failed
+
+
+#################### Move initialization result ####################
+  - name: Move playbook test result to Jenkins - NODE1
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      flat: yes
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Move playbook test result to Jenkins - NODE2
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      flat: yes
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Move playbook test result to Jenkins - NODE3
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      flat: yes
+    when: inventory_hostname in groups['NODE3']
+
+  - name: Move playbook test result to Jenkins - NODE4
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      flat: yes
+    when: inventory_hostname in groups['NODE4']
+
+  - name: Move playbook test result to Jenkins - NODE5
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      flat: yes
+    when: inventory_hostname in groups['NODE5']
+
+
+#################### Terminate playbook when initialization returns error ####################
+  - meta: end_play
+    when: blockchainHeight.failed
 
 
 #################### maxCount is string ####################
@@ -346,7 +685,7 @@
 
   - name: Wait for blockchain initialization
     wait_for:
-      timeout: 30
+      timeout: 20
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
@@ -356,6 +695,119 @@
     until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
     retries: 20
     delay: 10
+    ignore_errors: true
+
+
+#################### Check NODE1 result ####################
+  - name: Create initialization result NODE1 - true
+    shell: echo true > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE1- false
+    shell: echo false > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and not blockchainHeight.failed
+
+
+#################### Check NODE2 result ####################
+  - name: Create initialization result NODE2 - true
+    shell: echo true > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE2 - false
+    shell: echo false > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and not blockchainHeight.failed
+
+
+#################### Check NODE3 result ####################
+  - name: Create initialization result NODE3 - true
+    shell: echo true > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE3 - false
+    shell: echo false > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and not blockchainHeight.failed
+
+
+#################### Check NODE4 result ####################
+  - name: Create initialization result NODE4 - true
+    shell: echo true > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE4 - false
+    shell: echo false > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and not blockchainHeight.failed
+
+
+#################### Check NODE5 result ####################
+  - name: Create initialization result NODE5 - true
+    shell: echo true > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE5 - false
+    shell: echo false > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and not blockchainHeight.failed
+
+
+#################### Move initialization result ####################
+  - name: Move playbook test result to Jenkins - NODE1
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      flat: yes
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Move playbook test result to Jenkins - NODE2
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      flat: yes
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Move playbook test result to Jenkins - NODE3
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      flat: yes
+    when: inventory_hostname in groups['NODE3']
+
+  - name: Move playbook test result to Jenkins - NODE4
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      flat: yes
+    when: inventory_hostname in groups['NODE4']
+
+  - name: Move playbook test result to Jenkins - NODE5
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      flat: yes
+    when: inventory_hostname in groups['NODE5']
+
+
+#################### Terminate playbook when initialization returns error ####################
+  - meta: end_play
+    when: blockchainHeight.failed
 
 
 #################### maxCount is special character  ####################
@@ -442,7 +894,7 @@
 
   - name: Wait for blockchain initialization
     wait_for:
-      timeout: 30
+      timeout: 20
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
@@ -452,6 +904,119 @@
     until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
     retries: 20
     delay: 10
+    ignore_errors: true
+
+
+#################### Check NODE1 result ####################
+  - name: Create initialization result NODE1 - true
+    shell: echo true > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE1- false
+    shell: echo false > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and not blockchainHeight.failed
+
+
+#################### Check NODE2 result ####################
+  - name: Create initialization result NODE2 - true
+    shell: echo true > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE2 - false
+    shell: echo false > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and not blockchainHeight.failed
+
+
+#################### Check NODE3 result ####################
+  - name: Create initialization result NODE3 - true
+    shell: echo true > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE3 - false
+    shell: echo false > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and not blockchainHeight.failed
+
+
+#################### Check NODE4 result ####################
+  - name: Create initialization result NODE4 - true
+    shell: echo true > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE4 - false
+    shell: echo false > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and not blockchainHeight.failed
+
+
+#################### Check NODE5 result ####################
+  - name: Create initialization result NODE5 - true
+    shell: echo true > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE5 - false
+    shell: echo false > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and not blockchainHeight.failed
+
+
+#################### Move initialization result ####################
+  - name: Move playbook test result to Jenkins - NODE1
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      flat: yes
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Move playbook test result to Jenkins - NODE2
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      flat: yes
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Move playbook test result to Jenkins - NODE3
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      flat: yes
+    when: inventory_hostname in groups['NODE3']
+
+  - name: Move playbook test result to Jenkins - NODE4
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      flat: yes
+    when: inventory_hostname in groups['NODE4']
+
+  - name: Move playbook test result to Jenkins - NODE5
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      flat: yes
+    when: inventory_hostname in groups['NODE5']
+
+
+#################### Terminate playbook when initialization returns error ####################
+  - meta: end_play
+    when: blockchainHeight.failed
 
 
 #################### maxCount is empty ####################
@@ -536,7 +1101,7 @@
 
   - name: Wait for blockchain initialization
     wait_for:
-      timeout: 30
+      timeout: 20
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
@@ -546,6 +1111,119 @@
     until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
     retries: 20
     delay: 10
+    ignore_errors: true
+
+
+#################### Check NODE1 result ####################
+  - name: Create initialization result NODE1 - true
+    shell: echo true > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE1- false
+    shell: echo false > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and not blockchainHeight.failed
+
+
+#################### Check NODE2 result ####################
+  - name: Create initialization result NODE2 - true
+    shell: echo true > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE2 - false
+    shell: echo false > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and not blockchainHeight.failed
+
+
+#################### Check NODE3 result ####################
+  - name: Create initialization result NODE3 - true
+    shell: echo true > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE3 - false
+    shell: echo false > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and not blockchainHeight.failed
+
+
+#################### Check NODE4 result ####################
+  - name: Create initialization result NODE4 - true
+    shell: echo true > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE4 - false
+    shell: echo false > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and not blockchainHeight.failed
+
+
+#################### Check NODE5 result ####################
+  - name: Create initialization result NODE5 - true
+    shell: echo true > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE5 - false
+    shell: echo false > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and not blockchainHeight.failed
+
+
+#################### Move initialization result ####################
+  - name: Move playbook test result to Jenkins - NODE1
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      flat: yes
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Move playbook test result to Jenkins - NODE2
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      flat: yes
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Move playbook test result to Jenkins - NODE3
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      flat: yes
+    when: inventory_hostname in groups['NODE3']
+
+  - name: Move playbook test result to Jenkins - NODE4
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      flat: yes
+    when: inventory_hostname in groups['NODE4']
+
+  - name: Move playbook test result to Jenkins - NODE5
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      flat: yes
+    when: inventory_hostname in groups['NODE5']
+
+
+#################### Terminate playbook when initialization returns error ####################
+  - meta: end_play
+    when: blockchainHeight.failed
 
 
 #################### startBlockHashes is invalid ####################
@@ -630,7 +1308,7 @@
 
   - name: Wait for blockchain initialization
     wait_for:
-      timeout: 30
+      timeout: 20
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
@@ -640,6 +1318,119 @@
     until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
     retries: 20
     delay: 10
+    ignore_errors: true
+
+
+#################### Check NODE1 result ####################
+  - name: Create initialization result NODE1 - true
+    shell: echo true > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE1- false
+    shell: echo false > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and not blockchainHeight.failed
+
+
+#################### Check NODE2 result ####################
+  - name: Create initialization result NODE2 - true
+    shell: echo true > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE2 - false
+    shell: echo false > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and not blockchainHeight.failed
+
+
+#################### Check NODE3 result ####################
+  - name: Create initialization result NODE3 - true
+    shell: echo true > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE3 - false
+    shell: echo false > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and not blockchainHeight.failed
+
+
+#################### Check NODE4 result ####################
+  - name: Create initialization result NODE4 - true
+    shell: echo true > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE4 - false
+    shell: echo false > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and not blockchainHeight.failed
+
+
+#################### Check NODE5 result ####################
+  - name: Create initialization result NODE5 - true
+    shell: echo true > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE5 - false
+    shell: echo false > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and not blockchainHeight.failed
+
+
+#################### Move initialization result ####################
+  - name: Move playbook test result to Jenkins - NODE1
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      flat: yes
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Move playbook test result to Jenkins - NODE2
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      flat: yes
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Move playbook test result to Jenkins - NODE3
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      flat: yes
+    when: inventory_hostname in groups['NODE3']
+
+  - name: Move playbook test result to Jenkins - NODE4
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      flat: yes
+    when: inventory_hostname in groups['NODE4']
+
+  - name: Move playbook test result to Jenkins - NODE5
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      flat: yes
+    when: inventory_hostname in groups['NODE5']
+
+
+#################### Terminate playbook when initialization returns error ####################
+  - meta: end_play
+    when: blockchainHeight.failed
 
 
 #################### startBlockHashes is valid but doesn't exist ####################
@@ -724,7 +1515,7 @@
 
   - name: Wait for blockchain initialization
     wait_for:
-      timeout: 30
+      timeout: 20
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
@@ -734,6 +1525,119 @@
     until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
     retries: 20
     delay: 10
+    ignore_errors: true
+
+
+#################### Check NODE1 result ####################
+  - name: Create initialization result NODE1 - true
+    shell: echo true > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE1- false
+    shell: echo false > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and not blockchainHeight.failed
+
+
+#################### Check NODE2 result ####################
+  - name: Create initialization result NODE2 - true
+    shell: echo true > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE2 - false
+    shell: echo false > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and not blockchainHeight.failed
+
+
+#################### Check NODE3 result ####################
+  - name: Create initialization result NODE3 - true
+    shell: echo true > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE3 - false
+    shell: echo false > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and not blockchainHeight.failed
+
+
+#################### Check NODE4 result ####################
+  - name: Create initialization result NODE4 - true
+    shell: echo true > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE4 - false
+    shell: echo false > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and not blockchainHeight.failed
+
+
+#################### Check NODE5 result ####################
+  - name: Create initialization result NODE5 - true
+    shell: echo true > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE5 - false
+    shell: echo false > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and not blockchainHeight.failed
+
+
+#################### Move initialization result ####################
+  - name: Move playbook test result to Jenkins - NODE1
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      flat: yes
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Move playbook test result to Jenkins - NODE2
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      flat: yes
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Move playbook test result to Jenkins - NODE3
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      flat: yes
+    when: inventory_hostname in groups['NODE3']
+
+  - name: Move playbook test result to Jenkins - NODE4
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      flat: yes
+    when: inventory_hostname in groups['NODE4']
+
+  - name: Move playbook test result to Jenkins - NODE5
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      flat: yes
+    when: inventory_hostname in groups['NODE5']
+
+
+#################### Terminate playbook when initialization returns error ####################
+  - meta: end_play
+    when: blockchainHeight.failed
 
 
 #################### startBlockHashes is 0 ####################
@@ -818,7 +1722,7 @@
 
   - name: Wait for blockchain initialization
     wait_for:
-      timeout: 30
+      timeout: 20
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
@@ -828,6 +1732,119 @@
     until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
     retries: 20
     delay: 10
+    ignore_errors: true
+
+
+#################### Check NODE1 result ####################
+  - name: Create initialization result NODE1 - true
+    shell: echo true > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE1- false
+    shell: echo false > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and not blockchainHeight.failed
+
+
+#################### Check NODE2 result ####################
+  - name: Create initialization result NODE2 - true
+    shell: echo true > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE2 - false
+    shell: echo false > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and not blockchainHeight.failed
+
+
+#################### Check NODE3 result ####################
+  - name: Create initialization result NODE3 - true
+    shell: echo true > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE3 - false
+    shell: echo false > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and not blockchainHeight.failed
+
+
+#################### Check NODE4 result ####################
+  - name: Create initialization result NODE4 - true
+    shell: echo true > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE4 - false
+    shell: echo false > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and not blockchainHeight.failed
+
+
+#################### Check NODE5 result ####################
+  - name: Create initialization result NODE5 - true
+    shell: echo true > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE5 - false
+    shell: echo false > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and not blockchainHeight.failed
+
+
+#################### Move initialization result ####################
+  - name: Move playbook test result to Jenkins - NODE1
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      flat: yes
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Move playbook test result to Jenkins - NODE2
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      flat: yes
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Move playbook test result to Jenkins - NODE3
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      flat: yes
+    when: inventory_hostname in groups['NODE3']
+
+  - name: Move playbook test result to Jenkins - NODE4
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      flat: yes
+    when: inventory_hostname in groups['NODE4']
+
+  - name: Move playbook test result to Jenkins - NODE5
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      flat: yes
+    when: inventory_hostname in groups['NODE5']
+
+
+#################### Terminate playbook when initialization returns error ####################
+  - meta: end_play
+    when: blockchainHeight.failed
 
 
 #################### startBlockHashes is negative ####################
@@ -912,7 +1929,7 @@
 
   - name: Wait for blockchain initialization
     wait_for:
-      timeout: 30
+      timeout: 20
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
@@ -922,6 +1939,119 @@
     until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
     retries: 20
     delay: 10
+    ignore_errors: true
+
+
+#################### Check NODE1 result ####################
+  - name: Create initialization result NODE1 - true
+    shell: echo true > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE1- false
+    shell: echo false > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and not blockchainHeight.failed
+
+
+#################### Check NODE2 result ####################
+  - name: Create initialization result NODE2 - true
+    shell: echo true > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE2 - false
+    shell: echo false > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and not blockchainHeight.failed
+
+
+#################### Check NODE3 result ####################
+  - name: Create initialization result NODE3 - true
+    shell: echo true > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE3 - false
+    shell: echo false > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and not blockchainHeight.failed
+
+
+#################### Check NODE4 result ####################
+  - name: Create initialization result NODE4 - true
+    shell: echo true > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE4 - false
+    shell: echo false > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and not blockchainHeight.failed
+
+
+#################### Check NODE5 result ####################
+  - name: Create initialization result NODE5 - true
+    shell: echo true > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE5 - false
+    shell: echo false > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and not blockchainHeight.failed
+
+
+#################### Move initialization result ####################
+  - name: Move playbook test result to Jenkins - NODE1
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      flat: yes
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Move playbook test result to Jenkins - NODE2
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      flat: yes
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Move playbook test result to Jenkins - NODE3
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      flat: yes
+    when: inventory_hostname in groups['NODE3']
+
+  - name: Move playbook test result to Jenkins - NODE4
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      flat: yes
+    when: inventory_hostname in groups['NODE4']
+
+  - name: Move playbook test result to Jenkins - NODE5
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      flat: yes
+    when: inventory_hostname in groups['NODE5']
+
+
+#################### Terminate playbook when initialization returns error ####################
+  - meta: end_play
+    when: blockchainHeight.failed
 
 
 #################### startBlockHashes is a random string ####################
@@ -1006,7 +2136,7 @@
 
   - name: Wait for blockchain initialization
     wait_for:
-      timeout: 30
+      timeout: 20
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
@@ -1016,6 +2146,119 @@
     until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
     retries: 20
     delay: 10
+    ignore_errors: true
+
+
+#################### Check NODE1 result ####################
+  - name: Create initialization result NODE1 - true
+    shell: echo true > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE1- false
+    shell: echo false > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and not blockchainHeight.failed
+
+
+#################### Check NODE2 result ####################
+  - name: Create initialization result NODE2 - true
+    shell: echo true > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE2 - false
+    shell: echo false > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and not blockchainHeight.failed
+
+
+#################### Check NODE3 result ####################
+  - name: Create initialization result NODE3 - true
+    shell: echo true > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE3 - false
+    shell: echo false > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and not blockchainHeight.failed
+
+
+#################### Check NODE4 result ####################
+  - name: Create initialization result NODE4 - true
+    shell: echo true > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE4 - false
+    shell: echo false > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and not blockchainHeight.failed
+
+
+#################### Check NODE5 result ####################
+  - name: Create initialization result NODE5 - true
+    shell: echo true > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE5 - false
+    shell: echo false > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and not blockchainHeight.failed
+
+
+#################### Move initialization result ####################
+  - name: Move playbook test result to Jenkins - NODE1
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      flat: yes
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Move playbook test result to Jenkins - NODE2
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      flat: yes
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Move playbook test result to Jenkins - NODE3
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      flat: yes
+    when: inventory_hostname in groups['NODE3']
+
+  - name: Move playbook test result to Jenkins - NODE4
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      flat: yes
+    when: inventory_hostname in groups['NODE4']
+
+  - name: Move playbook test result to Jenkins - NODE5
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      flat: yes
+    when: inventory_hostname in groups['NODE5']
+
+
+#################### Terminate playbook when initialization returns error ####################
+  - meta: end_play
+    when: blockchainHeight.failed
 
 
 #################### startBlockHashes is special character ####################
@@ -1101,7 +2344,7 @@
 
   - name: Wait for blockchain initialization
     wait_for:
-      timeout: 30
+      timeout: 20
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
@@ -1111,6 +2354,119 @@
     until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
     retries: 20
     delay: 10
+    ignore_errors: true
+
+
+#################### Check NODE1 result ####################
+  - name: Create initialization result NODE1 - true
+    shell: echo true > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE1- false
+    shell: echo false > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and not blockchainHeight.failed
+
+
+#################### Check NODE2 result ####################
+  - name: Create initialization result NODE2 - true
+    shell: echo true > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE2 - false
+    shell: echo false > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and not blockchainHeight.failed
+
+
+#################### Check NODE3 result ####################
+  - name: Create initialization result NODE3 - true
+    shell: echo true > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE3 - false
+    shell: echo false > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and not blockchainHeight.failed
+
+
+#################### Check NODE4 result ####################
+  - name: Create initialization result NODE4 - true
+    shell: echo true > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE4 - false
+    shell: echo false > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and not blockchainHeight.failed
+
+
+#################### Check NODE5 result ####################
+  - name: Create initialization result NODE5 - true
+    shell: echo true > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE5 - false
+    shell: echo false > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and not blockchainHeight.failed
+
+
+#################### Move initialization result ####################
+  - name: Move playbook test result to Jenkins - NODE1
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      flat: yes
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Move playbook test result to Jenkins - NODE2
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      flat: yes
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Move playbook test result to Jenkins - NODE3
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      flat: yes
+    when: inventory_hostname in groups['NODE3']
+
+  - name: Move playbook test result to Jenkins - NODE4
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      flat: yes
+    when: inventory_hostname in groups['NODE4']
+
+  - name: Move playbook test result to Jenkins - NODE5
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      flat: yes
+    when: inventory_hostname in groups['NODE5']
+
+
+#################### Terminate playbook when initialization returns error ####################
+  - meta: end_play
+    when: blockchainHeight.failed
 
 
 #################### startBlockHashes is empty ####################
