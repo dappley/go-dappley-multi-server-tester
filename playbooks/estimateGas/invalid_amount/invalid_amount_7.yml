@@ -1,0 +1,362 @@
+---
+
+- hosts: all
+  become: true
+  become_user: ubuntu
+  environment:
+    GOPATH: "/home/ubuntu/go"
+    GOROOT: "/usr/local/go"
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin"
+  vars:
+    account1: account_1_address
+    account2: account_2_address
+
+  tasks:
+#################### Send account.dat file to Node1 && Node2 ####################
+  - name: Accounts.dat to Node1
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-ansible/accounts/node1/accounts.dat
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Accounts.dat to Node2
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-ansible/accounts/node2/accounts.dat
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Make build
+    make:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      target: build
+      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
+
+#################### Launch blockchain ####################
+  - name: Launch node1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 90
+    poll: 0
+
+  - name: Launch node2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 90
+    poll: 0
+
+  - name: Launch node3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 90
+    poll: 0
+
+  - name: Launch node4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 90
+    poll: 0
+
+  - name: Launch node5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 90
+    poll: 0
+
+  - name: Wait for blockchain initialization
+    wait_for:
+      timeout: 20
+
+  - name: Wait til the blockchain reaches height of 10
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
+    retries: 20
+    delay: 10
+    ignore_errors: true
+
+
+#################### Check NODE1 result ####################
+  - name: Create initialization result NODE1 - true
+    shell: echo true > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE1- false
+    shell: echo false > error_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE1'] and not blockchainHeight.failed
+
+
+#################### Check NODE2 result ####################
+  - name: Create initialization result NODE2 - true
+    shell: echo true > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE2 - false
+    shell: echo false > error_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE2'] and not blockchainHeight.failed
+
+
+#################### Check NODE3 result ####################
+  - name: Create initialization result NODE3 - true
+    shell: echo true > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE3 - false
+    shell: echo false > error_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE3'] and not blockchainHeight.failed
+
+
+#################### Check NODE4 result ####################
+  - name: Create initialization result NODE4 - true
+    shell: echo true > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE4 - false
+    shell: echo false > error_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE4'] and not blockchainHeight.failed
+
+
+#################### Check NODE5 result ####################
+  - name: Create initialization result NODE5 - true
+    shell: echo true > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and blockchainHeight.failed
+
+  - name: Create initialization result NODE5 - false
+    shell: echo false > error_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    when: inventory_hostname in groups['NODE5'] and not blockchainHeight.failed
+
+
+#################### Move initialization result ####################
+  - name: Move playbook test result to Jenkins - NODE1
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      flat: yes
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Move playbook test result to Jenkins - NODE2
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      flat: yes
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Move playbook test result to Jenkins - NODE3
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      flat: yes
+    when: inventory_hostname in groups['NODE3']
+
+  - name: Move playbook test result to Jenkins - NODE4
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      flat: yes
+    when: inventory_hostname in groups['NODE4']
+
+  - name: Move playbook test result to Jenkins - NODE5
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      flat: yes
+    when: inventory_hostname in groups['NODE5']
+
+
+#################### Terminate playbook when initialization returns error ####################
+  - debug:
+      msg: '{{ blockchainHeight }}'
+
+  - meta: end_play
+    when: blockchainHeight.failed
+
+
+#################### SendFromMiner to account1  ####################
+  - name: Send money to account1
+    shell: ./cli sendFromMiner -to {{ account1 }} -amount 100000
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Wait 10 seconds to complete transaction
+    wait_for:
+      timeout: 10
+
+  - name: Check account1 balance
+    shell: ./cli getBalance -address {{ account1 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account1Balance_1
+
+  - debug:
+      msg: 'Account1 balance: {{ account1Balance_1.stdout_lines[0][16:] }}'
+
+  - name: Check account2 balance
+    shell: ./cli getBalance -address {{ account2 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account2Balance_1
+
+  - debug:
+      msg: 'Account2 blanace: {{ account2Balance_1.stdout_lines[0][16:] }}'
+
+
+#################### Create smart contract ####################
+  - name: Create smart contract
+    shell: ./cli send -from {{ account1 }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -file ../jslib/step_recorder.js
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: smart_contract
+    when: inventory_hostname in groups['NODE1']
+
+  - debug:
+      msg: '{{ smart_contract.stdout_lines[0][18:] }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Wait 10 seconds to complete transaction
+    wait_for:
+      timeout: 10
+
+
+#################### Check account1 && account2 balance ####################
+  - name: Check account1 balance
+    shell: ./cli getBalance -address {{ account1 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account1Balance_2
+
+  - debug:
+      msg: 'Account1 balance: {{ account1Balance_2.stdout_lines[0][16:] }}'
+
+  - name: Account1 balance test
+    fail:
+     msg: "Expected the value to be {{ account1Balance_1.stdout_lines[0][16:]|int - 100|int }}, but returned {{ account1Balance_2.stdout_lines[0][16:] }}."
+    ignore_errors: true
+    when: account1Balance_2.stdout_lines[0][16:]|int != account1Balance_1.stdout_lines[0][16:]|int - 100|int
+
+  - name: Check account2 balance
+    shell: ./cli getBalance -address {{ account2 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account2Balance_2
+
+  - debug:
+      msg: 'Account2 blanace: {{ account2Balance_2.stdout_lines[0][16:] }}'
+
+  - name: Account2 balance test
+    fail:
+     msg: "Expected {{ account2Balance_1.stdout_lines[0][16:]|int }} but returned {{ account2Balance_2.stdout_lines[0][16:] }}"
+    when: account2Balance_2.stdout_lines[0][16:]|int != account2Balance_1.stdout_lines[0][16:]|int
+    ignore_errors: true
+
+
+#################### Estimate Gas - amount is equal to the balance ####################
+  - name: Estimate Gas - amount is equal to the balance
+    shell: ./cli estimateGas -from {{ account1 }} -to {{ smart_contract.stdout_lines[0][18:] }} -amount {{ account1Balance_1.stdout_lines[0][16:] }} -tip 0 -gasLimit 30000 -gasPrice 1 -data '{"function":"record","args":["account_2_address","5000"]}'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: estimate_gas
+    when: inventory_hostname in groups['NODE1']
+
+  - debug:
+      msg: '{{ estimate_gas }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Test
+    fail:
+      msg: "Expected an error message about the insufficient balance, but returned {{ estimate_gas }}"
+    when: inventory_hostname in groups['NODE1'] and estimate_gas.stdout_lines[0][:18] == "Gas estimiated num"
+    ignore_errors: true
+
+
+#################### Check account1 && account2 balance ####################
+  - name: Check account1 balance
+    shell: ./cli getBalance -address {{ account1 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account1Balance_3
+
+  - debug:
+      msg: 'Account1 balance: {{ account1Balance_3.stdout_lines[0][16:] }}'
+
+  - name: Account1 balance test
+    fail:
+     msg: "Expected the value to be {{ account1Balance_2.stdout_lines[0][16:]|int }}, but returned {{ account1Balance_3.stdout_lines[0][16:] }}."
+    ignore_errors: true
+    when: account1Balance_3.stdout_lines[0][16:]|int != account1Balance_2.stdout_lines[0][16:]|int
+
+  - name: Check account2 balance
+    shell: ./cli getBalance -address {{ account2 }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: account2Balance_3
+
+  - debug:
+      msg: 'Account2 blanace: {{ account2Balance_3.stdout_lines[0][16:] }}'
+
+  - name: Account2 balance test
+    fail:
+     msg: "Expected the value to be {{ account2Balance_2.stdout_lines[0][16:]|int }} but returned {{ account2Balance_3.stdout_lines[0][16:] }}"
+    when: account2Balance_3.stdout_lines[0][16:]|int != account2Balance_2.stdout_lines[0][16:]|int
+    ignore_errors: true
+
+
+#################### Terminate playbook ####################
+  - name: Wait til the blockchain terminates
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: blockchainHeight.stdout_lines[0][7:] == "server is not reachable!"
+    retries: 20
+    delay: 10
+    ignore_errors: true
+
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+
+  - name: Remove /go-dappley/dapp/bin Node1
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Remove /go-dappley/dapp/bin Node2
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
+    when: inventory_hostname in groups['NODE2']
