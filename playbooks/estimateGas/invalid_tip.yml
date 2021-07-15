@@ -196,6 +196,9 @@
 
 
 #################### Terminate playbook when initialization returns error ####################
+  - debug:
+      msg: '{{ blockchainHeight }}'
+
   - meta: end_play
     when: blockchainHeight.failed
 
@@ -546,6 +549,9 @@
 
 
 #################### Terminate playbook when initialization returns error ####################
+  - debug:
+      msg: '{{ blockchainHeight }}'
+
   - meta: end_play
     when: blockchainHeight.failed
 
@@ -896,6 +902,9 @@
 
 
 #################### Terminate playbook when initialization returns error ####################
+  - debug:
+      msg: '{{ blockchainHeight }}'
+
   - meta: end_play
     when: blockchainHeight.failed
 
@@ -1246,6 +1255,9 @@
 
 
 #################### Terminate playbook when initialization returns error ####################
+  - debug:
+      msg: '{{ blockchainHeight }}'
+
   - meta: end_play
     when: blockchainHeight.failed
 
@@ -1597,6 +1609,9 @@
 
 
 #################### Terminate playbook when initialization returns error ####################
+  - debug:
+      msg: '{{ blockchainHeight }}'
+
   - meta: end_play
     when: blockchainHeight.failed
 
@@ -1949,6 +1964,9 @@
 
 
 #################### Terminate playbook when initialization returns error ####################
+  - debug:
+      msg: '{{ blockchainHeight }}'
+
   - meta: end_play
     when: blockchainHeight.failed
 
@@ -2299,6 +2317,9 @@
 
 
 #################### Terminate playbook when initialization returns error ####################
+  - debug:
+      msg: '{{ blockchainHeight }}'
+
   - meta: end_play
     when: blockchainHeight.failed
 
