@@ -17,7 +17,10 @@ func send(recipient string, emailBody string, senderEmail string, senderPasswd s
 	//send the email
 	mail := gomail.NewMessage()
 	mail.SetHeader("From", senderEmail)
-	mail.SetHeader("To",   recipient)
+	recipients := strings.Split(recipient, ", ")
+	for _, recipient = range recipients {
+		mail.SetHeader("To",   recipient)
+	}
 	mail.SetHeader("Subject", "Ansible Test Result")
 	mail.SetBody("text", emailBody)
 	mail.Attach("test_results.zip")
