@@ -8,20 +8,19 @@ import (
 	"gopkg.in/gomail.v2"
 )
 
-func SendTestResult(recipient string, senderEmail string, senderPasswd string, test_results []string) {
+func SendTestResult(senderEmail string, senderPasswd string, test_results []string) {
 	emailContents := createEmail(test_results)
-	send(recipient, emailContents, senderEmail, senderPasswd)
+	send(emailContents, senderEmail, senderPasswd)
 }
 
-func send(recipient string, emailBody string, senderEmail string, senderPasswd string) {
+func send(emailBody string, senderEmail string, senderPasswd string) {
 	//send the email
 	mail := gomail.NewMessage()
 	mail.SetHeader("From", senderEmail)
-	recipients := strings.Split(recipient, ", ")
-	for _, recipient = range recipients {
-		fmt.Println(recipient)
-		mail.SetHeader("To", recipient)
-	}
+	mail.SetHeader("To", "blockchainwarning@omnisolu.com",
+						 "wulize1994@gmail.com", 
+						 "rshi@omnisolu.com", 
+						 "ilshiyi@omnisolu.com")
 	mail.SetHeader("Subject", "Ansible Test Result")
 	mail.SetBody("text", emailBody)
 	mail.Attach("test_results.zip")

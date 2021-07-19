@@ -15,10 +15,9 @@ import (
 )
 
 func main() {
-	var number, function, recipient, senderEmail, senderPasswd string
+	var number, function, senderEmail, senderPasswd string
 	flag.StringVar(&number, "number", "999999", "Number of the ec2 instances to be terminated.")
 	flag.StringVar(&function, "function", "<Function Name>", "Name of the function that will be run.")
-	flag.StringVar(&recipient, "recipient", "<Recipient Email>", "Email of the recipient.")
 	flag.StringVar(&senderEmail, "senderEmail", "<Sender Email>", "Email of the addressee.")
 	flag.StringVar(&senderPasswd, "senderPasswd", "<Sender Password>", "Email password of the addressee.")
 	flag.Parse()
@@ -36,7 +35,7 @@ func main() {
 		Update_address(allFiles("playbooks"))
 
 	} else if function == "send_result" {
-		SendTestResult(recipient, senderEmail, senderPasswd, allFiles("testresults"))
+		SendTestResult(senderEmail, senderPasswd, allFiles("testresults"))
 	
 	} else if function == "terminate" {
 		terminate(number)
