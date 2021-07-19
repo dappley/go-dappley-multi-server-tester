@@ -19,7 +19,8 @@ func send(recipient string, emailBody string, senderEmail string, senderPasswd s
 	mail.SetHeader("From", senderEmail)
 	recipients := strings.Split(recipient, ", ")
 	for _, recipient = range recipients {
-		mail.SetHeader("To",   recipient)
+		fmt.Println(recipient)
+		mail.SetHeader("To", recipient)
 	}
 	mail.SetHeader("Subject", "Ansible Test Result")
 	mail.SetBody("text", emailBody)
