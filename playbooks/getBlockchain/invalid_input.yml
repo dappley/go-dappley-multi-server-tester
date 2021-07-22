@@ -150,35 +150,35 @@
   - name: Move playbook test result to Jenkins - NODE1
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node1/
       flat: yes
     when: inventory_hostname in groups['NODE1']
 
   - name: Move playbook test result to Jenkins - NODE2
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node2/
       flat: yes
     when: inventory_hostname in groups['NODE2']
 
   - name: Move playbook test result to Jenkins - NODE3
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node3/
       flat: yes
     when: inventory_hostname in groups['NODE3']
 
   - name: Move playbook test result to Jenkins - NODE4
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node4/
       flat: yes
     when: inventory_hostname in groups['NODE4']
 
   - name: Move playbook test result to Jenkins - NODE5
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node5/
       flat: yes
     when: inventory_hostname in groups['NODE5']
 
@@ -361,35 +361,35 @@
   - name: Move playbook test result to Jenkins - NODE1
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node1/
       flat: yes
     when: inventory_hostname in groups['NODE1']
 
   - name: Move playbook test result to Jenkins - NODE2
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node2/
       flat: yes
     when: inventory_hostname in groups['NODE2']
 
   - name: Move playbook test result to Jenkins - NODE3
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node3/
       flat: yes
     when: inventory_hostname in groups['NODE3']
 
   - name: Move playbook test result to Jenkins - NODE4
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node4/
       flat: yes
     when: inventory_hostname in groups['NODE4']
 
   - name: Move playbook test result to Jenkins - NODE5
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node5/
       flat: yes
     when: inventory_hostname in groups['NODE5']
 
@@ -571,35 +571,35 @@
   - name: Move playbook test result to Jenkins - NODE1
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node1/
       flat: yes
     when: inventory_hostname in groups['NODE1']
 
   - name: Move playbook test result to Jenkins - NODE2
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node2/
       flat: yes
     when: inventory_hostname in groups['NODE2']
 
   - name: Move playbook test result to Jenkins - NODE3
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node3/
       flat: yes
     when: inventory_hostname in groups['NODE3']
 
   - name: Move playbook test result to Jenkins - NODE4
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node4/
       flat: yes
     when: inventory_hostname in groups['NODE4']
 
   - name: Move playbook test result to Jenkins - NODE5
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node5/
       flat: yes
     when: inventory_hostname in groups['NODE5']
 
@@ -781,35 +781,35 @@
   - name: Move playbook test result to Jenkins - NODE1
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node1/
       flat: yes
     when: inventory_hostname in groups['NODE1']
 
   - name: Move playbook test result to Jenkins - NODE2
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node2/
       flat: yes
     when: inventory_hostname in groups['NODE2']
 
   - name: Move playbook test result to Jenkins - NODE3
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node3/
       flat: yes
     when: inventory_hostname in groups['NODE3']
 
   - name: Move playbook test result to Jenkins - NODE4
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node4/
       flat: yes
     when: inventory_hostname in groups['NODE4']
 
   - name: Move playbook test result to Jenkins - NODE5
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node5/
       flat: yes
     when: inventory_hostname in groups['NODE5']
 
@@ -993,35 +993,35 @@
   - name: Move playbook test result to Jenkins - NODE1
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node1/
       flat: yes
     when: inventory_hostname in groups['NODE1']
 
   - name: Move playbook test result to Jenkins - NODE2
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node2/
       flat: yes
     when: inventory_hostname in groups['NODE2']
 
   - name: Move playbook test result to Jenkins - NODE3
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node3/
       flat: yes
     when: inventory_hostname in groups['NODE3']
 
   - name: Move playbook test result to Jenkins - NODE4
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node4/
       flat: yes
     when: inventory_hostname in groups['NODE4']
 
   - name: Move playbook test result to Jenkins - NODE5
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node5/
       flat: yes
     when: inventory_hostname in groups['NODE5']
 
@@ -1203,35 +1203,35 @@
   - name: Move playbook test result to Jenkins - NODE1
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node1/
       flat: yes
     when: inventory_hostname in groups['NODE1']
 
   - name: Move playbook test result to Jenkins - NODE2
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node2/
       flat: yes
     when: inventory_hostname in groups['NODE2']
 
   - name: Move playbook test result to Jenkins - NODE3
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node3/
       flat: yes
     when: inventory_hostname in groups['NODE3']
 
   - name: Move playbook test result to Jenkins - NODE4
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node4/
       flat: yes
     when: inventory_hostname in groups['NODE4']
 
   - name: Move playbook test result to Jenkins - NODE5
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node5/
       flat: yes
     when: inventory_hostname in groups['NODE5']
 
@@ -1413,35 +1413,35 @@
   - name: Move playbook test result to Jenkins - NODE1
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node1/
       flat: yes
     when: inventory_hostname in groups['NODE1']
 
   - name: Move playbook test result to Jenkins - NODE2
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node2/
       flat: yes
     when: inventory_hostname in groups['NODE2']
 
   - name: Move playbook test result to Jenkins - NODE3
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node3/
       flat: yes
     when: inventory_hostname in groups['NODE3']
 
   - name: Move playbook test result to Jenkins - NODE4
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node4/
       flat: yes
     when: inventory_hostname in groups['NODE4']
 
   - name: Move playbook test result to Jenkins - NODE5
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node5/
       flat: yes
     when: inventory_hostname in groups['NODE5']
 
@@ -1623,35 +1623,35 @@
   - name: Move playbook test result to Jenkins - NODE1
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node1/
       flat: yes
     when: inventory_hostname in groups['NODE1']
 
   - name: Move playbook test result to Jenkins - NODE2
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node2/
       flat: yes
     when: inventory_hostname in groups['NODE2']
 
   - name: Move playbook test result to Jenkins - NODE3
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node3/
       flat: yes
     when: inventory_hostname in groups['NODE3']
 
   - name: Move playbook test result to Jenkins - NODE4
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node4/
       flat: yes
     when: inventory_hostname in groups['NODE4']
 
   - name: Move playbook test result to Jenkins - NODE5
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node5/
       flat: yes
     when: inventory_hostname in groups['NODE5']
 
@@ -1833,35 +1833,35 @@
   - name: Move playbook test result to Jenkins - NODE1
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node1/
       flat: yes
     when: inventory_hostname in groups['NODE1']
 
   - name: Move playbook test result to Jenkins - NODE2
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node2/
       flat: yes
     when: inventory_hostname in groups['NODE2']
 
   - name: Move playbook test result to Jenkins - NODE3
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node3/
       flat: yes
     when: inventory_hostname in groups['NODE3']
 
   - name: Move playbook test result to Jenkins - NODE4
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node4/
       flat: yes
     when: inventory_hostname in groups['NODE4']
 
   - name: Move playbook test result to Jenkins - NODE5
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node5/
       flat: yes
     when: inventory_hostname in groups['NODE5']
 
@@ -2043,35 +2043,35 @@
   - name: Move playbook test result to Jenkins - NODE1
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node1/
       flat: yes
     when: inventory_hostname in groups['NODE1']
 
   - name: Move playbook test result to Jenkins - NODE2
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node2/
       flat: yes
     when: inventory_hostname in groups['NODE2']
 
   - name: Move playbook test result to Jenkins - NODE3
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node3/
       flat: yes
     when: inventory_hostname in groups['NODE3']
 
   - name: Move playbook test result to Jenkins - NODE4
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node4/
       flat: yes
     when: inventory_hostname in groups['NODE4']
 
   - name: Move playbook test result to Jenkins - NODE5
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node5/
       flat: yes
     when: inventory_hostname in groups['NODE5']
 
@@ -2253,35 +2253,35 @@
   - name: Move playbook test result to Jenkins - NODE1
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node1/
       flat: yes
     when: inventory_hostname in groups['NODE1']
 
   - name: Move playbook test result to Jenkins - NODE2
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node2/
       flat: yes
     when: inventory_hostname in groups['NODE2']
 
   - name: Move playbook test result to Jenkins - NODE3
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node3/
       flat: yes
     when: inventory_hostname in groups['NODE3']
 
   - name: Move playbook test result to Jenkins - NODE4
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node4/
       flat: yes
     when: inventory_hostname in groups['NODE4']
 
   - name: Move playbook test result to Jenkins - NODE5
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node5/
       flat: yes
     when: inventory_hostname in groups['NODE5']
 
@@ -2464,35 +2464,35 @@
   - name: Move playbook test result to Jenkins - NODE1
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node1/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node1/
       flat: yes
     when: inventory_hostname in groups['NODE1']
 
   - name: Move playbook test result to Jenkins - NODE2
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node2/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node2/
       flat: yes
     when: inventory_hostname in groups['NODE2']
 
   - name: Move playbook test result to Jenkins - NODE3
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node3/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node3/
       flat: yes
     when: inventory_hostname in groups['NODE3']
 
   - name: Move playbook test result to Jenkins - NODE4
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node4/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node4/
       flat: yes
     when: inventory_hostname in groups['NODE4']
 
   - name: Move playbook test result to Jenkins - NODE5
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-ansible/playbook_error/node5/
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node5/
       flat: yes
     when: inventory_hostname in groups['NODE5']
 
