@@ -216,7 +216,17 @@ Add Producer Test Cases:
         2. address is integer
         3. address is special characters
         4. address is empty
-    
+
     - Add producer when max producer number is already reached
 
-    - Add producer
+    - Initialize a 6 node blockchain with 4 producers,
+      then add 2 more producers to the blockchain. Shut down 2
+      servers and check if the blockchain if still mining or not.
+      If the blockchain height continues to grow, then there is an error.
+
+
+Remove Producer Test Cases:
+    - Initialize a 6 node blockchain with 6 produers,
+      then delete 1 producer from the genesis file and check if the blockchain continues.
+      Delete another producer and shutdown 2 of the blockchain nodes.
+      If the blockchain stops mining, then there is an error.

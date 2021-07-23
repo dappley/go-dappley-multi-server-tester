@@ -20,6 +20,12 @@
       repo: https://github.com/dappley/go-dappley.git
       dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/
 
+#################### Change branch to develop ####################
+  - name: Change branch to develop
+    shell: git checkout -f develop
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+
 #################### Update server environment ####################
   - name: Update apt
     apt:
