@@ -74,8 +74,22 @@
       group: ubuntu
       recurse: yes
 
-  - name: Update cli port to node1
-    ansible.builtin.replace:
+#################### Update Cli Ports ####################
+  - name: Remove default.conf
+    shell: 'rm -r default.conf'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+
+  - name: Create default.conf
+    shell: '> default.conf'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+
+  - name: Update default.conf
+    lineinfile:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
-      regexp: 'port: 50050'
-      replace: 'port: 50051'
+      state: present
+      line: "{{ item }}"
+    with_items:
+    - 'port: 50051'
+    - 'password: "password"'
