@@ -209,22 +209,22 @@
     when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[2][-6:-1] == "12342"
 
   - name: Check Node2 Peer ID
-    shell: echo '{{ PeerID.stdout_lines[6][7:-1] }}' > node2_peerID.txt
+    shell: echo '{{ PeerID.stdout_lines[5][7:-1] }}' > node2_peerID.txt
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
-    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[7][-6:-1] == "12342"
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[6][-6:-1] == "12342"
 
   - name: Check Node2 Peer ID
-    shell: echo '{{ PeerID.stdout_lines[11][7:-1] }}' > node2_peerID.txt
+    shell: echo '{{ PeerID.stdout_lines[9][7:-1] }}' > node2_peerID.txt
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
-    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[12][-6:-1] == "12342"
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[10][-6:-1] == "12342"
 
   - name: Check Node2 Peer ID
-    shell: echo '{{ PeerID.stdout_lines[16][7:-1] }}' > node2_peerID.txt
+    shell: echo '{{ PeerID.stdout_lines[13][7:-1] }}' > node2_peerID.txt
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
-    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[17][-6:-1] == "12342"
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[14][-6:-1] == "12342"
 
   - name: Move Peer ID to Jenkins
     fetch:
@@ -248,22 +248,22 @@
     when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[2][-6:-1] == "12343"
 
   - name: Check Node3 Peer ID
-    shell: echo '{{ PeerID.stdout_lines[6][7:-1] }}' > node3_peerID.txt
+    shell: echo '{{ PeerID.stdout_lines[5][7:-1] }}' > node3_peerID.txt
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
-    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[7][-6:-1] == "12343"
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[6][-6:-1] == "12343"
 
   - name: Check Node3 Peer ID
-    shell: echo '{{ PeerID.stdout_lines[11][7:-1] }}' > node3_peerID.txt
+    shell: echo '{{ PeerID.stdout_lines[9][7:-1] }}' > node3_peerID.txt
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
-    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[12][-6:-1] == "12343"
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[10][-6:-1] == "12343"
 
   - name: Check Node3 Peer ID
-    shell: echo '{{ PeerID.stdout_lines[16][7:-1] }}' > node3_peerID.txt
+    shell: echo '{{ PeerID.stdout_lines[13][7:-1] }}' > node3_peerID.txt
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
-    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[17][-6:-1] == "12343"
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[14][-6:-1] == "12343"
 
   - name: Move Peer ID to Jenkins
     fetch:
@@ -287,22 +287,22 @@
     when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[2][-6:-1] == "12344"
 
   - name: Check Node4 Peer ID
-    shell: echo '{{ PeerID.stdout_lines[6][7:-1] }}' > node4_peerID.txt
+    shell: echo '{{ PeerID.stdout_lines[5][7:-1] }}' > node4_peerID.txt
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
-    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[7][-6:-1] == "12344"
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[6][-6:-1] == "12344"
 
   - name: Check Node4 Peer ID
-    shell: echo '{{ PeerID.stdout_lines[11][7:-1] }}' > node4_peerID.txt
+    shell: echo '{{ PeerID.stdout_lines[9][7:-1] }}' > node4_peerID.txt
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
-    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[12][-6:-1] == "12344"
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[10][-6:-1] == "12344"
 
   - name: Check Node4 Peer ID
-    shell: echo '{{ PeerID.stdout_lines[16][7:-1] }}' > node4_peerID.txt
+    shell: echo '{{ PeerID.stdout_lines[13][7:-1] }}' > node4_peerID.txt
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
-    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[17][-6:-1] == "12344"
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[14][-6:-1] == "12344"
 
   - name: Move Peer ID to Jenkins
     fetch:
@@ -326,22 +326,22 @@
     when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[2][-6:-1] == "12345"
 
   - name: Check Node5 Peer ID
-    shell: echo '{{ PeerID.stdout_lines[6][7:-1] }}' > node5_peerID.txt
+    shell: echo '{{ PeerID.stdout_lines[5][7:-1] }}' > node5_peerID.txt
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
-    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[7][-6:-1] == "12345"
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[6][-6:-1] == "12345"
 
   - name: Check Node5 Peer ID
-    shell: echo '{{ PeerID.stdout_lines[11][7:-1] }}' > node5_peerID.txt
+    shell: echo '{{ PeerID.stdout_lines[9][7:-1] }}' > node5_peerID.txt
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
-    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[12][-6:-1] == "12345"
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[10][-6:-1] == "12345"
 
   - name: Check Node5 Peer ID
-    shell: echo '{{ PeerID.stdout_lines[16][7:-1] }}' > node5_peerID.txt
+    shell: echo '{{ PeerID.stdout_lines[13][7:-1] }}' > node5_peerID.txt
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
-    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[17][-6:-1] == "12345"
+    when: inventory_hostname in groups['NODE1'] and PeerID.stdout_lines[14][-6:-1] == "12345"
 
   - name: Move Peer ID to Jenkins
     fetch:
@@ -376,24 +376,6 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
     when: inventory_hostname in groups['NODE2'] and PeerID.stdout_lines[2][-6:-1] == "12341"
-
-  - name: Check Node1 Peer ID
-    shell: echo '{{ PeerID.stdout_lines[6][7:-1] }}' > node1_peerID.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
-    when: inventory_hostname in groups['NODE2'] and PeerID.stdout_lines[7][-6:-1] == "12341"
-
-  - name: Check Node1 Peer ID
-    shell: echo '{{ PeerID.stdout_lines[11][7:-1] }}' > node1_peerID.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
-    when: inventory_hostname in groups['NODE2'] and PeerID.stdout_lines[12][-6:-1] == "12341"
-
-  - name: Check Node1 Peer ID
-    shell: echo '{{ PeerID.stdout_lines[16][7:-1] }}' > node1_peerID.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/log
-    when: inventory_hostname in groups['NODE2'] and PeerID.stdout_lines[17][-6:-1] == "12341"
 
   - name: Move Peer ID to Jenkins
     fetch:
