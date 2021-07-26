@@ -17,10 +17,10 @@ func send(emailBody string, senderEmail string, senderPasswd string) {
 	//send the email
 	mail := gomail.NewMessage()
 	mail.SetHeader("From", senderEmail)
-	mail.SetHeader("To", "blockchainwarning@omnisolu.com",
+	mail.SetHeader("To", "blockchainwarning@omnisolu.com") /*,
 						 "wulize1994@gmail.com", 
 						 "rshi@omnisolu.com", 
-						 "ilshiyi@omnisolu.com")
+						 "ilshiyi@omnisolu.com") */
 	mail.SetHeader("Subject", "Ansible Test Result")
 	mail.SetBody("text", emailBody)
 	mail.Attach("test_results.zip")
