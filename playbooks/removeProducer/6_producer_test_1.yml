@@ -279,16 +279,36 @@
 
 
 #################### Remove One Producer ####################
-
-
-#################### Check Blockchain Height ####################
-  - name: Wait til the blockchain reaches height of 20
+  - name: Get Blockchain Height
     shell: ./cli getBlockchainInfo
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: blockchainHeight
-    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (20)|int
-    retries: 20
+
+  - name: Remove Producer
+    shell: ./cli addProducer -address dNY1BMqsJVMRDp16ohsBACerdw5JQ931Eh -height {{ (blockchainHeight.stdout_lines[1][17:-1])|int + 2|int }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
+    when: inventory_hostname in groups['NODE1']
+
+  - debug:
+      msg: '{{ test_result }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Test
+    fail:
+      msg: "Expected an error message about the maximum producer, but returned {{ test_result }}"
+    when: inventory_hostname in groups['NODE1'] and test_result.stdout != "Producer will be added."
+    ignore_errors: true
+
+  - name: Wait til the producer is removed
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: new_blockchainHeight
+    until: (new_blockchainHeight.stdout_lines[1][17:-1])|int > (blockchainHeight.stdout_lines[1][17:-1])|int + 2|int
+    retries: 5
     delay: 10
     ignore_errors: true
 
@@ -348,7 +368,51 @@
     ignore_errors: true
 
 
+#################### Check Blockchain Height ####################
+  - name: Wait til the blockchain reaches height of 20
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (20)|int
+    retries: 20
+    delay: 10
+    ignore_errors: true
+
+
 #################### Remove One Producer ####################
+  - name: Get Blockchain Height
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+
+  - name: Remove Producer
+    shell: ./cli addProducer -address dNY1BMqsJVMRDp16ohsBACerdw5JQ931Eh -height {{ (blockchainHeight.stdout_lines[1][17:-1])|int + 2|int }}
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result
+    when: inventory_hostname in groups['NODE1']
+
+  - debug:
+      msg: '{{ test_result }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Test
+    fail:
+      msg: "Expected an error message about the maximum producer, but returned {{ test_result }}"
+    when: inventory_hostname in groups['NODE1'] and test_result.stdout != "Producer will be added."
+    ignore_errors: true
+
+  - name: Wait til the producer is removed
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: new_blockchainHeight
+    until: (new_blockchainHeight.stdout_lines[1][17:-1])|int > (blockchainHeight.stdout_lines[1][17:-1])|int + 2|int
+    retries: 5
+    delay: 10
+    ignore_errors: true
 
 
 #################### Check producers ####################
