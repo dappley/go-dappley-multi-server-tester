@@ -273,12 +273,6 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: blockchainHeight
 
-  - debug:
-      msg: '{{ (blockchainHeight.stdout_lines[1][17:-1])|int }}'
-
-  - debug:
-      msg: '{{ (blockchainHeight.stdout_lines[1][17:-1])|int + 2|int }}'
-
   - name: Add new producer
     shell: ./cli addProducer -address dTSNWQeFNRJBEQEhuDJNdu219r389CSkh3 -height {{ (blockchainHeight.stdout_lines[1][17:-1])|int + 2|int }}
     args:
@@ -300,8 +294,8 @@
     shell: ./cli getBlockchainInfo
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: blockchainHeight
-    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (blockchainHeight.stdout_lines[1][17:-1])|int + 2|int
+    register: new_blockchainHeight
+    until: (new_blockchainHeight.stdout_lines[1][17:-1])|int > (blockchainHeight.stdout_lines[1][17:-1])|int + 2|int
     retries: 5
     delay: 10
     ignore_errors: true
