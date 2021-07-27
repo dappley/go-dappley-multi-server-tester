@@ -388,7 +388,7 @@
     register: blockchainHeight
 
   - name: Remove Producer
-    shell: ./cli addProducer -address dNY1BMqsJVMRDp16ohsBACerdw5JQ931Eh -height {{ (blockchainHeight.stdout_lines[1][17:-1])|int + 2|int }}
+    shell: ./cli addProducer -address dTSNWQeFNRJBEQEhuDJNdu219r389CSkh3 -height {{ (blockchainHeight.stdout_lines[1][17:-1])|int + 2|int }}
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: test_result
