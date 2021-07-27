@@ -293,11 +293,11 @@
       msg: '{{ test_result }}'
     when: inventory_hostname in groups['NODE1']
 
-  # - name: Test
-  #   fail:
-  #     msg: "Expected an error message about the maximum producer, but returned {{ test_result }}"
-  #   when: inventory_hostname in groups['NODE1'] and test_result.stdout != "Producer will be added."
-  #   ignore_errors: true
+  - name: Test
+    fail:
+      msg: "Expected an error message about the maximum producer, but returned {{ test_result }}"
+    when: inventory_hostname in groups['NODE1'] and test_result.stdout != "Producer will be delete."
+    ignore_errors: true
 
   - name: Wait til the producer is removed
     shell: ./cli getBlockchainInfo
@@ -321,48 +321,48 @@
       msg: '{{ BlockchainInfo }}'
 
 
-# ################### Check 5 producers ###################
-#   - name: Check producer 2-1
-#     fail:
-#       msg: "Expected '[' but returned {{ BlockchainInfo.stdout_lines[2] }}"
-#     when: BlockchainInfo.stdout_lines[2][-1:] != "["
-#     ignore_errors: true
+################### Check 5 producers ###################
+  - name: Check producer 2-1
+    fail:
+      msg: "Expected '[' but returned {{ BlockchainInfo.stdout_lines[2] }}"
+    when: BlockchainInfo.stdout_lines[2][-1:] != "["
+    ignore_errors: true
 
-#   - name: Check producer 2-2
-#     fail:
-#       msg: "Expected 'dastXXWLe5pxbRYFhcyUq8T3wb5srWkHKa' but returned {{ BlockchainInfo.stdout_lines[3] }}"
-#     when: BlockchainInfo.stdout_lines[3][5:-2] != "dastXXWLe5pxbRYFhcyUq8T3wb5srWkHKa"
-#     ignore_errors: true
+  - name: Check producer 2-2
+    fail:
+      msg: "Expected 'dUuPPYshbBgkzUrgScEHWvdGbSxC8z4R12' but returned {{ BlockchainInfo.stdout_lines[3] }}"
+    when: BlockchainInfo.stdout_lines[3][5:-2] != "dUuPPYshbBgkzUrgScEHWvdGbSxC8z4R12"
+    ignore_errors: true
 
-#   - name: Check producer 2-3
-#     fail:
-#       msg: "Expected 'dUuPPYshbBgkzUrgScEHWvdGbSxC8z4R12' but returned {{ BlockchainInfo.stdout_lines[4] }}"
-#     when: BlockchainInfo.stdout_lines[4][5:-2] != "dUuPPYshbBgkzUrgScEHWvdGbSxC8z4R12"
-#     ignore_errors: true
+  - name: Check producer 2-3
+    fail:
+      msg: "Expected 'dPGD4t6ibpmyKZnXH1TNbbPw98EDaaZq8C' but returned {{ BlockchainInfo.stdout_lines[4] }}"
+    when: BlockchainInfo.stdout_lines[4][5:-2] != "dPGD4t6ibpmyKZnXH1TNbbPw98EDaaZq8C"
+    ignore_errors: true
 
-#   - name: Check producer 2-4
-#     fail:
-#       msg: "Expected 'dPGD4t6ibpmyKZnXH1TNbbPw98EDaaZq8C' but returned {{ BlockchainInfo.stdout_lines[5] }}"
-#     when: BlockchainInfo.stdout_lines[5][5:-2] != "dPGD4t6ibpmyKZnXH1TNbbPw98EDaaZq8C"
-#     ignore_errors: true
+  - name: Check producer 2-4
+    fail:
+      msg: "Expected 'dUa6gQkijmVqf7pk9cmRS6M9nMnU6b9Ssm' but returned {{ BlockchainInfo.stdout_lines[5] }}"
+    when: BlockchainInfo.stdout_lines[5][5:-2] != "dUa6gQkijmVqf7pk9cmRS6M9nMnU6b9Ssm"
+    ignore_errors: true
 
-#   - name: Check producer 2-5
-#     fail:
-#       msg: "Expected 'dUa6gQkijmVqf7pk9cmRS6M9nMnU6b9Ssm' but returned {{ BlockchainInfo.stdout_lines[6] }}"
-#     when: BlockchainInfo.stdout_lines[6][5:-2] != "dUa6gQkijmVqf7pk9cmRS6M9nMnU6b9Ssm"
-#     ignore_errors: true
+  - name: Check producer 2-5
+    fail:
+      msg: "Expected 'dTSNWQeFNRJBEQEhuDJNdu219r389CSkh3' but returned {{ BlockchainInfo.stdout_lines[6] }}"
+    when: BlockchainInfo.stdout_lines[6][5:-2] != "dTSNWQeFNRJBEQEhuDJNdu219r389CSkh3"
+    ignore_errors: true
 
-#   - name: Check producer 2-6
-#     fail:
-#       msg: "Expected 'dTSNWQeFNRJBEQEhuDJNdu219r389CSkh3' but returned {{ BlockchainInfo.stdout_lines[7] }}"
-#     when: BlockchainInfo.stdout_lines[7][5:-1] != "dTSNWQeFNRJBEQEhuDJNdu219r389CSkh3"
-#     ignore_errors: true
+  - name: Check producer 2-6
+    fail:
+      msg: "Expected 'dNY1BMqsJVMRDp16ohsBACerdw5JQ931Eh' but returned {{ BlockchainInfo.stdout_lines[7] }}"
+    when: BlockchainInfo.stdout_lines[7][5:-1] != "dNY1BMqsJVMRDp16ohsBACerdw5JQ931Eh"
+    ignore_errors: true
 
-#   - name: Check producer 2-7
-#     fail:
-#       msg: "Expected ']' but returned {{ BlockchainInfo.stdout_lines[8] }}"
-#     when: BlockchainInfo.stdout_lines[8][-2:-1] != "]"
-#     ignore_errors: true
+  - name: Check producer 2-7
+    fail:
+      msg: "Expected ']' but returned {{ BlockchainInfo.stdout_lines[8] }}"
+    when: BlockchainInfo.stdout_lines[8][-2:-1] != "]"
+    ignore_errors: true
 
 
 #################### Check Blockchain Height ####################
@@ -395,11 +395,11 @@
       msg: '{{ test_result }}'
     when: inventory_hostname in groups['NODE1']
 
-  # - name: Test
-  #   fail:
-  #     msg: "Expected an error message about the maximum producer, but returned {{ test_result }}"
-  #   when: inventory_hostname in groups['NODE1'] and test_result.stdout != "Producer will be added."
-  #   ignore_errors: true
+  - name: Test
+    fail:
+      msg: "Expected an error message about the maximum producer, but returned {{ test_result }}"
+    when: inventory_hostname in groups['NODE1'] and test_result.stdout != "Producer will be delete."
+    ignore_errors: true
 
   - name: Wait til the producer is removed
     shell: ./cli getBlockchainInfo
