@@ -322,8 +322,8 @@
 
   - name: Check producer 1-2
     fail:
-      msg: "Expected 'dastXXWLe5pxbRYFhcyUq8T3wb5srWkHKa' but returned {{ BlockchainInfo.stdout_lines[3] }}"
-    when: BlockchainInfo.stdout_lines[3][5:-2] != "dastXXWLe5pxbRYFhcyUq8T3wb5srWkHKa"
+      msg: "Expected 'dNY1BMqsJVMRDp16ohsBACerdw5JQ931Eh' but returned {{ BlockchainInfo.stdout_lines[3] }}"
+    when: BlockchainInfo.stdout_lines[3][5:-2] != "dNY1BMqsJVMRDp16ohsBACerdw5JQ931Eh"
     ignore_errors: true
 
   - name: Check producer 1-3
