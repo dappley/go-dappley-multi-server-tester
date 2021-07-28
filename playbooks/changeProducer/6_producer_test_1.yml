@@ -376,12 +376,12 @@
   - debug:
       msg: '{{ blockchainHeight }}'
 
-  - name: Mine 2 blocks
+  - name: Mine 5 blocks
     shell: ./cli getBlockchainInfo
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: new_blockchainHeight
-    until: (new_blockchainHeight.stdout_lines[1][17:-1])|int > (blockchainHeight.stdout_lines[1][17:-1])|int + (2)|int
+    until: (new_blockchainHeight.stdout_lines[1][17:-1])|int > (blockchainHeight.stdout_lines[1][17:-1])|int + (5)|int
     retries: 20
     delay: 10
     ignore_errors: true

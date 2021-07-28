@@ -23,7 +23,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 300
+    async: 360
     poll: 0
 
   - name: Launch NODE2
@@ -31,7 +31,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 300
+    async: 360
     poll: 0
 
   - name: Launch NODE3
@@ -39,7 +39,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 300
+    async: 360
     poll: 0
 
   - name: Launch NODE4
@@ -47,7 +47,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 300
+    async: 360
     poll: 0
 
   - name: Launch NODE5
@@ -55,7 +55,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 300
+    async: 360
     poll: 0
 
   - name: Launch NODE6
@@ -63,7 +63,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE6']
-    async: 300
+    async: 360
     poll: 0
 
   - name: Wait for blockchain initialization
@@ -299,12 +299,32 @@
 
   - debug:
       msg: '{{ test_result }}'
-    when: inventory_hostname in groups['NODE1'] or inventory_hostname in groups['NODE2'] or inventory_hostname in groups['NODE3']
+    when: inventory_hostname in groups['NODE1']
+
+  - debug:
+      msg: '{{ test_result }}'
+    when: inventory_hostname in groups['NODE2']
+
+  - debug:
+      msg: '{{ test_result }}'
+    when: inventory_hostname in groups['NODE3']
 
   - name: Test
     fail:
       msg: "Expected the producer to stay the same but returned {{ test_result }}"
-    when: (inventory_hostname in groups['NODE1'] or inventory_hostname in groups['NODE2'] or inventory_hostname in groups['NODE3']) and test_result.stdout != "Producer will be changed."
+    when: inventory_hostname in groups['NODE1'] and test_result.stdout != "Producer will be changed."
+    ignore_errors: true
+
+  - name: Test
+    fail:
+      msg: "Expected the producer to stay the same but returned {{ test_result }}"
+    when: inventory_hostname in groups['NODE2'] and test_result.stdout != "Producer will be changed."
+    ignore_errors: true
+
+  - name: Test
+    fail:
+      msg: "Expected the producer to stay the same but returned {{ test_result }}"
+    when: inventory_hostname in groups['NODE3'] and test_result.stdout != "Producer will be changed."
     ignore_errors: true
 
   - name: Wait 2 Blocks
