@@ -259,7 +259,7 @@
   - name: Check producer 1-6
     fail:
       msg: "Expected 'dTSNWQeFNRJBEQEhuDJNdu219r389CSkh3' but returned {{ BlockchainInfo.stdout_lines[7] }}"
-    when: BlockchainInfo.stdout_lines[7][5:-2] != "dTSNWQeFNRJBEQEhuDJNdu219r389CSkh3"
+    when: BlockchainInfo.stdout_lines[7][5:-1] != "dTSNWQeFNRJBEQEhuDJNdu219r389CSkh3"
     ignore_errors: true
 
   - name: Check producer 1-7
@@ -347,7 +347,7 @@
   - name: Check producer 1-6
     fail:
       msg: "Expected 'dTSNWQeFNRJBEQEhuDJNdu219r389CSkh3' but returned {{ BlockchainInfo.stdout_lines[7] }}"
-    when: BlockchainInfo.stdout_lines[7][5:-2] != "dTSNWQeFNRJBEQEhuDJNdu219r389CSkh3"
+    when: BlockchainInfo.stdout_lines[7][5:-1] != "dTSNWQeFNRJBEQEhuDJNdu219r389CSkh3"
     ignore_errors: true
 
   - name: Check producer 1-7
@@ -398,7 +398,7 @@
   - name: Test producer balance
     fail:
       msg: "Expected the miner balance to increase, but stayed the same"
-    when: (new_producer_balance.stdout_lines[0][16:])|int > (producer_balance.stdout_lines[0][16:])|int
+    when: (new_producer_balance.stdout_lines[0][16:])|int == (producer_balance.stdout_lines[0][16:])|int
     ignore_errors: true
 
 
