@@ -12,7 +12,7 @@
 #################### Check Blockchain height ####################
   - name: Wait a minute who are you?
     wait_for:
-      timeout: 60
+      timeout: 120
 
   - name: Check blockchain height
     shell: ./cli getBlockchainInfo
@@ -47,7 +47,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: blockchainHeight
-    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (30)|int
+    until: (blockchainHeight.stdout_lines[1][17:-1])|int >= (30)|int
     retries: 20
     delay: 10
     ignore_errors: true
