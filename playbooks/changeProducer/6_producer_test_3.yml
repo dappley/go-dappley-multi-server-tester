@@ -280,51 +280,51 @@
     shell: ./cli changeProducer -address dZj8Lu2ZvPjLkH7KZqpQsDmEoMrNNErvfS -height {{ (blockchainHeight.stdout_lines[1][17:-1])|int + 2|int }}
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: test_result
+    register: test_result_1
     when: inventory_hostname in groups['NODE1']
 
   - name: Change Producer
     shell: ./cli changeProducer -address dHaucy9hS3qCP6NeZA8zXBMwGVatrLzn4y -height {{ (blockchainHeight.stdout_lines[1][17:-1])|int + 2|int }}
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: test_result
+    register: test_result_2
     when: inventory_hostname in groups['NODE2']
 
   - name: Change Producer
     shell: ./cli changeProducer -address dNMCxkKm2mEJT2frSJAMa1kD3QbookoRs8 -height {{ (blockchainHeight.stdout_lines[1][17:-1])|int + 2|int }}
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: test_result
+    register: test_result_3
     when: inventory_hostname in groups['NODE3']
 
   - debug:
-      msg: '{{ test_result }}'
+      msg: '{{ test_result_1 }}'
     when: inventory_hostname in groups['NODE1']
 
   - debug:
-      msg: '{{ test_result }}'
+      msg: '{{ test_result_2 }}'
     when: inventory_hostname in groups['NODE2']
 
   - debug:
-      msg: '{{ test_result }}'
+      msg: '{{ test_result_3 }}'
     when: inventory_hostname in groups['NODE3']
 
   - name: Test
     fail:
-      msg: "Expected the producer to stay the same but returned {{ test_result }}"
-    when: inventory_hostname in groups['NODE1'] and test_result.stdout != "Producer will be changed."
+      msg: "Expected the producer to stay the same but returned {{ test_result_1 }}"
+    when: inventory_hostname in groups['NODE1'] and test_result_1.stdout != "Producer will be changed."
     ignore_errors: true
 
   - name: Test
     fail:
-      msg: "Expected the producer to stay the same but returned {{ test_result }}"
-    when: inventory_hostname in groups['NODE2'] and test_result.stdout != "Producer will be changed."
+      msg: "Expected the producer to stay the same but returned {{ test_result_2 }}"
+    when: inventory_hostname in groups['NODE2'] and test_result_2.stdout != "Producer will be changed."
     ignore_errors: true
 
   - name: Test
     fail:
-      msg: "Expected the producer to stay the same but returned {{ test_result }}"
-    when: inventory_hostname in groups['NODE3'] and test_result.stdout != "Producer will be changed."
+      msg: "Expected the producer to stay the same but returned {{ test_result_3 }}"
+    when: inventory_hostname in groups['NODE3'] and test_result_3.stdout != "Producer will be changed."
     ignore_errors: true
 
   - name: Wait 2 Blocks
@@ -410,9 +410,6 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: Blockchain_Info
 
-  - debug:
-      msg: '{{ Blockchain_Info }}'
-
   - name: Test
     fail:
       msg: Expected the blockchain height to remain the same at {{ blockchainHeight.stdout_lines[1][17:]|replace(',','') }}, but returned {{ Blockchain_Info.stdout_lines[1][17:]|replace(',','') }}
@@ -430,9 +427,6 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: Blockchain_Info
-
-  - debug:
-      msg: '{{ Blockchain_Info }}'
 
   - name: Test
     fail:
@@ -452,9 +446,6 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: Blockchain_Info
 
-  - debug:
-      msg: '{{ Blockchain_Info }}'
-
   - name: Test
     fail:
       msg: Expected the blockchain height to remain the same at {{ blockchainHeight.stdout_lines[1][17:]|replace(',','') }}, but returned {{ Blockchain_Info.stdout_lines[1][17:]|replace(',','') }}
@@ -472,9 +463,6 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: Blockchain_Info
-
-  - debug:
-      msg: '{{ Blockchain_Info }}'
 
   - name: Test
     fail:
@@ -494,9 +482,6 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: Blockchain_Info
 
-  - debug:
-      msg: '{{ Blockchain_Info }}'
-
   - name: Test
     fail:
       msg: Expected the blockchain height to remain the same at {{ blockchainHeight.stdout_lines[1][17:]|replace(',','') }}, but returned {{ Blockchain_Info.stdout_lines[1][17:]|replace(',','') }}
@@ -514,9 +499,6 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: Blockchain_Info
-
-  - debug:
-      msg: '{{ Blockchain_Info }}'
 
   - name: Test
     fail:
