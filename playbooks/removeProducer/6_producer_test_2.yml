@@ -84,6 +84,40 @@
     retries: 2
     delay: 5
     ignore_errors: true
+    when: inventory_hostname in groups['NODE3']
+
+  - name: Wait til the blockchain reaches height of 30
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (30)|int
+    retries: 2
+    delay: 5
+    ignore_errors: true
+    when: inventory_hostname in groups['NODE4']
+
+  - name: Wait til the blockchain reaches height of 30
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (30)|int
+    retries: 2
+    delay: 5
+    ignore_errors: true
+    when: inventory_hostname in groups['NODE5']
+
+  - name: Wait til the blockchain reaches height of 30
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (30)|int
+    retries: 2
+    delay: 5
+    ignore_errors: true
+    when: inventory_hostname in groups['NODE6']
 
 
 #################### Terminate ####################
