@@ -37,7 +37,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 120
+    async: 140
     poll: 0
 
   - name: Launch node2
@@ -45,7 +45,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 120
+    async: 140
     poll: 0
 
   - name: Launch node3
@@ -53,7 +53,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 120
+    async: 140
     poll: 0
 
   - name: Launch node4
@@ -61,7 +61,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 120
+    async: 140
     poll: 0
 
   - name: Launch node5
@@ -69,7 +69,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 120
+    async: 140
     poll: 0
 
   - name: Wait for blockchain initialization
@@ -260,7 +260,7 @@
 
   - name: Account1 balance test
     fail:
-     msg: "Expected the value to be {{ account1Balance_1.stdout_lines[0][16:]|int - 100|int }}, but returned {{ account1Balance_2.stdout_lines[0][16:] }}."
+     msg: "Expected transaction to only consume the args amount of 100 and return {{ account1Balance_1.stdout_lines[0][16:]|int - 100|int }}, but returned {{ account1Balance_2.stdout_lines[0][16:] }}."
     ignore_errors: true
     when: account1Balance_2.stdout_lines[0][16:]|int != account1Balance_1.stdout_lines[0][16:]|int - 100|int
 
@@ -309,7 +309,7 @@
 
   - name: Account1 balance test
     fail:
-     msg: "Expected the value to be {{ account1Balance_2.stdout_lines[0][16:]|int - 100|int }}, but returned {{ account1Balance_3.stdout_lines[0][16:] }}."
+     msg: "Expected transaction to only consume the args amount of 100 and return {{ account1Balance_2.stdout_lines[0][16:]|int - 100|int }}, but returned {{ account1Balance_3.stdout_lines[0][16:] }}."
     ignore_errors: true
     when: account1Balance_3.stdout_lines[0][16:]|int != account1Balance_2.stdout_lines[0][16:]|int - 100|int
 
