@@ -180,7 +180,7 @@ func isFileFail(fileNames []string) []string {
 			}
 
 			if scan_result {
-				if !(strings.Contains(line, "failed=0")) || !(strings.Contains(line, "ignored=0")) {
+				if !(strings.Contains(line, "failed=0")) || !(strings.Contains(line, "ignored=0")) || !(strings.Contains(line, "unreachable=0")) {
 					if contains(failingFiles, curr_file) {
 						continue
 					} else {

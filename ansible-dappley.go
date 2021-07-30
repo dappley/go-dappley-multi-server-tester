@@ -35,7 +35,7 @@ func main() {
 		Update_address(allFiles("playbooks"))
 
 	} else if function == "send_result" {
-		SendTestResult(senderEmail, senderPasswd, allFiles("testresults"))
+		SendTestResult(senderEmail, senderPasswd, allFiles("test_results"))
 	
 	} else if function == "terminate" {
 		terminate(number)
@@ -279,9 +279,9 @@ func allFiles(directory string) []string {
     if err != nil {
         panic(err)
     }
-    // for _, file := range files {
-    //     fmt.Println(file)
-	// }
+    for _, file := range files {
+        fmt.Println(file)
+	}
 	
 	return files
 }
