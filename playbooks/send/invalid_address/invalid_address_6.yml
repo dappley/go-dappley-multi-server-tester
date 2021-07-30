@@ -275,7 +275,7 @@
     fail:
      msg: "Expected an error message about the missing -from & -to argument, but returned: {{ transaction_result.stdout }}"
     ignore_errors: true
-    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout_lines[0][7:] != "'from' address is not valid!"
+    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout_lines[0][7:] != "to address is missing!"
 
   - name: Wait 10 seconds to complete transaction
     wait_for:

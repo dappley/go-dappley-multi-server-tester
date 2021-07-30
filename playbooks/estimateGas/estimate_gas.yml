@@ -232,6 +232,17 @@
       msg: 'Account2 blanace: {{ account2Balance_1.stdout_lines[0][16:] }}'
 
 #################### Create smart contract 1 ####################
+  - name: Estimate Gas Price
+    shell: ./cli estimateGas -from {{ account1 }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -file ../jslib/step_recorder.js
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: estimated_gas_price
+    when: inventory_hostname in groups['NODE1']
+
+  - debug:
+      msg: '{{ estimated_gas_price }}'
+    when: inventory_hostname in groups['NODE1']
+
   - name: Create smart contract 1
     shell: ./cli send -from {{ account1 }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -file ../jslib/step_recorder.js
     args:
@@ -260,9 +271,9 @@
 
   - name: Account1 balance test
     fail:
-     msg: "Expected transaction to only consume the args amount of 100 and return {{ account1Balance_1.stdout_lines[0][16:]|int - 100|int }}, but returned {{ account1Balance_2.stdout_lines[0][16:] }}."
+     msg: "Expected to return {{ account1Balance_1.stdout_lines[0][16:]|int - 100|int - estimated_gas_price.stdout[19:]|int }}, but returned {{ account1Balance_2.stdout_lines[0][16:] }}."
     ignore_errors: true
-    when: account1Balance_2.stdout_lines[0][16:]|int != account1Balance_1.stdout_lines[0][16:]|int - 100|int
+    when: inventory_hostname in groups['NODE1'] and account1Balance_2.stdout_lines[0][16:]|int != account1Balance_1.stdout_lines[0][16:]|int - 100|int - estimated_gas_price.stdout[19:]|int
 
   - name: Check account2 balance
     shell: ./cli getBalance -address {{ account2 }}
@@ -276,11 +287,22 @@
   - name: Account2 balance test
     fail:
      msg: "Expected {{ account2Balance_1.stdout_lines[0][16:]|int }} but returned {{ account2Balance_2.stdout_lines[0][16:] }}"
-    when: account2Balance_2.stdout_lines[0][16:]|int != account2Balance_1.stdout_lines[0][16:]|int
+    when: inventory_hostname in groups['NODE1'] and account2Balance_2.stdout_lines[0][16:]|int != account2Balance_1.stdout_lines[0][16:]|int
     ignore_errors: true
 
 
 #################### Create smart contract 2 ####################
+  - name: Estimate Gas Price
+    shell: ./cli estimateGas -from {{ account1 }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -file ../jslib/step_recorder.js
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: estimated_gas_price
+    when: inventory_hostname in groups['NODE1']
+
+  - debug:
+      msg: '{{ estimated_gas_price }}'
+    when: inventory_hostname in groups['NODE1']
+
   - name: Create smart contract 2
     shell: ./cli send -from {{ account1 }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -file ../jslib/step_recorder.js
     args:
@@ -309,9 +331,9 @@
 
   - name: Account1 balance test
     fail:
-     msg: "Expected transaction to only consume the args amount of 100 and return {{ account1Balance_2.stdout_lines[0][16:]|int - 100|int }}, but returned {{ account1Balance_3.stdout_lines[0][16:] }}."
+     msg: "Expected to return {{ account1Balance_2.stdout_lines[0][16:]|int - 100|int - estimated_gas_price.stdout[19:]|int}}, but returned {{ account1Balance_3.stdout_lines[0][16:] }}."
     ignore_errors: true
-    when: account1Balance_3.stdout_lines[0][16:]|int != account1Balance_2.stdout_lines[0][16:]|int - 100|int
+    when: inventory_hostname in groups['NODE1'] and account1Balance_3.stdout_lines[0][16:]|int != account1Balance_2.stdout_lines[0][16:]|int - 100|int - estimated_gas_price.stdout[19:]|int
 
   - name: Check account2 balance
     shell: ./cli getBalance -address {{ account2 }}

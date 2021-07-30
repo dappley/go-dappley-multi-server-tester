@@ -198,6 +198,9 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: prev_tailBlock
 
+  - debug:
+      msg: '{{ prev_tailBlock }}'
+
 
 #################### Wait until next block ####################
   - name: Wait til the blockchain reaches next height
@@ -209,9 +212,6 @@
     retries: 100
     delay: 1
 
-  - debug:
-      msg: "Blockchain height: {{ next_tailBlock.stdout_lines[1][17:-1] }}"
-
 
 #################### Get current block height ####################
   - name: Get current block height
@@ -220,13 +220,19 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: new_tailBlock
 
+  - debug:
+      msg: '{{ new_tailBlock }}'
+
 
 #################### getBlocks ####################
   - name: getBlocks
-    shell: ./cli getBlocks -startBlockHashes {{ prev_tailBlock.stdout_lines[9][20:-1]}} -maxCount 1
+    shell: ./cli getBlocks -startBlockHashes '{{ prev_tailBlock.stdout_lines[8][20:-1]}}' -maxCount 1
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: getBlocks
+
+  - debug:
+      msg: '{{ getBlocks }}'
 
   - name: Test Height
     fail:
@@ -236,8 +242,8 @@
 
   - name: Test Hash
     fail:
-      msg: "Expected the hash value to be {{ new_tailBlock.stdout_lines[9][20:-1] }}, but returned {{ getBlocks.stdout_lines[3][15:-2] }}"
-    when: getBlocks.stdout_lines[3][15:-2] != new_tailBlock.stdout_lines[9][20:-1]
+      msg: "Expected the hash value to be {{ new_tailBlock.stdout_lines[8][20:-1] }}, but returned {{ getBlocks.stdout_lines[3][15:-2] }}"
+    when: getBlocks.stdout_lines[3][15:-2] != new_tailBlock.stdout_lines[8][20:-1]
     ignore_errors: true
 
 

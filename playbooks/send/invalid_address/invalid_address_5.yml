@@ -261,21 +261,17 @@
 
 #################### Send from no address ####################
   - name: Send from no address
-    shell: ./cli send -from -to {{ account1 }} -amount 50000
+    shell: ./cli send -to {{ account1 }} -amount 50000 -from
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: transaction_result
-    when: inventory_hostname in groups['NODE1']
-
-  - debug:
-      msg: '{{ transaction_result.stdout }}'
     when: inventory_hostname in groups['NODE1']
 
   - name: Transaction Test
     fail:
      msg: "Expected an error message about the missing -from argument, but returned: {{ transaction_result.stdout }}"
     ignore_errors: true
-    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout_lines[0][7:] != "'from' address is not valid!"
+    when: inventory_hostname in groups['NODE1'] and transaction_result.stderr_lines[0][:-7] != "flag needs an argument"
 
   - name: Wait 10 seconds to complete transaction
     wait_for:
