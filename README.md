@@ -472,7 +472,7 @@ EstimateGas Test Cases
         2. smart contract address is valid but does not exist
         3. smart contract address is empty
 
-   - Invalid amount
+    - Invalid amount
         1. amount is 0
         2. amount is negative
         3. amount more than the balance 
