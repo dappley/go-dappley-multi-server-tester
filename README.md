@@ -308,7 +308,8 @@ def remove_files() {
 ```
 
 ### Test Cases
-Send Test Cases:
+Send Test Cases
+
     - Invalid Address
         1. From an invalid address
         2. No from address
@@ -377,7 +378,8 @@ Send Test Cases:
         1. Deploy transaction from the node without the account.dat file
 
 
-SendFromMiner Test Cases:
+SendFromMiner Test Cases
+
     - Invalid amount
         1. Send more than miner's balance
         2. Send negative amount
@@ -396,7 +398,8 @@ SendFromMiner Test Cases:
         2. No flags
 
 
-CreateAccount Test Cases:
+CreateAccount Test Cases
+
     - Empty password
         1. First input is empty
         2. Second input is empty
@@ -409,7 +412,8 @@ CreateAccount Test Cases:
         4. Empty space password
 
 
-GetBalance Test Cases:
+GetBalance Test Cases
+
     - Invalid address
         1. Get balance from an invalid address
         2. Get balance from a valid address without accounts.dat
@@ -419,14 +423,16 @@ GetBalance Test Cases:
         2. No flag
 
 
-ListAddress Test Cases:
+ListAddress Test Cases
+
     - Invalid password
         1. ListAddress when there is no accounts.dat
         2. ListAddress with -privateKey when there is no accounts.dat
         3. ListAddress with incorrect password
 
 
-Smart Contract Test Cases:
+Smart Contract Test Cases
+
     - Smart contract gas 1
         1. Smart contract deployment with gas price of 1
 
@@ -434,7 +440,8 @@ Smart Contract Test Cases:
         1. Smart contract deployment with gas price of 2
 
 
-Get Blocks & BlockchainInfo Test Cases:
+Get Blocks & BlockchainInfo Test Cases
+
     - Compare blockchainInfo & blocks returning value
 
     - Invalid Input
@@ -451,7 +458,8 @@ Get Blocks & BlockchainInfo Test Cases:
         12. startBlockHashes is special character
         13. startBlockHashes is emtpy
 
-EstimateGas Test Cases:
+EstimateGas Test Cases
+
     - Estimate gas price and deploy smart contract witht the estimated gasLimit
 
     - Invalid address
@@ -516,11 +524,13 @@ EstimateGas Test Cases:
         13. data is empty
 
 
-Get Peer Info Test Case:
+Get Peer Info Test Case
+
     - Check if the peer ID exists in the log file on each server.
 
 
-Add Producer Test Cases:
+Add Producer Test Cases
+
     - Invalid address
         1. address is invalid
         2. address is integer
@@ -535,14 +545,16 @@ Add Producer Test Cases:
       If the blockchain height continues to grow, then there is an error.
 
 
-Remove Producer Test Cases:
+Remove Producer Test Cases
+
     - Initialize a 6 node blockchain with 6 produers,
       then delete 1 producer from the genesis file and check if the blockchain continues.
       Delete another producer and shutdown 2 of the blockchain nodes.
       If the blockchain stops mining, then there is an error.
 
 
-Change Producer Test Cases:
+Change Producer Test Cases
+
     - Change one of the produer and check if the balance of the miner is increasing after change.
 
     - Change one of the producer's address to an address that is already inside the blockchain.
