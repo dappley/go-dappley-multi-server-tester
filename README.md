@@ -548,9 +548,19 @@ Add Producer Test Cases
 Remove Producer Test Cases
 
     - Initialize a 6 node blockchain with 6 produers,
-      then delete 1 producer from the genesis file and check if the blockchain continues.
+      then delete 1 producer and check if the blockchain continues.
       Delete another producer and shutdown 2 of the blockchain nodes.
       If the blockchain stops mining, then there is an error.
+
+    - Invalid input
+        1. height is less than the current blockahin height
+        2. height is string
+        3. height is speical characters
+        4. height is decimal
+        5. height is empty
+
+    - Run deleteProducer method from the node that isn't running any producer in the blockchain OR 
+      Run deleteProducer twice from the node that is running a proudcer in the blockchain
 
 
 Change Producer Test Cases
@@ -569,6 +579,13 @@ Change Producer Test Cases
         3. address is integer
         4. address is special characters
         5. address is empty
+
+    - Invalid height
+        1. height is less than the current blockchain height
+        2. height is string
+        3. height is special character
+        4. height is decimal
+        5. height is empty
 
     - Run changeProducer command twice
         1. Run change producer twice with different addresses but the same height. The blockchain is expected to discard
