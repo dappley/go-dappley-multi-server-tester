@@ -301,7 +301,7 @@
     fail:
      msg: "Expected the value to be {{ account1Balance_1.stdout_lines[0][16:]|int - 100|int - estimated_gas_price.stdout[19:]|int }}, but returned {{ account1Balance_2.stdout_lines[0][16:] }}."
     ignore_errors: true
-    when: inventory_hostname in groups['NODE1'] and account1Balance_2.stdout_lines[0][16:]|int != account1Balance_1.stdout_lines[0][16:]|int - 100|int
+    when: inventory_hostname in groups['NODE1'] and account1Balance_2.stdout_lines[0][16:]|int != account1Balance_1.stdout_lines[0][16:]|int - 100|int - estimated_gas_price.stdout[19:]|int
 
   - name: Check account2 balance
     shell: ./cli getBalance -address {{ account2 }}
