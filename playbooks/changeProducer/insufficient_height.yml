@@ -298,6 +298,17 @@
     ignore_errors: true
 
 
+#################### Check producers ####################
+  - name: Check Blockchain
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: BlockchainInfo
+
+  - debug:
+      msg: '{{ BlockchainInfo }}'
+
+
 ################### Check 5 producers ###################
   - name: Check producer 1-1
     fail:
