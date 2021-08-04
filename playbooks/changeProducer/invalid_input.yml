@@ -370,7 +370,7 @@
   - name: Test
     fail:
       msg: "Expected an error message about the invalid height argument, but returned: {{ test_result_1 }}"
-    when: inventory_hostname in groups['NODE1'] and test_result_1.stdout_lines[0][:-13] != "invalid value \"thisshouldntworkeither\" for flag -height"
+    when: inventory_hostname in groups['NODE1'] and test_result_1.stderr_lines[0][:-13] != "invalid value \"thisshouldntwork\" for flag -height"
     ignore_errors: true
 
 ########## Double ##########
@@ -394,7 +394,7 @@
   - name: Test
     fail:
       msg: "Expected an error message about the invalid height argument, but returned: {{ test_result_1 }}"
-    when: inventory_hostname in groups['NODE1'] and test_result_1.stdout_lines[0][:-13] != "invalid value \"12.5\" for flag -height"
+    when: inventory_hostname in groups['NODE1'] and test_result_1.stderr_lines[0][:-13] != "invalid value \"12.5\" for flag -height"
     ignore_errors: true
 
 ########## Special Character ##########
@@ -421,6 +421,17 @@
       msg: "Program returns an error when the height argument is special characters."
     when: inventory_hostname in groups['NODE1'] and test_result_1.failed
     ignore_errors: true
+
+
+#################### Check producers ####################
+  - name: Check Blockchain
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: BlockchainInfo
+
+  - debug:
+      msg: '{{ BlockchainInfo }}'
 
 
 ################### Check 5 producers ###################
