@@ -328,7 +328,7 @@
     when: inventory_hostname in groups['NODE1']
 
   - debug:
-      msg: '{{ deploy_contract.stdout }}'
+      msg: '{{ deploy_contract }}'
     when: inventory_hostname in groups['NODE1']
 
   - name: Transaction Test
