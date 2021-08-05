@@ -32,7 +32,6 @@
     - 'consensus_config{'
     - '    miner_address: "dNY1BMqsJVMRDp16ohsBACerdw5JQ931Eh"'
     - '    private_key: "555afabcf1f21a1516e3484f5884e627a74c1a9a6b1c6f13f05ceb3cf7d8c0d3"'
-    - '    private_key: "555afabcf1f21a1516e3484f5884e627a74c1a9a6b1c6f13f05ceb3cf7d8c0d3"'
     - '}'
     - ' '
     - 'node_config{'
