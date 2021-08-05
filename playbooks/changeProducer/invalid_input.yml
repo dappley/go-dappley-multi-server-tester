@@ -273,6 +273,30 @@
 
 #################### Change producer with invalid address inputs ####################
 
+#################### Change Producer with no Address ####################
+  - name: Get Blockchain Height
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+
+  - name: Change Producer
+    shell: ./cli changeProducer -height {{ (blockchainHeight.stdout_lines[1][17:-1])|int + 2|int }} -address
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result_1
+    when: inventory_hostname in groups['NODE1']
+
+  - debug:
+      msg: '{{ test_result_1 }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Test
+    fail:
+      msg: "Expected the producer to stay the same but returned {{ test_result_1 }}"
+    when: inventory_hostname in groups['NODE1'] and test_result_1.stderr_lines[0][:22] != "flag needs an argument"
+    ignore_errors: true
+
 #################### Change Producer to an Invalid Producer Address ####################
   - name: Get Blockchain Height
     shell: ./cli getBlockchainInfo
@@ -348,6 +372,30 @@
 
 
 #################### Change producer with invalid height inputs ####################
+
+#################### Change Producer with no Height ####################
+  - name: Get Blockchain Height
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+
+  - name: Change Producer
+    shell: ./cli changeProducer -address dZj8Lu2ZvPjLkH7KZqpQsDmEoMrNNErvfS -height
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: test_result_1
+    when: inventory_hostname in groups['NODE1']
+
+  - debug:
+      msg: '{{ test_result_1 }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Test
+    fail:
+      msg: "Expected the producer to stay the same but returned {{ test_result_1 }}"
+    when: inventory_hostname in groups['NODE1'] and test_result_1.stderr_lines[0][:22] != "flag needs an argument"
+    ignore_errors: true
 
 #################### Height input is smaller than the current height ####################
   - name: Get Blockchain Height
