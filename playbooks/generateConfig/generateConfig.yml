@@ -244,6 +244,17 @@
     ignore_errors: true
 
 
+#################### Check Blockchain ####################
+  - name: Check Blockchain
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: BlockchainInfo
+
+  - debug:
+      msg: '{{ BlockchainInfo }}'
+
+
 #################### Terminate ####################
   - name: Wait til the blockchain terminates
     shell: ./cli getBlockchainInfo
