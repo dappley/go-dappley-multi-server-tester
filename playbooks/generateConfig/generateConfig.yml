@@ -22,21 +22,20 @@
     ansible.builtin.expect:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
       command: ./cli generateConfig
-      responses:
-        Question:
-          - 'MinerNode'
-          - 'node6'
-          - ''
-          - 'dappley'
-          - ''
-          - 'CAISICMUvaL/UxDELHpZiTbJ7subEtRverOR7XFndu4y/CUO'
-          - ''
-          - '50056'
-          - ''
+      responses: 
+        'Choose config type \(FullNode or MinerNode\):' : 'MinerNode'
+        'File name, do not include extension: \(Input nothing for default: \"node\"\)' : 'node6'
+        'Miner address info: \(Input nothing to generate new key pair or input valueable key pair\)' : ''
+        'miner_address: Please input the password for the new account: ' : 'dappley'
+        'Repeat password: ' : 'dappley'
+        'Port info: \(Input nothing for default setting: 12341\)' : ''
+        'Seed:' : 'CAISICMUvaL/UxDELHpZiTbJ7subEtRverOR7XFndu4y/CUO'
+        'db_path: \(Input nothing for default: ../bin/node6.db\)' : ''
+        'Rpc_port: \(Input nothing for default setting : 50051\)' : '50056'
+        'Key: \(Input nothing to generate new key\)' : ''
     register: new_node_config
     when: inventory_hostname in groups['NODE1']
-        # 'Please input the password for the new account:' : 'dappley'
-        # 'Repeat password:' : 'dappley'
+    ignore_errors: true
 
   - debug:
       msg: '{{ new_node_config }}'
@@ -54,51 +53,6 @@
       src: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node6/node6.conf
       dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf
     when: inventory_hostname in groups['NODE2'] or inventory_hostname in groups['NODE3'] inventory_hostname in groups['NODE4'] inventory_hostname in groups['NODE5'] inventory_hostname in groups['NODE6']
-
-# Choose config type:
-# FullNode or MinerNode:
-
-# Ans - MinerNode
-# Ans - FullNode
-
-# File name(don't need extension name): Input nothing for default: "node"
-
-# Ans - node6
-
-# Miner address info:
-# Input nothing to generate new key pair or input valueable key pair
-# miner_address:
-
-# Ans - Nothing
-# Ans - Keypair
-
-# Please input the password:
-
-# Ans - dappley
-
-# New miner_address & pravte_key generated
-# miner_address:  dYNe6tNN77NCJRKdZRvDXeL7uLVpYBGhJQ
-# private_key:  97b60953ea0529f53831e922c229a15bb5fc8a3c9b067bc54d0d7eadb21c1c25
-# Port info:
-# Input nothing for default setting: 12341
-
-# Ans - Nothing
-
-# Seed:
-
-# CAISICMUvaL/UxDELHpZiTbJ7subEtRverOR7XFndu4y/CUO
-
-# db_path: Input nothing for default: ../bin/node6.db
-
-# Ans - Nothing
-
-# Rpc_port: Input nothing for default setting : 50051
-
-# Ans - 50056
-
-# Key: Input nothing to generate new key
-
-# Ans - Nothing
 
 
 #################### Update cli ports on All nodes ####################
@@ -143,7 +97,6 @@
       regexp: 'port: 50050'
       replace: 'port: 50056'
     when: inventory_hostname in groups['NODE6']
-
 
 
 #################### Update seed on All nodes ####################
@@ -284,8 +237,8 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
     ignore_errors: true
 
-  # - name: Remove /go-dappley/dapp/bin Node
-  #   shell: rm -r bin
-  #   args:
-  #     chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
-  #   ignore_errors: true
+  - name: Remove /go-dappley/dapp/bin Node
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
+    ignore_errors: true
