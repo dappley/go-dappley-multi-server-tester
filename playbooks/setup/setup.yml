@@ -19,6 +19,7 @@
     ansible.builtin.git:
       repo: https://github.com/dappley/go-dappley.git
       dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+    ignore_errors: true
 
 #################### Change branch to develop ####################
   - name: Change branch to develop
