@@ -29,7 +29,7 @@
         'miner_address: Please input the password for the new account: ' : 'dappley'
         'Repeat password: ' : 'dappley'
         'Port info: \(Input nothing for default setting: 12341\)' : ''
-        'Seed:' : 'CAISICMUvaL/UxDELHpZiTbJ7subEtRverOR7XFndu4y/CUO'
+        'Seed:' : '/ip4/127.0.0.1/tcp/12341/p2p/QmNzA9rsEcM5nAzX9PzTrabJsGiifzaUU85Qe78HSDzSSE'
         'db_path: \(Input nothing for default: ../bin/node6.db\)' : ''
         'Rpc_port: \(Input nothing for default setting : 50051\)' : '50056'
         'Key: \(Input nothing to generate new key\)' : ''
@@ -48,53 +48,77 @@
       flat: yes
     when: inventory_hostname in groups['NODE1']
 
-  - name: Copy accounts.dat to all hosts
+  - name: Copy accounts.dat to node2
     copy:
       src: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node6/node6.conf
       dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf
-    when: inventory_hostname in groups['NODE2'] or inventory_hostname in groups['NODE3'] inventory_hostname in groups['NODE4'] inventory_hostname in groups['NODE5'] inventory_hostname in groups['NODE6']
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Copy accounts.dat to node3
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node6/node6.conf
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf
+    when: inventory_hostname in groups['NODE3']
+
+  - name: Copy accounts.dat to node4
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node6/node6.conf
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf
+    when: inventory_hostname in groups['NODE4']
+
+  - name: Copy accounts.dat to node5
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node6/node6.conf
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf
+    when: inventory_hostname in groups['NODE5']
+
+  - name: Copy accounts.dat to node6
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node6/node6.conf
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf
+    when: inventory_hostname in groups['NODE6']
 
 
 #################### Update cli ports on All nodes ####################
   - name: Update node1 cli port
     ansible.builtin.replace:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
-      regexp: 'port: 50050'
+      regexp: 'port: 50051'
       replace: 'port: 50051'
     when: inventory_hostname in groups['NODE1']
 
   - name: Update node2 cli port
     ansible.builtin.replace:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
-      regexp: 'port: 50050'
+      regexp: 'port: 50051'
       replace: 'port: 50052'
     when: inventory_hostname in groups['NODE2']
 
   - name: Update node3 cli port
     ansible.builtin.replace:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
-      regexp: 'port: 50050'
+      regexp: 'port: 50051'
       replace: 'port: 50053'
     when: inventory_hostname in groups['NODE3']
 
   - name: Update node4 cli port
     ansible.builtin.replace:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
-      regexp: 'port: 50050'
+      regexp: 'port: 50051'
       replace: 'port: 50054'
     when: inventory_hostname in groups['NODE4']
 
   - name: Update node5 cli port
     ansible.builtin.replace:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
-      regexp: 'port: 50050'
+      regexp: 'port: 50051'
       replace: 'port: 50055'
     when: inventory_hostname in groups['NODE5']
 
   - name: Update node6 cli port
     ansible.builtin.replace:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
-      regexp: 'port: 50050'
+      regexp: 'port: 50051'
       replace: 'port: 50056'
     when: inventory_hostname in groups['NODE6']
 
@@ -162,7 +186,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 60
+    async: 70
     poll: 0
 
   - name: Launch NODE2
@@ -170,7 +194,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 60
+    async: 70
     poll: 0
 
   - name: Launch NODE3
@@ -178,7 +202,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 60
+    async: 70
     poll: 0
 
   - name: Launch NODE4
@@ -186,7 +210,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 60
+    async: 70
     poll: 0
 
   - name: Launch NODE5
@@ -194,7 +218,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 60
+    async: 70
     poll: 0
 
   - name: Launch NODE6
@@ -202,7 +226,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE6']
-    async: 60
+    async: 70
     poll: 0
 
   - name: Wait for blockchain initialization
@@ -241,4 +265,5 @@
     shell: rm -r bin
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
+    when: inventory_hostname in groups['NODE1']
     ignore_errors: true
