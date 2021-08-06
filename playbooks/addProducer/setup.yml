@@ -46,7 +46,9 @@
     - '    node_address: "dNY1BMqsJVMRDp16ohsBACerdw5JQ931Eh"'
     - '    metrics_interval: 7200'
     - '    metrics_polling_interval: 5'
-    - '}'
+    - '} '
+    - '  '
+    - '   '
 
   - name: Update node2 cli port
     ansible.builtin.replace:
@@ -138,29 +140,3 @@
     with_inventory_hostnames:
       - NODE1
     when: inventory_hostname in groups['NODE6']
-
-
-# #################### update genesis.conf ####################
-#   - name: Remove genesis.conf
-#     shell: 'rm -r genesis.conf'
-#     args:
-#       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf
-
-#   - name: Create genesis.conf
-#     shell: '> genesis.conf'
-#     args:
-#       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf
-
-#   - name: Update genesis.conf
-#     lineinfile:
-#       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/genesis.conf
-#       state: present
-#       line: "{{ item }}"
-#     with_items:
-#     - 'producers: ['
-#     - '"dastXXWLe5pxbRYFhcyUq8T3wb5srWkHKa",'
-#     - '"dUuPPYshbBgkzUrgScEHWvdGbSxC8z4R12",'
-#     - '"dPGD4t6ibpmyKZnXH1TNbbPw98EDaaZq8C",'
-#     - '"dUa6gQkijmVqf7pk9cmRS6M9nMnU6b9Ssm"'
-#     - ']'
-#     - 'max_producers: 6'
