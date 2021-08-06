@@ -576,6 +576,10 @@ Delete Producer Test Cases
         4. height is decimal
         5. height is empty
 
+Generate Config Test Case
+
+    - Creates a new node configuration file in all servers. Initialize the blockchain with the newly
+      added node configuration file and check if the blockchain height increments upto height of 10.
 
 Change Producer Test Cases
 
