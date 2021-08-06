@@ -46,14 +46,14 @@ pipeline {
         }
         stage('Create Directories') {
             steps {
-                sh 'mkdir test_results test_results/createAccount test_results/getBalance test_results/listAddresses test_results/send test_results/sendFromMiner test_results/setup test_results/smartContract test_results/getPeerInfo test_results/getBlockchain test_results/estimateGas test_results/addProducer test_results/removeProducer test_results/changeProducer'
+                sh 'mkdir test_results test_results/createAccount test_results/getBalance test_results/listAddresses test_results/send test_results/sendFromMiner test_results/setup test_results/smartContract test_results/getPeerInfo test_results/getBlockchain test_results/estimateGas test_results/addProducer test_results/deleteProducer test_results/changeProducer test_results/generateConfig'
                 sh 'mkdir accounts accounts/node1 accounts/node2 accounts/node3 accounts/node4 accounts/node5'
                 sh 'mkdir playbook_error playbook_error/node1 playbook_error/node2 playbook_error/node3 playbook_error/node4 playbook_error/node5 playbook_error/node6'
             }
         }
         stage('Create instances 1') {
             steps {
-                create_n_setup_instances(5)
+                create_instance(5)
             }
         }
         stage('Setup Host Nodes 1') {
@@ -73,7 +73,7 @@ pipeline {
         }
         stage('Generate Peer ID') {
             steps {
-                run_playbook('./playbooks/setup/get_PeerID.yml', './test_results/setup/get_PeerID.txt', 5)
+                run_playbook('./playbooks/setup/generate_PeerID.yml', './test_results/setup/generate_PeerID.txt', 5)
             }
         }
         stage('Update Playbooks') {
@@ -155,7 +155,6 @@ pipeline {
         stage('Add Producer Playbooks') {
             steps {
                 run_playbook('./playbooks/addProducer/add_producer.yml', './test_results/addProducer/add_producer.txt', 5)
-                run_playbook('./playbooks/addProducer/add_when_max.yml', './test_results/addProducer/add_when_max.txt', 5)
                 run_playbook('./playbooks/addProducer/invalid_address.yml', './test_results/addProducer/invalid_address.txt', 5)
             }
         }
@@ -167,24 +166,23 @@ pipeline {
         }
         stage('Create instances 2') {
             steps {
-                create_n_setup_instances(6)
+                create_instance(6)
             }
         }
-        stage('Setup Host Nodes 2-1') {
+        stage('Setup Host Nodes 2') {
             steps {
                 sh 'ansible-playbook ./playbooks/setup/setup.yml > ./test_results/setup/setup_2.txt'
-            }
-        }
-        stage('Setup Host Nodes 2-2') {
-            steps {
                 sh 'ansible-playbook ./playbooks/addProducer/setup.yml > ./test_results/setup/setup_3.txt'
             }
         }
-        stage('6 Producer Test - addProducer') {
+        stage('AddProducer Playbooks') {
             steps {
-                run_playbook('./playbooks/addProducer/6_producer_test_1.yml', './test_results/addProducer/6_producer_test_1.txt', 6)
+                run_playbook('./playbooks/addProducer/add_producer.yml', './test_results/addProducer/add_producer.txt', 6)
+                run_playbook('./playbooks/addProducer/invalid_address.yml', './test_results/addProducer/invalid_address.txt', 6)
+
+                run_playbook('./playbooks/addProducer/server_shutdown_1.yml', './test_results/addProducer/server_shutdown_1.txt', 6)
                 sh './go-dappley-multi-server-tester -function terminate -number 2'
-                run_playbook('./playbooks/addProducer/6_producer_test_2.yml', './test_results/addProducer/6_producer_test_2.txt', 6)
+                run_playbook('./playbooks/addProducer/server_shutdown_2.yml', './test_results/addProducer/server_shutdown_2.txt', 6)
             }
         }
         stage('Terminate Host Nodes 2') {
@@ -195,24 +193,23 @@ pipeline {
         }
         stage('Create instances 3') {
             steps {
-                create_n_setup_instances(6)
+                create_instance(6)
             }
         }
         stage('Setup Host Nodes 3-1') {
             steps {
                 sh 'ansible-playbook ./playbooks/setup/setup.yml > ./test_results/setup/setup_4.txt'
+                sh 'ansible-playbook ./playbooks/deleteProducer/setup.yml > ./test_results/setup/setup_5.txt'
             }
         }
-        stage('Setup Host Nodes 3-2') {
+        stage('DeleteProducer Playbooks') {
             steps {
-                sh 'ansible-playbook ./playbooks/removeProducer/setup.yml > ./test_results/setup/setup_5.txt'
-            }
-        }
-        stage('6 Producer Test - removeProducer') {
-            steps {
-                run_playbook('./playbooks/removeProducer/6_producer_test_1.yml', './test_results/removeProducer/6_producer_test_1.txt', 6)
+                run_playbook('./playbooks/deleteProducer/delete_twice.yml', './test_results/deleteProducer/delete_twice.txt', 6)
+                run_playbook('./playbooks/deleteProducer/invalid_input.yml', './test_results/deleteProducer/invalid_input.txt', 6)
+
+                run_playbook('./playbooks/deleteProducer/server_shutdown_1.yml', './test_results/deleteProducer/server_shutdown_1.txt', 6)
                 sh './go-dappley-multi-server-tester -function terminate -number 2'
-                run_playbook('./playbooks/removeProducer/6_producer_test_2.yml', './test_results/removeProducer/6_producer_test_2.txt', 6)
+                run_playbook('./playbooks/deleteProducer/server_shutdown_2.yml', './test_results/deleteProducer/server_shutdown_2.txt', 6)
             }
         }
         stage('Terminate Host Nodes 3') {
@@ -223,7 +220,7 @@ pipeline {
         }
         stage('Create instances 4') {
             steps {
-                create_n_setup_instances(6)
+                create_instance(6)
             }
         }
         stage('Setup Host Nodes 4-1') {
@@ -236,11 +233,28 @@ pipeline {
                 sh 'ansible-playbook ./playbooks/changeProducer/setup.yml > ./test_results/setup/setup_5.txt'
             }
         }
-        stage('6 Producer Test - changeProducer') {
+        stage('ChangeProducer Playbooks') {
             steps {
-                run_playbook('./playbooks/changeProducer/6_producer_test_1.yml', './test_results/removeProducer/6_producer_test_1.txt', 6)
-                run_playbook('./playbooks/changeProducer/6_producer_test_2.yml', './test_results/removeProducer/6_producer_test_2.txt', 6)
-                run_playbook('./playbooks/changeProducer/6_producer_test_3.yml', './test_results/removeProducer/6_producer_test_3.txt', 6)
+                run_playbook('./playbooks/changeProducer/change_once.yml', './test_results/changeProducer/change_once.txt', 6)
+                run_playbook('./playbooks/changeProducer/change_twice.yml', './test_results/changeProducer/change_twice.txt', 6)
+                run_playbook('./playbooks/changeProducer/invalid_input.yml', './test_results/changeProducer/invalid_input.txt', 6)
+                run_playbook('./playbooks/changeProducer/duplicate_producer.yml', './test_results/changeProducer/duplicate_producer.txt', 6)
+                run_playbook('./playbooks/changeProducer/change_to_invalid_producer.yml', './test_results/changeProducer/change_to_invalid_producer.txt', 6)
+            }
+        }
+        stage('Create instances 5') {
+            steps {
+                create_instance(6)
+            }
+        }
+        stage('Setup Host Nodes 5') {
+            steps {
+                sh 'ansible-playbook ./playbooks/setup/setup.yml > ./test_results/setup/setup_5.txt'
+            }
+        }
+        stage('GenerateConfig Playbooks') {
+            steps {
+                run_playbook('./playbooks/generateConfig/generateConfig.yml', './test_results/generateConfig/generateConfig.txt', 6)
             }
         }
         stage('Send Report') {
@@ -258,7 +272,7 @@ pipeline {
     }
 }
 
-def create_n_setup_instances(int nodes) {
+def create_instance(int nodes) {
     for (int i = 1; i <= nodes; i++) {
         sh "aws ec2 run-instances --image-id ami-09e67e426f25ce0d7 --instance-type m5.large --count 1 --key-name jenkins --security-group-ids sg-0805d37807366482d --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=JenkinsTestNode${i}}]' > node${i}.txt"
     }
@@ -531,13 +545,13 @@ Get Peer Info Test Case
 
 Add Producer Test Cases
 
+    - Add a new producer to the blockchain
+
     - Invalid address
         1. address is invalid
         2. address is integer
         3. address is special characters
         4. address is empty
-
-    - Add producer when max producer number is already reached
 
     - Initialize a 6 node blockchain with 4 producers,
       then add 2 more producers to the blockchain. Shut down 2
@@ -545,12 +559,15 @@ Add Producer Test Cases
       If the blockchain height continues to grow, then there is an error.
 
 
-Remove Producer Test Cases
+Delete Producer Test Cases
 
     - Initialize a 6 node blockchain with 6 produers,
       then delete 1 producer and check if the blockchain continues.
       Delete another producer and shutdown 2 of the blockchain nodes.
       If the blockchain stops mining, then there is an error.
+
+    - Run the delete producer command twice on the same node. The first command is expected to delete the current producer.
+      The second command is expected to do nothing to the remaining producers.
 
     - Invalid input
         1. height is less than the current blockahin height
@@ -558,9 +575,6 @@ Remove Producer Test Cases
         3. height is speical characters
         4. height is decimal
         5. height is empty
-
-    - Run deleteProducer method from the node that isn't running any producer in the blockchain OR 
-      Run deleteProducer twice from the node that is running a proudcer in the blockchain
 
 
 Change Producer Test Cases
@@ -572,26 +586,20 @@ Change Producer Test Cases
 
     - Change 3 producers' address to a valid, but non-existing (non of the nodes in the blockchain contains the address)
       producer addresses. If the blockchain continues to mine, then fail.
+      
+    - Run change producer twice with different addresses but the same height. The blockchain is expected to discard the input of the first changeProdcer command and change the producer address to the input of the second changeProducer command.
 
-    - Invalid address
+    - Invalid Inputs
+        Address:
         1. address is invalid
         2. address is non-sense string
         3. address is integer
         4. address is special characters
         5. address is empty
 
-    - Invalid height
+        Height:
         1. height is less than the current blockchain height
         2. height is string
         3. height is special character
         4. height is decimal
         5. height is empty
-
-    - Run changeProducer command twice
-        1. Run change producer twice with different addresses but the same height. The blockchain is expected to discard
-           the input of the first changeProdcer command and change the producer address to the input of the second changeProducer
-           command.
-
-        2. Run change producer twice with different addresses but the same height. The address of the second changeProducer
-           command is invalid. The blockchain is expected to discard the input of the second changeProdcer command and change
-           the producer address to the input of the first changeProducer command.
