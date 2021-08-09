@@ -23,7 +23,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 180
+    async: 140
     poll: 0
 
   - name: Launch NODE2
@@ -31,7 +31,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 180
+    async: 140
     poll: 0
 
   - name: Launch NODE3
@@ -39,7 +39,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 180
+    async: 140
     poll: 0
 
   - name: Launch NODE4
@@ -47,7 +47,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 180
+    async: 140
     poll: 0
 
   - name: Launch NODE5
@@ -55,7 +55,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 180
+    async: 140
     poll: 0
 
   - name: Launch NODE6
@@ -63,7 +63,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE6']
-    async: 180
+    async: 140
     poll: 0
 
   - name: Wait for blockchain initialization
