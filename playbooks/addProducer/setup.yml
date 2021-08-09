@@ -9,7 +9,7 @@
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin"
 
   tasks:
-#################### Send Accounts.dat ####################
+#################### Make build ####################
   - name: Make build
     make:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
