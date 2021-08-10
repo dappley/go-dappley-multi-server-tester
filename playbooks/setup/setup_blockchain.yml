@@ -74,7 +74,7 @@
     - 'port: 50056'
     - 'password: "password"'
     when: 
-      - 'NODE6' in groups
+      - "'NODE6' in groups"
       - inventory_hostname in groups['NODE6']
 
 
@@ -132,7 +132,7 @@
     with_inventory_hostnames:
       - NODE1
     when: 
-      - 'NODE6' in groups
+      - "'NODE6' in groups"
       - inventory_hostname in groups['NODE6']
 
 
