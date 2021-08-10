@@ -9,12 +9,34 @@
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin"
 
   tasks:
+#################### Update Cli Ports ####################
+  - name: Remove default.conf
+    shell: 'rm -r default.conf'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+
+  - name: Create default.conf
+    shell: '> default.conf'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+
+  - name: Update default.conf
+    lineinfile:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
+      state: present
+      line: "{{ item }}"
+    with_items:
+    - 'port: 50051'
+    - 'password: "password"'
+
+
 #################### Build go-dappley ####################
   - name: Make build
     make:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
       target: build
       file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
+
 
 #################### Launch Node1 ####################
   - name: Launch node1
@@ -57,6 +79,7 @@
     async: 70
     poll: 0
 
+
 #################### Launch Node2 ####################
   - name: Launch node1
     shell: ./dapp -f conf/node1.conf
@@ -97,6 +120,7 @@
     when: inventory_hostname in groups['NODE2']
     async: 70
     poll: 0
+
 
 #################### Launch Node3 ####################
   - name: Launch node1
@@ -139,6 +163,7 @@
     async: 70
     poll: 0
 
+
 #################### Launch Node4 ####################
   - name: Launch node1
     shell: ./dapp -f conf/node1.conf
@@ -179,6 +204,7 @@
     when: inventory_hostname in groups['NODE4']
     async: 70
     poll: 0
+
 
 #################### Launch Node5 ####################
   - name: Launch node1
@@ -221,21 +247,21 @@
     async: 70
     poll: 0
 
+
+#################### Initialize Blockchain ####################
   - name: Wait for blockchain initialization
     wait_for:
-      timeout: 30
+      timeout: 20
 
   - name: Wait til the blockchain reaches height of 10
     shell: ./cli getBlockchainInfo
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: blockchainHeight
-    until: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int > (10)|int
+    until: (blockchainHeight.stdout_lines[1][17:]|replace(',',''))|int > 10|int
     retries: 20
     delay: 10
 
-  - debug:
-      msg: "Blockchain height: {{ blockchainHeight.stdout_lines[1][17:]|replace(',','') }}"
 
 #################### Create accounts.dat ####################
   - name: Create accounts.dat
@@ -255,7 +281,7 @@
     register: account_info
 
   - debug:
-      msg: '{{ account_info.stdout_lines[3] }}'
+      msg: '{{ account_info }}'
 
   - name: Create account info file
     shell: echo '{{ account_info.stdout_lines[3][12:] }}' > account_address.txt
@@ -263,6 +289,7 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin
 
 
+#################### Move account Info ####################
   - name: Move account info to Jenkins
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/accounts.dat
@@ -276,7 +303,6 @@
       dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node1/
       flat: yes
     when: inventory_hostname in groups['NODE1']
-
 
   - name: Move account info to Jenkins
     fetch:
@@ -292,7 +318,6 @@
       flat: yes
     when: inventory_hostname in groups['NODE2']
 
-
   - name: Move account info to Jenkins
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/accounts.dat
@@ -306,7 +331,6 @@
       dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node3/
       flat: yes
     when: inventory_hostname in groups['NODE3']
-
 
   - name: Move account info to Jenkins
     fetch:
@@ -322,7 +346,6 @@
       flat: yes
     when: inventory_hostname in groups['NODE4']
 
-
   - name: Move account info to Jenkins
     fetch:
       src: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/accounts.dat
@@ -336,6 +359,7 @@
       dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node5/
       flat: yes
     when: inventory_hostname in groups['NODE5']
+
 
 #################### Terminate ####################
   - name: Wait til the blockchain terminates

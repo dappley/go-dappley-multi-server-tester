@@ -15,11 +15,16 @@
     when: go_directory.stat.exists == false
 
 #################### Clone go-dappley to directory ####################
+  - name: Check directory exists
+    stat:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    register: go_dappley
+
   - name: Clone the go-dappley repository
     ansible.builtin.git:
       repo: https://github.com/dappley/go-dappley.git
       dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/
-    ignore_errors: true
+    when: go_dappley.stat.exists == false
 
 #################### Change branch to develop ####################
   - name: Change branch to develop
@@ -74,23 +79,3 @@
       owner: ubuntu
       group: ubuntu
       recurse: yes
-
-#################### Update Cli Ports ####################
-  - name: Remove default.conf
-    shell: 'rm -r default.conf'
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-
-  - name: Create default.conf
-    shell: '> default.conf'
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-
-  - name: Update default.conf
-    lineinfile:
-      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli/default.conf
-      state: present
-      line: "{{ item }}"
-    with_items:
-    - 'port: 50051'
-    - 'password: "password"'
