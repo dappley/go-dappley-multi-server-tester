@@ -11,6 +11,7 @@
     account1: account_1_address
     account2: account_2_address
     invalid_address: thisistheaddressofaninvalidaddress
+    est_gasPrice: 0
 
   tasks:
 #################### Send Accounts.dat ####################
@@ -271,6 +272,14 @@
       msg: '{{ estimated_gas_price }}'
     when: inventory_hostname in groups['NODE1']
 
+  - name: set estimated gas price
+    set_fact: est_gasPrice="{{ estimated_gas_price.stdout_lines[0].split(":")[1] | int }}"
+    when: inventory_hostname in groups['NODE1']
+
+  - debug:
+      msg: '{{ est_gasPrice }}'
+    when: inventory_hostname in groups['NODE1']
+
   - name: Create smart contract
     shell: ./cli send -from {{ account1 }} -amount 100 -tip 0 -gasLimit 30000 -gasPrice 1 -file ../jslib/step_recorder.js
     args:
@@ -299,9 +308,9 @@
 
   - name: Account1 balance test
     fail:
-     msg: "Expected the value to be {{ account1Balance_1.stdout_lines[0][16:]|int - 100|int - estimated_gas_price.stdout[19:]|int }}, but returned {{ account1Balance_2.stdout_lines[0][16:] }}."
+     msg: "Expected the value to be {{ account1Balance_1.stdout_lines[0][16:]|int - 100|int - est_gasPrice|int }}, but returned {{ account1Balance_2.stdout_lines[0][16:] }}."
     ignore_errors: true
-    when: inventory_hostname in groups['NODE1'] and account1Balance_2.stdout_lines[0][16:]|int != account1Balance_1.stdout_lines[0][16:]|int - 100|int - estimated_gas_price.stdout[19:]|int
+    when: inventory_hostname in groups['NODE1'] and account1Balance_2.stdout_lines[0][16:]|int != account1Balance_1.stdout_lines[0][16:]|int - 100|int - est_gasPrice|int
 
   - name: Check account2 balance
     shell: ./cli getBalance -address {{ account2 }}
