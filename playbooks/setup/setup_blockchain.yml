@@ -124,9 +124,9 @@
       - NODE1
     when: inventory_hostname in groups['NODE5']
 
-  - name: Update node5 seed
+  - name: Update node6 seed
     ansible.builtin.replace:
-      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node5.conf
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node6.conf
       regexp: '127.0.0.1'
       replace: '{{ item }}'
     with_inventory_hostnames:
