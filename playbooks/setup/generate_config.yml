@@ -23,17 +23,20 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
       command: ./cli generateConfig
       responses: 
-        'Choose config type \(FullNode or MinerNode\):' : 'MinerNode'
-        'File name, do not include extension: \(Input nothing for default: \"node\"\)' : 'node6'
-        'Miner address info: \(Input nothing to generate new key pair or input valueable key pair\)' : 'dNY1BMqsJVMRDp16ohsBACerdw5JQ931Eh'
-        'miner_address: private_key:' : '555afabcf1f21a1516e3484f5884e627a74c1a9a6b1c6f13f05ceb3cf7d8c0d3'
-        'miner_address: Please input the password for the new account: ' : 'dappley'
+        'Select node type - FullNode or MinerNode:' : 'MinerNode'
+        'Input file name - Input nothing for default name "new_node":' : 'node6'
+        'Input miner address:' : 'dNY1BMqsJVMRDp16ohsBACerdw5JQ931Eh'
+        'Input private keypair:' : '555afabcf1f21a1516e3484f5884e627a74c1a9a6b1c6f13f05ceb3cf7d8c0d3'
+        'Please input the password for the new account: ' : 'dappley'
         'Repeat password: ' : 'dappley'
-        'Port info: \(Input nothing for default setting: 12341\)' : ''
-        'Seed:' : '/ip4/127.0.0.1/tcp/12341/p2p/QmNzA9rsEcM5nAzX9PzTrabJsGiifzaUU85Qe78HSDzSSE'
-        'db_path: \(Input nothing for default: ../bin/node6.db\)' : ''
-        'Rpc_port: \(Input nothing for default setting : 50051\)' : '50056'
-        'Key: \(Input nothing to generate new key\)' : ''
+        'Input port info - Input nothing for default port "12341":' : '12346'
+        'Input seed:' : '/ip4/127.0.0.1/tcp/12341/p2p/QmNzA9rsEcM5nAzX9PzTrabJsGiifzaUU85Qe78HSDzSSE'
+        'Input database path - Input nothing for default path "../bin/node6.db"' : ''
+        'Input rpc port - Input nothing for default port "50051"' : '50056'
+        'Input key - Input nothing to generate a new key:' : ''
     register: new_node_config
     when: inventory_hostname in groups['NODE6']
     ignore_errors: true
+
+  - debug:
+      msg: '{{ new_node_config }}'
