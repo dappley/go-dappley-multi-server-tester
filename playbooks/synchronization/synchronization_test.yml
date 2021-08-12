@@ -9,9 +9,9 @@
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin"
 
   tasks:
-#################### update genesis.conf ####################
+#################### Update genesis.conf ####################
   - name: Remove genesis.conf
-    shell: 'rm -r genesis.conf'
+    shell: 'sudo rm -r genesis.conf'
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf
 
@@ -49,7 +49,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 120
+    async: 150
     poll: 0
 
   - name: Launch NODE2
@@ -57,7 +57,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 120
+    async: 150
     poll: 0
 
   - name: Launch NODE3
@@ -65,7 +65,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 120
+    async: 150
     poll: 0
 
   - name: Launch NODE4
@@ -73,7 +73,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 120
+    async: 150
     poll: 0
 
   - name: Launch NODE5
@@ -81,7 +81,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 120
+    async: 150
     poll: 0
 
   - name: Wait for blockchain initialization
@@ -97,12 +97,7 @@
     retries: 20
     delay: 10
     ignore_errors: true
-    when:
-      - inventory_hostname in groups['NODE1']
-      - inventory_hostname in groups['NODE2']
-      - inventory_hostname in groups['NODE3']
-      - inventory_hostname in groups['NODE4']
-      - inventory_hostname in groups['NODE5']
+    when: inventory_hostname in ((groups['NODE1'] + groups['NODE2'] + groups['NODE3'] + groups['NODE4'] + groups['NODE5'] ) | unique )
 
 
 #################### Check NODE1 result ####################
@@ -223,7 +218,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE6']
-    async: 70
+    async: 100
     poll: 0
 
 
@@ -233,7 +228,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: blockchainHeight
-    when: iventory_hostname in groups['NODE6']
+    when: inventory_hostname in groups['NODE6']
 
   - name: Check if height increaments
     shell: ./cli getBlockchainInfo
@@ -248,6 +243,7 @@
 
   - debug:
       msg: '{{ blockchainHeight_new }}'
+    when: inventory_hostname in groups['NODE6']
 
   - name: Wait half a minute
     wait_for:
@@ -258,7 +254,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: blockchainHeight
-    when: iventory_hostname in groups['NODE6']
+    when: inventory_hostname in groups['NODE6']
 
   - name: Check if height increaments
     shell: ./cli getBlockchainInfo
@@ -273,7 +269,7 @@
 
   - debug:
       msg: '{{ blockchainHeight_new }}'
-
+    when: inventory_hostname in groups['NODE6']
 
 #################### Terminate ####################
   - name: Wait til the blockchain terminates
