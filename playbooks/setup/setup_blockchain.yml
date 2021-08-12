@@ -119,7 +119,7 @@
       state: present
       line: "{{ item }}"
     with_items:
-    - 'port: 500510'
+    - 'port: 50050'
     - 'password: "password"'
     when: 
       - "'NODE10' in groups"

@@ -146,7 +146,7 @@
         'Input port info - Input nothing for default port "12341":' : '12340'
         'Input seed:' : '/ip4/127.0.0.1/tcp/12345/p2p/16Uiu2HAmVer1v2PuXaJxbtCrhZb42CwNpg7MMcsWWVfyCmMiXhAr'
         'Input database path - Input nothing for default path "../bin/node10.db"' : ''
-        'Input rpc port - Input nothing for default port "50051"' : '500510'
+        'Input rpc port - Input nothing for default port "50051"' : '50050'
         'Input key - Input nothing to generate a new key:' : ''
     register: new_node_config
     when: 
