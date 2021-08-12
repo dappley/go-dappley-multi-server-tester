@@ -18,6 +18,8 @@
 
 
 #################### Generate node6 configuration file ####################
+
+########## Node6 ##########
   - name: Generate node6.conf
     ansible.builtin.expect:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
@@ -35,8 +37,139 @@
         'Input rpc port - Input nothing for default port "50051"' : '50056'
         'Input key - Input nothing to generate a new key:' : ''
     register: new_node_config
-    when: inventory_hostname in groups['NODE6']
-    ignore_errors: true
+    when: 
+      - "'NODE6' in groups"
+      - inventory_hostname in groups['NODE6']
 
   - debug:
       msg: '{{ new_node_config }}'
+    when: 
+      - "'NODE6' in groups"
+      - inventory_hostname in groups['NODE6']
+
+########## Update Node6 ##########
+  - name: Update node6.conf
+    ansible.builtin.replace:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node6.conf
+      regexp: '    seed:   ["/ip4/127.0.0.1/tcp/12341/p2p/QmNzA9rsEcM5nAzX9PzTrabJsGiifzaUU85Qe78HSDzSSE"]'
+      replace: '{{ item }}'
+    with_items:
+    - '    seed:   ['
+    - '                "/ip4/127.0.0.1/tcp/12341/p2p/QmNzA9rsEcM5nAzX9PzTrabJsGiifzaUU85Qe78HSDzSSE",'
+    - '                "/ip4/127.0.1.1/tcp/123410/p2p/CAISIPOe3CKg1tn5YTW5K2FfS6Qd8Yklo+D1uy0A0OkoH5Et"'
+    - '            ]'
+    when: 
+      - "'NODE7' in groups"
+      - inventory_hostname in groups['NODE6']
+
+########## Node7 ##########
+  - name: Generate node7.conf
+    ansible.builtin.expect:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+      command: ./cli generateConfig
+      responses: 
+        'Select node type - FullNode or MinerNode:' : 'MinerNode'
+        'Input file name - Input nothing for default name "new_node":' : 'node7'
+        'Input miner address:' : '#TODO'
+        'Input private keypair:' : '#TODO'
+        'Please input the password for the new account: ' : 'dappley'
+        'Repeat password: ' : 'dappley'
+        'Input port info - Input nothing for default port "12341":' : '12347'
+        'Input seed:' : '/ip4/127.0.0.1/tcp/123410/p2p/CAISIPOe3CKg1tn5YTW5K2FfS6Qd8Yklo+D1uy0A0OkoH5Et'
+        'Input database path - Input nothing for default path "../bin/node7.db"' : ''
+        'Input rpc port - Input nothing for default port "50051"' : '50057'
+        'Input key - Input nothing to generate a new key:' : ''
+    register: new_node_config
+    when: 
+      - "'NODE7' in groups"
+      - inventory_hostname in groups['NODE7']
+
+  - debug:
+      msg: '{{ new_node_config }}'
+    when: 
+      - "'NODE7' in groups"
+      - inventory_hostname in groups['NODE7']
+
+########## Node8 ##########
+  - name: Generate node8.conf
+    ansible.builtin.expect:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+      command: ./cli generateConfig
+      responses: 
+        'Select node type - FullNode or MinerNode:' : 'MinerNode'
+        'Input file name - Input nothing for default name "new_node":' : 'node8'
+        'Input miner address:' : '#TODO'
+        'Input private keypair:' : '#TODO'
+        'Please input the password for the new account: ' : 'dappley'
+        'Repeat password: ' : 'dappley'
+        'Input port info - Input nothing for default port "12341":' : '12348'
+        'Input seed:' : '/ip4/127.0.0.1/tcp/123410/p2p/CAISIPOe3CKg1tn5YTW5K2FfS6Qd8Yklo+D1uy0A0OkoH5Et'
+        'Input database path - Input nothing for default path "../bin/node8.db"' : ''
+        'Input rpc port - Input nothing for default port "50051"' : '50058'
+        'Input key - Input nothing to generate a new key:' : ''
+    register: new_node_config
+    when: 
+      - "'NODE8' in groups"
+      - inventory_hostname in groups['NODE8']
+
+  - debug:
+      msg: '{{ new_node_config }}'
+    when: 
+      - "'NODE8' in groups"
+      - inventory_hostname in groups['NODE8']
+
+########## Node9 ##########
+  - name: Generate node9.conf
+    ansible.builtin.expect:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+      command: ./cli generateConfig
+      responses: 
+        'Select node type - FullNode or MinerNode:' : 'MinerNode'
+        'Input file name - Input nothing for default name "new_node":' : 'node9'
+        'Input miner address:' : '#TODO'
+        'Input private keypair:' : '#TODO'
+        'Please input the password for the new account: ' : 'dappley'
+        'Repeat password: ' : 'dappley'
+        'Input port info - Input nothing for default port "12341":' : '12349'
+        'Input seed:' : '/ip4/127.0.0.1/tcp/123410/p2p/CAISIPOe3CKg1tn5YTW5K2FfS6Qd8Yklo+D1uy0A0OkoH5Et'
+        'Input database path - Input nothing for default path "../bin/node9.db"' : ''
+        'Input rpc port - Input nothing for default port "50051"' : '50059'
+        'Input key - Input nothing to generate a new key:' : ''
+    register: new_node_config
+    when: 
+      - "'NODE9' in groups"
+      - inventory_hostname in groups['NODE9']
+
+  - debug:
+      msg: '{{ new_node_config }}'
+    when: 
+      - "'NODE9' in groups"
+      - inventory_hostname in groups['NODE9']
+
+########## Node10 ##########
+  - name: Generate node10.conf
+    ansible.builtin.expect:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+      command: ./cli generateConfig
+      responses: 
+        'Select node type - FullNode or MinerNode:' : 'MinerNode'
+        'Input file name - Input nothing for default name "new_node":' : 'node10'
+        'Input miner address:' : '#TODO'
+        'Input private keypair:' : '#TODO'
+        'Please input the password for the new account: ' : 'dappley'
+        'Repeat password: ' : 'dappley'
+        'Input port info - Input nothing for default port "12341":' : '123410'
+        'Input seed:' : '/ip4/127.0.0.1/tcp/12349/p2p/CAISIFEcS2JrlTsMeebDV6Cknz8EHSjJ/AxltIlWU03zBoy0'
+        'Input database path - Input nothing for default path "../bin/node10.db"' : ''
+        'Input rpc port - Input nothing for default port "50051"' : '500510'
+        'Input key - Input nothing to generate a new key:' : ''
+    register: new_node_config
+    when: 
+      - "'NODE10' in groups"
+      - inventory_hostname in groups['NODE10']
+
+  - debug:
+      msg: '{{ new_node_config }}'
+    when: 
+      - "'NODE10' in groups"
+      - inventory_hostname in groups['NODE10']
