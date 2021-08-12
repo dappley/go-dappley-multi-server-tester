@@ -127,6 +127,8 @@
 
 
 #################### Update seed on All nodes ####################
+
+########## Update node1 ##########
   - name: Update node1 seed
     ansible.builtin.replace:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node1.conf
@@ -136,6 +138,7 @@
       - NODE2
     when: inventory_hostname in groups['NODE1']
 
+########## Update node2 ##########
   - name: Update node2 seed
     ansible.builtin.replace:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node2.conf
@@ -145,6 +148,7 @@
       - NODE1
     when: inventory_hostname in groups['NODE2']
 
+########## Update node3 ##########
   - name: Update node3 seed
     ansible.builtin.replace:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node3.conf
@@ -154,6 +158,7 @@
       - NODE1
     when: inventory_hostname in groups['NODE3']
 
+########## Update node4 ##########
   - name: Update node4 seed
     ansible.builtin.replace:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node4.conf
@@ -161,8 +166,22 @@
       replace: '{{ item }}'
     with_inventory_hostnames:
       - NODE1
-    when: inventory_hostname in groups['NODE4']
+    when: 
+      - not "'NODE10' in groups"
+      - inventory_hostname in groups['NODE4']
 
+  - name: Update node4 seed
+    ansible.builtin.replace:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node4.conf
+      regexp: '127.0.0.1'
+      replace: '{{ item }}'
+    with_inventory_hostnames:
+      - NODE5
+    when: 
+      - "'NODE10' in groups"
+      - inventory_hostname in groups['NODE4']
+
+########## Update node5 ##########
   - name: Update node5 seed
     ansible.builtin.replace:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node5.conf
@@ -170,8 +189,22 @@
       replace: '{{ item }}'
     with_inventory_hostnames:
       - NODE1
-    when: inventory_hostname in groups['NODE5']
+    when: 
+      - not "'NODE10' in groups"
+      - inventory_hostname in groups['NODE5']
 
+  - name: Update node5 seed
+    ansible.builtin.replace:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node5.conf
+      regexp: '127.0.0.1'
+      replace: '{{ item }}'
+    with_inventory_hostnames:
+      - NODE4
+    when: 
+      - "'NODE10' in groups"
+      - inventory_hostname in groups['NODE5']
+
+########## Update node6 ##########
   - name: Update node6 seed
     ansible.builtin.replace:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node6.conf
@@ -183,58 +216,61 @@
       - "'NODE6' in groups"
       - inventory_hostname in groups['NODE6']
 
-  - name: Update node6 seed
-    ansible.builtin.replace:
-      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node6.conf
-      regexp: '127.0.1.1'
-      replace: '{{ item }}'
-    with_inventory_hostnames:
-      - NODE10
-    when: 
-      - "'NODE6' in groups"
-      - "'NODE7' in groups"
-      - inventory_hostname in groups['NODE6']
-
+########## Update node7 ##########
   - name: Update node7 seed
     ansible.builtin.replace:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node7.conf
       regexp: '127.0.0.1'
       replace: '{{ item }}'
     with_inventory_hostnames:
-      - NODE10
+      - NODE1
     when: 
       - "'NODE7' in groups"
       - inventory_hostname in groups['NODE7']
 
+########## Update node8 ##########
   - name: Update node8 seed
     ansible.builtin.replace:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node8.conf
       regexp: '127.0.0.1'
       replace: '{{ item }}'
     with_inventory_hostnames:
-      - NODE10
+      - NODE1
     when: 
       - "'NODE8' in groups"
       - inventory_hostname in groups['NODE8']
 
+  - name: Update node8 seed
+    ansible.builtin.replace:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node8.conf
+      regexp: '127.0.1.1'
+      replace: '{{ item }}'
+    with_inventory_hostnames:
+      - NODE5
+    when: 
+      - "'NODE8' in groups"
+      - inventory_hostname in groups['NODE8']
+
+########## Update node9 ##########
   - name: Update node9 seed
     ansible.builtin.replace:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node9.conf
       regexp: '127.0.0.1'
       replace: '{{ item }}'
     with_inventory_hostnames:
-      - NODE10
+      - NODE5
     when: 
       - "'NODE9' in groups"
       - inventory_hostname in groups['NODE9']
 
+########## Update node10 ##########
   - name: Update node10 seed
     ansible.builtin.replace:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node10.conf
       regexp: '127.0.0.1'
       replace: '{{ item }}'
     with_inventory_hostnames:
-      - NODE9
+      - NODE5
     when: 
       - "'NODE10' in groups"
       - inventory_hostname in groups['NODE10']
@@ -265,3 +301,27 @@
     - '"dTSNWQeFNRJBEQEhuDJNdu219r389CSkh3"'
     - ']'
     - 'max_producers: 5'
+    when: 
+    - not "'NODE10' in groups"
+
+  - name: Update genesis.conf
+    lineinfile:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/genesis.conf
+      state: present
+      line: "{{ item }}"
+    with_items:
+    - 'producers: ['
+    - '"dastXXWLe5pxbRYFhcyUq8T3wb5srWkHKa",'
+    - '"dUuPPYshbBgkzUrgScEHWvdGbSxC8z4R12",'
+    - '"dPGD4t6ibpmyKZnXH1TNbbPw98EDaaZq8C",'
+    - '"dUa6gQkijmVqf7pk9cmRS6M9nMnU6b9Ssm",'
+    - '"dTSNWQeFNRJBEQEhuDJNdu219r389CSkh3",'
+    - '"dNY1BMqsJVMRDp16ohsBACerdw5JQ931Eh",'
+    - '"dc4d34HPJ8uyWE48K2huR2EL2LXYq8Snmd",'
+    - '"da163VeoFUvvzor4sCxXJxTb4exjRRf1vB",'
+    - '"dLwF9aPY1PtcHP7wqvY79uVgvaJHYm25AH",'
+    - '"dGwRAfBEufqP5Wc3MkGGTC2XkrZkeEg61Z"'
+    - ']'
+    - 'max_producers: 10'
+    when: 
+    - "'NODE10' in groups"

@@ -17,7 +17,7 @@
       file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
 
 
-#################### Generate node6 configuration file ####################
+#################### Generate configuration files ####################
 
 ########## Node6 ##########
   - name: Generate node6.conf
@@ -47,21 +47,6 @@
       - "'NODE6' in groups"
       - inventory_hostname in groups['NODE6']
 
-########## Update Node6 ##########
-  - name: Update node6.conf
-    ansible.builtin.replace:
-      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node6.conf
-      regexp: '    seed:   ["/ip4/127.0.0.1/tcp/12341/p2p/QmNzA9rsEcM5nAzX9PzTrabJsGiifzaUU85Qe78HSDzSSE"]'
-      replace: '{{ item }}'
-    with_items:
-    - '    seed:   ['
-    - '                "/ip4/127.0.0.1/tcp/12341/p2p/QmNzA9rsEcM5nAzX9PzTrabJsGiifzaUU85Qe78HSDzSSE",'
-    - '                "/ip4/127.0.1.1/tcp/123410/p2p/CAISIPOe3CKg1tn5YTW5K2FfS6Qd8Yklo+D1uy0A0OkoH5Et"'
-    - '            ]'
-    when: 
-      - "'NODE7' in groups"
-      - inventory_hostname in groups['NODE6']
-
 ########## Node7 ##########
   - name: Generate node7.conf
     ansible.builtin.expect:
@@ -70,12 +55,12 @@
       responses: 
         'Select node type - FullNode or MinerNode:' : 'MinerNode'
         'Input file name - Input nothing for default name "new_node":' : 'node7'
-        'Input miner address:' : '#TODO'
-        'Input private keypair:' : '#TODO'
+        'Input miner address:' : 'dc4d34HPJ8uyWE48K2huR2EL2LXYq8Snmd'
+        'Input private keypair:' : '3259758b4271065076495f1a21324db043e78198c296681f6a2e8a66255b5219'
         'Please input the password for the new account: ' : 'dappley'
         'Repeat password: ' : 'dappley'
         'Input port info - Input nothing for default port "12341":' : '12347'
-        'Input seed:' : '/ip4/127.0.0.1/tcp/123410/p2p/CAISIPOe3CKg1tn5YTW5K2FfS6Qd8Yklo+D1uy0A0OkoH5Et'
+        'Input seed:' : '/ip4/127.0.0.1/tcp/12341/p2p/QmNzA9rsEcM5nAzX9PzTrabJsGiifzaUU85Qe78HSDzSSE'
         'Input database path - Input nothing for default path "../bin/node7.db"' : ''
         'Input rpc port - Input nothing for default port "50051"' : '50057'
         'Input key - Input nothing to generate a new key:' : ''
@@ -98,12 +83,12 @@
       responses: 
         'Select node type - FullNode or MinerNode:' : 'MinerNode'
         'Input file name - Input nothing for default name "new_node":' : 'node8'
-        'Input miner address:' : '#TODO'
-        'Input private keypair:' : '#TODO'
+        'Input miner address:' : 'da163VeoFUvvzor4sCxXJxTb4exjRRf1vB'
+        'Input private keypair:' : '48697b273b31899072bca1b6a292562f963a0f30351aa9d8a2fe2f8218f2cc6d'
         'Please input the password for the new account: ' : 'dappley'
         'Repeat password: ' : 'dappley'
         'Input port info - Input nothing for default port "12341":' : '12348'
-        'Input seed:' : '/ip4/127.0.0.1/tcp/123410/p2p/CAISIPOe3CKg1tn5YTW5K2FfS6Qd8Yklo+D1uy0A0OkoH5Et'
+        'Input seed:' : '/ip4/127.0.0.1/tcp/12341/p2p/QmNzA9rsEcM5nAzX9PzTrabJsGiifzaUU85Qe78HSDzSSE'
         'Input database path - Input nothing for default path "../bin/node8.db"' : ''
         'Input rpc port - Input nothing for default port "50051"' : '50058'
         'Input key - Input nothing to generate a new key:' : ''
@@ -126,12 +111,12 @@
       responses: 
         'Select node type - FullNode or MinerNode:' : 'MinerNode'
         'Input file name - Input nothing for default name "new_node":' : 'node9'
-        'Input miner address:' : '#TODO'
-        'Input private keypair:' : '#TODO'
+        'Input miner address:' : 'dLwF9aPY1PtcHP7wqvY79uVgvaJHYm25AH'
+        'Input private keypair:' : 'b00e5c87792148fabc41fe1b447f1f053f5fc5fb6c44ca2baebb1192177785a0'
         'Please input the password for the new account: ' : 'dappley'
         'Repeat password: ' : 'dappley'
         'Input port info - Input nothing for default port "12341":' : '12349'
-        'Input seed:' : '/ip4/127.0.0.1/tcp/123410/p2p/CAISIPOe3CKg1tn5YTW5K2FfS6Qd8Yklo+D1uy0A0OkoH5Et'
+        'Input seed:' : '/ip4/127.0.0.1/tcp/12345/p2p/16Uiu2HAmVer1v2PuXaJxbtCrhZb42CwNpg7MMcsWWVfyCmMiXhAr'
         'Input database path - Input nothing for default path "../bin/node9.db"' : ''
         'Input rpc port - Input nothing for default port "50051"' : '50059'
         'Input key - Input nothing to generate a new key:' : ''
@@ -154,12 +139,12 @@
       responses: 
         'Select node type - FullNode or MinerNode:' : 'MinerNode'
         'Input file name - Input nothing for default name "new_node":' : 'node10'
-        'Input miner address:' : '#TODO'
-        'Input private keypair:' : '#TODO'
+        'Input miner address:' : 'dGwRAfBEufqP5Wc3MkGGTC2XkrZkeEg61Z'
+        'Input private keypair:' : '1da8be593731f45e99799cad2db9e3b9ad6b4a13afeaa834f96754827683ace8'
         'Please input the password for the new account: ' : 'dappley'
         'Repeat password: ' : 'dappley'
-        'Input port info - Input nothing for default port "12341":' : '123410'
-        'Input seed:' : '/ip4/127.0.0.1/tcp/12349/p2p/CAISIFEcS2JrlTsMeebDV6Cknz8EHSjJ/AxltIlWU03zBoy0'
+        'Input port info - Input nothing for default port "12341":' : '12340'
+        'Input seed:' : '/ip4/127.0.0.1/tcp/12345/p2p/16Uiu2HAmVer1v2PuXaJxbtCrhZb42CwNpg7MMcsWWVfyCmMiXhAr'
         'Input database path - Input nothing for default path "../bin/node10.db"' : ''
         'Input rpc port - Input nothing for default port "50051"' : '500510'
         'Input key - Input nothing to generate a new key:' : ''
