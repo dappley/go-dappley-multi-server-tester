@@ -26,7 +26,7 @@
       regexp: '"/ip4/127.0.0.1/tcp/12341/p2p/QmNzA9rsEcM5nAzX9PzTrabJsGiifzaUU85Qe78HSDzSSE"'
       replace: '{{ item }}'
     with_items:
-    - '/ip4/127.0.0.1/tcp/12345/p2p/16Uiu2HAmVer1v2PuXaJxbtCrhZb42CwNpg7MMcsWWVfyCmMiXhAr'
+    - '"/ip4/127.0.0.1/tcp/12345/p2p/16Uiu2HAmVer1v2PuXaJxbtCrhZb42CwNpg7MMcsWWVfyCmMiXhAr"'
     when: 
       - "'NODE10' in groups"
       - inventory_hostname in groups['NODE4']
@@ -34,14 +34,14 @@
 ########## Update Node5 ##########
   - name: Update node5.conf
     ansible.builtin.replace:
-      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node4.conf
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/conf/node5.conf
       regexp: '"/ip4/127.0.0.1/tcp/12341/p2p/QmNzA9rsEcM5nAzX9PzTrabJsGiifzaUU85Qe78HSDzSSE"'
       replace: '{{ item }}'
     with_items:
-    - '/ip4/127.0.0.1/tcp/12344/p2p/16Uiu2HAmF1xtzd6XGr9WcPD9vAt32igx2Y7UnBR9JG6HbG5UNc6T'
+    - '"/ip4/127.0.0.1/tcp/12344/p2p/16Uiu2HAmF1xtzd6XGr9WcPD9vAt32igx2Y7UnBR9JG6HbG5UNc6T"'
     when: 
       - "'NODE10' in groups"
-      - inventory_hostname in groups['NODE4']
+      - inventory_hostname in groups['NODE5']
 
 ########## Update Node8 ##########
   - name: Update node8.conf
