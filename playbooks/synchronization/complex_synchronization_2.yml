@@ -367,7 +367,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE1']
-    async: 350
+    async: 400
     poll: 0
 
   - name: Launch NODE2
@@ -375,7 +375,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE2']
-    async: 350
+    async: 400
     poll: 0
 
   - name: Launch NODE3
@@ -383,7 +383,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE3']
-    async: 350
+    async: 400
     poll: 0
 
   - name: Launch NODE4
@@ -391,7 +391,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 350
+    async: 400
     poll: 0
 
   - name: Launch NODE5
@@ -399,7 +399,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 350
+    async: 400
     poll: 0
 
   - name: Launch NODE6
@@ -407,7 +407,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE6']
-    async: 350
+    async: 400
     poll: 0
 
   - name: Launch NODE7
@@ -415,7 +415,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE7']
-    async: 350
+    async: 400
     poll: 0
 
   - name: Launch NODE8
@@ -423,7 +423,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE8']
-    async: 350
+    async: 400
     poll: 0
 
   - name: Wait for blockchain initialization
@@ -452,7 +452,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE9']
-    async: 150
+    async: 200
     poll: 0
 
   - name: Launch NODE10
@@ -460,7 +460,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE10']
-    async: 150
+    async: 200
     poll: 0
 
   - name: Check blockchain height
