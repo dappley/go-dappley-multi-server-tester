@@ -47,7 +47,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE4']
-    async: 100
+    async: 200
     poll: 0
 
   - name: Launch NODE5
@@ -55,7 +55,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE5']
-    async: 100
+    async: 200
     poll: 0
 
   - name: Launch NODE6
@@ -79,7 +79,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE8']
-    async: 100
+    async: 200
     poll: 0
 
   - name: Launch NODE9
@@ -87,7 +87,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE9']
-    async: 100
+    async: 200
     poll: 0
 
   - name: Launch NODE10
@@ -95,7 +95,7 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
     when: inventory_hostname in groups['NODE10']
-    async: 100
+    async: 200
     poll: 0
 
   - name: Wait for blockchain initialization
@@ -333,7 +333,568 @@
     when: blockchainHeight.failed
 
 
-#################### Terminate ####################
+#################### Wait for the group 1 to terminate ####################
+  - name: Check group 1 height
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    when: inventory_hostname in ((groups['NODE1'] + groups['NODE2'] + groups['NODE3'] + groups['NODE6'] + groups['NODE7'] ) | unique )
+
+  - debug:
+      msg: '{{ blockchainHeight }}'
+    when: inventory_hostname in ((groups['NODE1'] + groups['NODE2'] + groups['NODE3'] + groups['NODE6'] + groups['NODE7'] ) | unique )
+
+  - name: Wait til the group 1 terminates
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: blockchainHeight.stdout_lines[0][7:] == "server is not reachable!"
+    retries: 20
+    delay: 10
+    ignore_errors: true
+    when: inventory_hostname in ((groups['NODE1'] + groups['NODE2'] + groups['NODE3'] + groups['NODE6'] + groups['NODE7'] ) | unique )
+
+
+#################### Wait for the group 2 to terminate ####################
+  - name: Check group 2 height
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    when: inventory_hostname in ((groups['NODE4'] + groups['NODE5'] + groups['NODE8'] + groups['NODE9'] + groups['NODE10'] ) | unique )
+
+  - debug:
+      msg: '{{ blockchainHeight }}'
+    when: inventory_hostname in ((groups['NODE4'] + groups['NODE5'] + groups['NODE8'] + groups['NODE9'] + groups['NODE10'] ) | unique )
+
+
+  - name: Wait til the group 2 terminates
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: blockchainHeight.stdout_lines[0][7:] == "server is not reachable!"
+    retries: 30
+    delay: 10
+    ignore_errors: true
+    when: inventory_hostname in ((groups['NODE4'] + groups['NODE5'] + groups['NODE8'] + groups['NODE9'] + groups['NODE10'] ) | unique )
+
+
+#################### Relaunch group 1 ####################
+  - name: Launch NODE1
+    shell: ./dapp -f conf/node1.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE1']
+    async: 200
+    poll: 0
+
+  - name: Launch NODE2
+    shell: ./dapp -f conf/node2.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE2']
+    async: 200
+    poll: 0
+
+  - name: Launch NODE3
+    shell: ./dapp -f conf/node3.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE3']
+    async: 200
+    poll: 0
+
+  - name: Launch NODE6
+    shell: ./dapp -f conf/node6.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE6']
+    async: 200
+    poll: 0
+
+  - name: Launch NODE7
+    shell: ./dapp -f conf/node7.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE7']
+    async: 200
+    poll: 0
+
+  - name: Check blockchain height
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    when: inventory_hostname in ((groups['NODE1'] + groups['NODE2'] + groups['NODE3'] + groups['NODE6'] + groups['NODE7'] ) | unique )
+
+  - debug:
+      msg: '{{ blockchainHeight }}'
+    when: inventory_hostname in ((groups['NODE1'] + groups['NODE2'] + groups['NODE3'] + groups['NODE6'] + groups['NODE7'] ) | unique )
+
+  - name: Wait 30 seconds
+    wait_for:
+      timeout: 30
+
+#################### Relaunch group 2 ####################
+  - name: Launch NODE4
+    shell: ./dapp -f conf/node4.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE4']
+    async: 150
+    poll: 0
+
+  - name: Launch NODE5
+    shell: ./dapp -f conf/node5.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE5']
+    async: 150
+    poll: 0
+
+  - name: Launch NODE8
+    shell: ./dapp -f conf/node8.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE8']
+    async: 150
+    poll: 0
+
+  - name: Launch NODE9
+    shell: ./dapp -f conf/node9.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE9']
+    async: 150
+    poll: 0
+
+  - name: Launch NODE10
+    shell: ./dapp -f conf/node10.conf
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
+    when: inventory_hostname in groups['NODE10']
+    async: 150
+    poll: 0
+
+  - name: Check blockchain height
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+
+  - debug:
+      msg: '{{ blockchainHeight }}'
+
+
+#################### Wait for two groups to merge ####################
+  - name: Wait 60 seconds
+    wait_for:
+      timeout: 60
+
+  - name: Check blockchain height
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+
+  - debug:
+      msg: '{{ blockchainHeight }}'
+
+
+#################### Compare blockchain height ####################
+
+########## NODE 1 ##########
+  - name: Check directory exists
+    stat:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    register: height_directory
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Create height directory
+    shell: 'mkdir height'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+    when: inventory_hostname in groups['NODE1'] and height_directory.stat.exists == false
+
+  - name: Create height info file
+    shell: '> height_1.txt'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Write height info to file
+    lineinfile:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/height_1.txt
+      state: present
+      line: '{{ blockchainHeight.stdout_lines[1][17:-1] }}'
+    when: inventory_hostname in groups['NODE1']
+
+########## NODE 2 ##########
+  - name: Create height info file
+    shell: '> height_2.txt'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Write height info to file
+    lineinfile:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/height_2.txt
+      state: present
+      line: '{{ blockchainHeight.stdout_lines[1][17:-1] }}'
+    when: inventory_hostname in groups['NODE2']
+
+########## NODE 3 ##########
+  - name: Create height info file
+    shell: '> height_3.txt'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+    when: inventory_hostname in groups['NODE3']
+
+  - name: Write height info to file
+    lineinfile:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/height_3.txt
+      state: present
+      line: '{{ blockchainHeight.stdout_lines[1][17:-1] }}'
+    when: inventory_hostname in groups['NODE3']
+
+########## NODE 4 ##########
+  - name: Create height info file
+    shell: '> height_4.txt'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+    when: inventory_hostname in groups['NODE4']
+
+  - name: Write height info to file
+    lineinfile:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/height_4.txt
+      state: present
+      line: '{{ blockchainHeight.stdout_lines[1][17:-1] }}'
+    when: inventory_hostname in groups['NODE4']
+
+########## NODE 5 ##########
+  - name: Create height info file
+    shell: '> height_5.txt'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+    when: inventory_hostname in groups['NODE5']
+
+  - name: Write height info to file
+    lineinfile:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/height_5.txt
+      state: present
+      line: '{{ blockchainHeight.stdout_lines[1][17:-1] }}'
+    when: inventory_hostname in groups['NODE5']
+
+########## NODE 6 ##########
+  - name: Create height info file
+    shell: '> height_6.txt'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+    when: inventory_hostname in groups['NODE6']
+
+  - name: Write height info to file
+    lineinfile:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/height_6.txt
+      state: present
+      line: '{{ blockchainHeight.stdout_lines[1][17:-1] }}'
+    when: inventory_hostname in groups['NODE6']
+
+########## NODE 7 ##########
+  - name: Create height info file
+    shell: '> height_7.txt'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+    when: inventory_hostname in groups['NODE7']
+
+  - name: Write height info to file
+    lineinfile:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/height_7.txt
+      state: present
+      line: '{{ blockchainHeight.stdout_lines[1][17:-1] }}'
+    when: inventory_hostname in groups['NODE7']
+
+########## NODE 8 ##########
+  - name: Create height info file
+    shell: '> height_8.txt'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+    when: inventory_hostname in groups['NODE8']
+
+  - name: Write height info to file
+    lineinfile:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/height_8.txt
+      state: present
+      line: '{{ blockchainHeight.stdout_lines[1][17:-1] }}'
+    when: inventory_hostname in groups['NODE8']
+
+########## NODE 9 ##########
+  - name: Create height info file
+    shell: '> height_9.txt'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+    when: inventory_hostname in groups['NODE9']
+
+  - name: Write height info to file
+    lineinfile:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/height_9.txt
+      state: present
+      line: '{{ blockchainHeight.stdout_lines[1][17:-1] }}'
+    when: inventory_hostname in groups['NODE9']
+
+########## NODE 10 ##########
+  - name: Create height info file
+    shell: '> height_10.txt'
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+    when: inventory_hostname in groups['NODE10']
+
+  - name: Write height info to file
+    lineinfile:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/height_10.txt
+      state: present
+      line: '{{ blockchainHeight.stdout_lines[1][17:-1] }}'
+    when: inventory_hostname in groups['NODE10']
+
+
+#################### Move files to NODE1 ####################
+  - name: Move height info to Jenkins
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/height_2.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node2/
+      flat: yes
+    when: inventory_hostname in groups['NODE2']
+
+  - name: Move height info to Jenkins
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/height_3.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node3/
+      flat: yes
+    when: inventory_hostname in groups['NODE3']
+
+  - name: Move height info to Jenkins
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/height_4.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node4/
+      flat: yes
+    when: inventory_hostname in groups['NODE4']
+
+  - name: Move height info to Jenkins
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/height_5.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node5/
+      flat: yes
+    when: inventory_hostname in groups['NODE5']
+
+  - name: Move height info to Jenkins
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/height_6.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node6/
+      flat: yes
+    when: inventory_hostname in groups['NODE6']
+
+  - name: Move height info to Jenkins
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/height_7.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node7/
+      flat: yes
+    when: inventory_hostname in groups['NODE7']
+
+  - name: Move height info to Jenkins
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/height_8.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node8/
+      flat: yes
+    when: inventory_hostname in groups['NODE8']
+
+  - name: Move height info to Jenkins
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/height_9.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node9/
+      flat: yes
+    when: inventory_hostname in groups['NODE9']
+
+  - name: Move height info to Jenkins
+    fetch:
+      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/height_10.txt
+      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node10/
+      flat: yes
+    when: inventory_hostname in groups['NODE10']
+
+  - name: Move height info to NODE1
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node2/height_2.txt
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Move height info to NODE1
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node3/height_3.txt
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Move height info to NODE1
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node4/height_4.txt
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Move height info to NODE1
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node5/height_5.txt
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Move height info to NODE1
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node6/height_6.txt
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Move height info to NODE1
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node7/height_7.txt
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Move height info to NODE1
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node8/height_8.txt
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Move height info to NODE1
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node9/height_9.txt
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Move height info to NODE1
+    copy:
+      src: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node10/height_10.txt
+      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
+    when: inventory_hostname in groups['NODE1']
+
+#################### Compare heights ####################
+  - name: Check height_1
+    shell: cat height_1.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
+    when: inventory_hostname in groups['NODE1']
+    register: height_1
+
+  - debug:
+      msg: '{{ height_1 }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Check height_2
+    shell: cat height_2.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
+    when: inventory_hostname in groups['NODE1']
+    register: height_2
+
+  - debug:
+      msg: '{{ height_2 }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Check height_3
+    shell: cat height_3.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
+    when: inventory_hostname in groups['NODE1']
+    register: height_3
+
+  - debug:
+      msg: '{{ height_3 }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Check height_4
+    shell: cat height_4.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
+    when: inventory_hostname in groups['NODE1']
+    register: height_4
+
+  - debug:
+      msg: '{{ height_4 }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Check height_5
+    shell: cat height_5.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
+    when: inventory_hostname in groups['NODE1']
+    register: height_5
+
+  - debug:
+      msg: '{{ height_5 }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Check height_6
+    shell: cat height_6.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
+    when: inventory_hostname in groups['NODE1']
+    register: height_6
+
+  - debug:
+      msg: '{{ height_6 }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Check height_7
+    shell: cat height_7.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
+    when: inventory_hostname in groups['NODE1']
+    register: height_7
+
+  - debug:
+      msg: '{{ height_7 }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Check height_8
+    shell: cat height_8.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
+    when: inventory_hostname in groups['NODE1']
+    register: height_8
+
+  - debug:
+      msg: '{{ height_8 }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Check height_9
+    shell: cat height_9.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
+    when: inventory_hostname in groups['NODE1']
+    register: height_9
+
+  - debug:
+      msg: '{{ height_9 }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Check height_10
+    shell: cat height_10.txt
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
+    when: inventory_hostname in groups['NODE1']
+    register: height_10
+
+  - debug:
+      msg: '{{ height_10 }}'
+    when: inventory_hostname in groups['NODE1']
+
+  - name: Check all nodes height
+    fail:
+      msg: "Expected the height of the blocks to be the same, but returned different values!"
+    ignore_errors: true
+    when: inventory_hostname in groups['NODE1'] and not (height_1.stdout|int == height_2.stdout|int == height_3.stdout|int == height_4.stdout|int == height_5.stdout|int == height_6.stdout|int == height_7.stdout|int == height_8.stdout|int == height_9.stdout|int == height_10.stdout|int)
+
+#################### Termintate ####################
   - name: Wait til the blockchain terminates
     shell: ./cli getBlockchainInfo
     args:
