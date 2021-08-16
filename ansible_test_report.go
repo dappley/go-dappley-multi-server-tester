@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"bufio"
 	"strings"
+	"net/mail"
 	"io/ioutil"
 	"gopkg.in/gomail.v2"
 )
@@ -14,13 +16,29 @@ func SendTestResult(senderEmail string, senderPasswd string, test_results []stri
 }
 
 func send(emailBody string, senderEmail string, senderPasswd string) {
+	var recipients []string
+
+	file_byte, err := ioutil.ReadFile("recipients.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	scanner := bufio.NewScanner(strings.NewReader(string(file_byte)))
+	for scanner.Scan() {
+		line := scanner.Text()
+		if !valid_email(line) {
+			fmt.Println("Invalid email address: \"" + line + "\"")
+			continue
+		}
+		recipients = append(recipients, line)
+	}
 	//send the email
 	mail := gomail.NewMessage()
 	mail.SetHeader("From", senderEmail)
-	mail.SetHeader("To", "blockchainwarning@omnisolu.com") /*,
-						 "wulize1994@gmail.com", 
-						 "rshi@omnisolu.com", 
-						 "ilshiyi@omnisolu.com") */
+	addresses := make([]string, len(recipients))
+	for i, recipient := range recipients {
+		addresses[i] = mail.FormatAddress(recipient, "")
+	}
+	mail.SetHeader("To", addresses...)
 	mail.SetHeader("Subject", "Ansible Test Result")
 	mail.SetBody("text", emailBody)
 	mail.Attach("test_results.zip")
@@ -231,4 +249,10 @@ func between(value string, a string, b string) string {
         return ""
     }
     return value[posFirstAdjusted:posLast]
+}
+
+//Checks the validity of the email address
+func valid_email(email string) bool {
+    _, err := mail.ParseAddress(email)
+    return err == nil
 }
