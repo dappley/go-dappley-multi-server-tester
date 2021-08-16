@@ -607,3 +607,12 @@ Change Producer Test Cases
         3. height is special character
         4. height is decimal
         5. height is empty
+
+Synchronization test
+
+    - Initialize a 4 producer blockchain, then add another node to the blockchain and check if the blockchain heights are
+      synchornized and increamenting.
+
+    - Setup a 10 producer nodes blockchain so it still continues to mine when there are only 5 nodes at a time. (ie. update node.conf's seed info) Initialize the blockchain then pause first group of 5 nodes. Let the second group mine for a minute or two, then pause and relaunched the first group of 5 nodes. After mining with the first group of 5 for 30 seconds, relaunch the second group of 5. Check if the blockchain height synchronizes.
+
+    - Initialize a 10 producer nodes blockchain. Let the blockchain mine upto the height of 25 then pause all nodes. Remove the db files of 8 nodes, then relaunch only those 8 nodes. When the height of the 8 nodes blockchain reaches 35, relaunched the remaining 2 nodes and check if the height information on all nodes are synchronized.
