@@ -20,6 +20,7 @@ func main() {
 	err := checkFlags(function, senderEmail, senderPasswd)
 	if err != nil {
 		log.Fatal(err)
+		return
 	}
 
 	if function == "update" {
