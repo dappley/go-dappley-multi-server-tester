@@ -1,17 +1,17 @@
-package main
+package email
 
 import (
+	"github.com/heesooh/go-dappley-multi-server-tester/helper"
+	"gopkg.in/gomail.v2"
+	"io/ioutil"
+	"strings"
+	"bufio"
 	"fmt"
 	"log"
-	"bufio"
-	"strings"
-	"net/mail"
-	"io/ioutil"
-	"gopkg.in/gomail.v2"
 )
 
 func SendTestResult(senderEmail string, senderPasswd string, test_results []string) {
-	emailContents := composeEmail(test_results)
+	emailContents := ComposeEmail(test_results)
 	send(emailContents, senderEmail, senderPasswd)
 }
 
@@ -25,7 +25,7 @@ func send(emailBody string, senderEmail string, senderPasswd string) {
 	scanner := bufio.NewScanner(strings.NewReader(string(file_byte)))
 	for scanner.Scan() {
 		line := scanner.Text()
-		if !valid_email(line) {
+		if !helper.Valid_email(line) {
 			fmt.Println("Invalid email address: \"" + line + "\"")
 			continue
 		}
@@ -49,12 +49,4 @@ func send(emailBody string, senderEmail string, senderPasswd string) {
 		fmt.Println("Failed to send email!")
 		panic(err)
 	}
-}
-
-//----------Helper----------
-
-//Checks the validity of the email address
-func valid_email(email string) bool {
-    _, err := mail.ParseAddress(email)
-    return err == nil
 }

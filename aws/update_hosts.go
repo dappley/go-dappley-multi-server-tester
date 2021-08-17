@@ -1,4 +1,4 @@
-package main
+package aws
 
 import (
 	"os"
@@ -10,7 +10,7 @@ import (
 )
 
 //Adds the server information to the hosts and instance_ids file
-func update_hosts(number string) {
+func Update_hosts(number string) {
 	instances_to_update, err := strconv.Atoi(number)
 	if err != nil {
 		panic(err)

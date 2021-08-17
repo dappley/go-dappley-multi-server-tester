@@ -1,4 +1,4 @@
-package main
+package aws
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 )
 
 //Runs until all servers are initialized
-func initialize_hosts(number string) {
+func Initialize_hosts(number string) {
 	instances_to_initialize, err := strconv.Atoi(number)
 	if err != nil {
 		panic(err)

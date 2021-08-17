@@ -1,4 +1,4 @@
-package main
+package aws
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 )
 
 //Prints out the ssh command for all servers
-func ssh_command(number string) {
+func SSH_command(number string) {
 	number_of_instances, err := strconv.Atoi(number)
 	if err != nil {
 		panic(err)

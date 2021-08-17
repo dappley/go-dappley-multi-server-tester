@@ -1,4 +1,4 @@
-package main
+package aws
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 )
 
 //Termiante all servers via aws cli command
-func terminate_hosts(number string) {
+func Terminate_hosts(number string) {
 	var updated_instance_list string
 	var updated_host_list string
 	fileName_1 := "instance_ids"
