@@ -487,6 +487,15 @@
   - debug:
       msg: '{{ blockchainHeight }}'
 
+  - name: Check genesisblock
+    shell: ./cli getBlockByHeight -height 1
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: genesisBlock
+
+  - debug:
+      msg: '{{ genesisBlock }}'
+
 
 #################### Compare blockchain height ####################
 
