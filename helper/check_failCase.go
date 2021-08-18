@@ -27,9 +27,7 @@ func IsFileFail(fileNames []string) []string {
 		scanner := bufio.NewScanner(strings.NewReader(string(file_byte)))
 		for scanner.Scan() {
 			line := scanner.Text()
-			if line == "" {
-				continue
-			}
+			if line == "" { continue }
 			if scan_result {
 				if !(strings.Contains(line, "failed=0")) || !(strings.Contains(line, "ignored=0")) || !(strings.Contains(line, "unreachable=0")) {
 					if contains(failingFiles, curr_file) {

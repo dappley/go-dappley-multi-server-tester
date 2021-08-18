@@ -15,11 +15,9 @@ func ComposeEmail(fileNames []string) string {
 	var task []string
 
 	failingFiles := helper.IsFileFail(fileNames)
-	if (len(failingFiles) == 0) {
-		return "ALL TESTS PASS!"
-	}
-	files_results := make([][]string, len(failingFiles))
+	if (len(failingFiles) == 0) { return "ALL TESTS PASS!" }
 
+	files_results := make([][]string, len(failingFiles))
 	for index := 0; index < len(failingFiles); index++ {
 		curr_file := failingFiles[index]
 		files_results[index] = append(files_results[index], curr_file)
@@ -33,9 +31,7 @@ func ComposeEmail(fileNames []string) string {
 
 		scanner := bufio.NewScanner(strings.NewReader(string(file_byte)))
 		for i := 0; scanner.Scan(); i++ {
-			if i == 0 || i == 1 || i == 2 {
-				continue
-			}
+			if i == 0 || i == 1 || i == 2 { continue }
 			line := scanner.Text()
 			if strings.Contains(line, "PLAY RECAP") {
 				files_results[index] = append(files_results[index], file_description...)
@@ -61,9 +57,7 @@ func ComposeEmail(fileNames []string) string {
 		emailContents += "Playbook: [" + strings.TrimRight(result[0], ".txt")[15:] + "]\n"
 		emailContents += "Failing Tasks: \n\n"
 		for i, line := range result {
-			if i == 0 {
-				continue
-			}
+			if i == 0 { continue }
 			emailContents += line + "\n"
 		}
 		emailContents += "------------------------------------------------------\n"

@@ -21,9 +21,7 @@ func send(emailBody string, senderEmail string, senderPasswd string) {
 	var recipients []string
 
 	file_byte, err := ioutil.ReadFile("recipients.txt")
-	if err != nil {
-		log.Fatal(err)
-	}
+	if err != nil { log.Fatal(err) }
 	scanner := bufio.NewScanner(strings.NewReader(string(file_byte)))
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -46,7 +44,6 @@ func send(emailBody string, senderEmail string, senderPasswd string) {
 	mail.Attach("test_results.zip")
 
 	deliver := gomail.NewDialer("smtp.gmail.com", 587, senderEmail, senderPasswd)
-
 	if err := deliver.DialAndSend(mail); err != nil {
 		fmt.Println("Failed to send email!")
 		panic(err)

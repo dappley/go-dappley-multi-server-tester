@@ -1,13 +1,13 @@
 package aws
 
 import (
-	"fmt"
-	"log"
-	"bufio"
+	"github.com/heesooh/go-dappley-multi-server-tester/helper"
+	"io/ioutil"
 	"strconv"
 	"strings"
-	"os/exec"
-	"io/ioutil"
+	"bufio"
+	"fmt"
+	"log"
 )
 
 //Termiante all servers via aws cli command.
@@ -18,16 +18,12 @@ func Terminate_hosts(number string) {
 	fileName_2 := "hosts"
 
 	to_terminate, err := strconv.Atoi(number)
-	if err != nil {
-		panic(err)
-	}
+	if err != nil { panic(err) }
 
 	lines_to_remove := to_terminate * 2
 	hosts_byte, err := ioutil.ReadFile(fileName_2)
-	if err != nil {
-		fmt.Println("Failed to read", fileName_2, "!")
-		return
-	}
+	if err != nil { log.Fatal("Failed to read", fileName_2, "!") }
+
 	host_scanner := bufio.NewScanner(strings.NewReader(string(hosts_byte)))
 	for host_scanner.Scan() {
 		line := host_scanner.Text()
@@ -38,15 +34,10 @@ func Terminate_hosts(number string) {
 		lines_to_remove -= 1
 	}
 	err = ioutil.WriteFile(fileName_2, []byte(updated_host_list), 0644)
-	if err != nil {
-		log.Fatalln(err)
-	}
+	if err != nil { log.Fatalln(err) }
 
 	instance_byte, err := ioutil.ReadFile(fileName_1)
-	if err != nil {
-		fmt.Println("Failed to read", fileName_1, "!")
-		return
-	}
+	if err != nil { log.Fatal("Failed to read", fileName_1, "!") }
 
 	instance_scanner := bufio.NewScanner(strings.NewReader(string(instance_byte)))
 	for instance_scanner.Scan() {
@@ -56,18 +47,11 @@ func Terminate_hosts(number string) {
 			continue
 		}
 		terminate_instance := "aws ec2 terminate-instances --instance-ids " + instance_id
-		args := strings.Split(terminate_instance, " ")
-		cmd := exec.Command(args[0], args[1:]...)
-		output, err := cmd.CombinedOutput()
-		if err != nil {
-			fmt.Println(err)
-		}
+		output := helper.ShellCommandExecuter(terminate_instance)
 		fmt.Printf("%s\n", output)
 		fmt.Println(terminate_instance)
 		to_terminate -= 1
 	}
 	err = ioutil.WriteFile(fileName_1, []byte(updated_instance_list), 0644)
-	if err != nil {
-		log.Fatalln(err)
-	}
+	if err != nil { log.Fatalln(err) }
 }

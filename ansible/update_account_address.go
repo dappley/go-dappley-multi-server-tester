@@ -1,12 +1,12 @@
 package ansible 
 
 import (
-	"log"
-	"fmt"
-	"bufio"
-	"strings"
-	"strconv"
 	"io/ioutil"
+	"strconv"
+	"strings"
+	"bufio"
+	"fmt"
+	"log"
 )
 
 //Updates ansible playbooks' account address and the peer info value.
@@ -14,21 +14,16 @@ func Update_address(playbooks []string) {
 	var account_addresses []string
 	var peer_ids []string
 
+	//Read all account_address.txt
 	for i := 1; i <= 5; i++ {
 		account_address, err := ioutil.ReadFile("./accounts/node" + strconv.Itoa(i) + "/account_address.txt")
-		if err != nil {
-			fmt.Println("Failed to read account" + strconv.Itoa(i) + "'s address!")
-			continue
-		}
+		if err != nil { log.Fatal("Failed to read account" + strconv.Itoa(i) + "'s address!") }
 		account_addresses = append(account_addresses, string(account_address))
 	}
-
+	//Read all node_peerID.txt
 	for i := 1; i <= 5; i++ {
 		peer_id, err := ioutil.ReadFile("./accounts/node" + strconv.Itoa(i) + "/node" + strconv.Itoa(i) + "_peerID.txt")
-		if err != nil {
-			fmt.Println("Failed to read node" + strconv.Itoa(i) + "'s peerID!")
-			continue
-		}
+		if err != nil { log.Fatal("Failed to read node" + strconv.Itoa(i) + "'s peerID!") }
 		peer_ids = append(peer_ids, string(peer_id))
 	}
 
@@ -36,8 +31,8 @@ func Update_address(playbooks []string) {
 		var updated_playbook string
 		playbook_byte, err := ioutil.ReadFile(playbook)
 		if err != nil {
-			fmt.Println("Failed to read " + playbook)
-			return
+			fmt.Println("Failed to read", playbook, "!")
+			continue
 		}
 		scanner := bufio.NewScanner(strings.NewReader(string(playbook_byte)))
 		for scanner.Scan() {
@@ -58,28 +53,25 @@ func Update_address(playbooks []string) {
 				updated_line := strings.ReplaceAll(line, "account_5_address", account_addresses[4][:34]) + "\n"
 				updated_playbook += updated_line
 			} else if strings.Contains(line, "peer_ID_1") {
-				updated_line := strings.ReplaceAll(line, "peer_ID_1", peer_ids[0]) // + "\n"
+				updated_line := strings.ReplaceAll(line, "peer_ID_1", peer_ids[0])
 				updated_playbook += updated_line
 			} else if strings.Contains(line, "peer_ID_2") {
-				updated_line := strings.ReplaceAll(line, "peer_ID_2", peer_ids[1]) // + "\n"
+				updated_line := strings.ReplaceAll(line, "peer_ID_2", peer_ids[1])
 				updated_playbook += updated_line
 			} else if strings.Contains(line, "peer_ID_3") {
-				updated_line := strings.ReplaceAll(line, "peer_ID_3", peer_ids[2]) // + "\n"
+				updated_line := strings.ReplaceAll(line, "peer_ID_3", peer_ids[2])
 				updated_playbook += updated_line
 			} else if strings.Contains(line, "peer_ID_4") {
-				updated_line := strings.ReplaceAll(line, "peer_ID_4", peer_ids[3]) // + "\n"
+				updated_line := strings.ReplaceAll(line, "peer_ID_4", peer_ids[3])
 				updated_playbook += updated_line
 			} else if strings.Contains(line, "peer_ID_5") {
-				updated_line := strings.ReplaceAll(line, "peer_ID_5", peer_ids[4]) // + "\n"
+				updated_line := strings.ReplaceAll(line, "peer_ID_5", peer_ids[4])
 				updated_playbook += updated_line
 			} else {
 				updated_playbook += line + "\n"
-
 			}
 		}
 		err = ioutil.WriteFile(playbook, []byte(updated_playbook), 0644)
-		if err != nil {
-			log.Fatalln(err)
-		}
+		if err != nil { log.Fatalln(err) }
 	}
 }

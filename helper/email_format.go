@@ -6,11 +6,11 @@ import (
 
 //Creates a simpler email.
 func simpleEmail(fileNames []string) string {
+	var emailContents string
 	failingFiles := IsFileFail(fileNames)
 	if (len(failingFiles) == 0) {
 		return "ALL TESTS PASS!"
 	}
-	var emailContents string
 	emailContents += "Failing Playbook: \n"
 	for _, fileName := range failingFiles {
 		emailContents += "[" + strings.TrimRight(fileName, ".txt") + "] - Failing\n\n"

@@ -1,27 +1,24 @@
 package aws
 
 import (
-	"fmt"
-	"bufio"
-	"errors"
-	"strconv"
-	"strings"
-	"os/exec"
+	"github.com/heesooh/go-dappley-multi-server-tester/helper"
 	"io/ioutil"
+	"strings"
+	"strconv"
+	"errors"
+	"bufio"
+	"fmt"
+	"log"
 )
 
 //Runs until all servers are initialized.
 func Initialize_hosts(number string) {
+	//number is type string because of Jenkins pipeline
 	instances_to_initialize, err := strconv.Atoi(number)
-	if err != nil {
-		panic(err)
-	}
+	if err != nil { panic(err) }
 	fileName := "instance_ids"
 	instance_byte, err := ioutil.ReadFile(fileName)
-	if err != nil {
-		fmt.Println("Failed to read", fileName)
-		return
-	}
+	if err != nil { log.Fatal("Failed to read", fileName) }
 
 	scanner := bufio.NewScanner(strings.NewReader(string(instance_byte)))
 	for i := 1; scanner.Scan() && i <= instances_to_initialize; i++ {
@@ -30,29 +27,19 @@ func Initialize_hosts(number string) {
 		fmt.Println("Initializing " + instance_id + "...")
 		for initializing {
 			initialize_instance := "aws ec2 describe-instance-status --instance-ids " + instance_id
-			args := strings.Split(initialize_instance, " ")
-			cmd := exec.Command(args[0], args[1:]...)
-			output, err := cmd.CombinedOutput()
-			if err != nil {
-				fmt.Println(err)
-			}
-			
+			output := helper.ShellCommandExecuter(initialize_instance)
 			status_scanner := bufio.NewScanner(strings.NewReader(string(output)))
 			for status_scanner.Scan() {
 				line := status_scanner.Text()
-
 				if strings.Contains(line, "\"InstanceStatuses\":") {
-					args := strings.Split(line, ": ")
-					status := strings.TrimLeft(strings.TrimRight(args[1], "\""), "\"")
+					status := helper.TrimLeftRight(line, "\"", "\"")
 					if status == "[]" {
 						err := errors.New("Instance " + instance_id + "has been termianted!")
 						panic(err)
 					}
 				}
-
 				if strings.Contains(line, "\"Status\":") {
-					args := strings.Split(line, ": ")
-					status := strings.TrimLeft(strings.TrimRight(args[1], "\""), "\"")
+					status := helper.TrimLeftRight(line, "\"", "\"")
 					if status == "passed" {
 						initializing = false
 						fmt.Println("Instance " + instance_id + " initialized!")
