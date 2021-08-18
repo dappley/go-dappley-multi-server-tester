@@ -6,7 +6,7 @@ import (
 	"bufio"
 )
 
-//Check which given files contains failing test case
+//Check which given files contains failing test case.
 func IsFileFail(fileNames []string) []string {
 	var failingFiles []string
 	var curr_file string

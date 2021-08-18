@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 )
 
+//Updates ansible playbooks' account address and the peer info value.
 func Update_address(playbooks []string) {
 	var account_addresses []string
 	var peer_ids []string

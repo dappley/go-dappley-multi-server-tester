@@ -10,7 +10,7 @@ import (
 	"io/ioutil"
 )
 
-//Runs until all servers are initialized
+//Runs until all servers are initialized.
 func Initialize_hosts(number string) {
 	instances_to_initialize, err := strconv.Atoi(number)
 	if err != nil {

@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-//Create simpler email
+//Creates a simpler email.
 func simpleEmail(fileNames []string) string {
 	failingFiles := IsFileFail(fileNames)
 	if (len(failingFiles) == 0) {
@@ -18,6 +18,7 @@ func simpleEmail(fileNames []string) string {
 	return emailContents
 }
 
+//Simplifies the data inside the email content.
 func Simplify(task []string) []string {
 	var fatal bool
 	var simplified_task []string

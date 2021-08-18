@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-//Checks if slice contains the given value
+//Checks if slice contains the given value.
 func contains(slice []string, val string) bool {
 	for _, elem := range slice {
 		if elem == val {
@@ -17,6 +17,7 @@ func contains(slice []string, val string) bool {
 	return false
 }
 
+//Runs contains method twice.
 func DoubleContains(slice []string, val string) bool {
 	for _, elem := range slice {
 		if strings.Contains(elem, val) {
@@ -43,12 +44,13 @@ func Between(value string, a string, b string) string {
     return value[posFirstAdjusted:posLast]
 }
 
-//Checks the validity of the email address
+//Checks the validity of the email address.
 func Valid_email(email string) bool {
     _, err := mail.ParseAddress(email)
     return err == nil
 }
 
+//Returns the slice containing name of all files in a drectory.
 func AllFiles(directory string) []string {
     var files []string
     root := directory

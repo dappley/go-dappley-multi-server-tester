@@ -9,7 +9,7 @@ import (
 	"io/ioutil"
 )
 
-//Prints out the ssh command for all servers
+//Prints out the ssh command for all servers.
 func SSH_command(number string) {
 	number_of_instances, err := strconv.Atoi(number)
 	if err != nil {

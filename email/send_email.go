@@ -10,11 +10,13 @@ import (
 	"log"
 )
 
+//Composes and send out the email.
 func SendTestResult(senderEmail string, senderPasswd string, test_results []string) {
 	emailContents := ComposeEmail(test_results)
 	send(emailContents, senderEmail, senderPasswd)
 }
 
+//Send out the go-dappley-multi-server-test result.
 func send(emailBody string, senderEmail string, senderPasswd string) {
 	var recipients []string
 

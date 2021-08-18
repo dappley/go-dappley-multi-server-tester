@@ -7,7 +7,7 @@ import (
 	"bufio"
 )
 
-//Create email with all failing cases
+//Create email with all failing cases.
 func ComposeEmail(fileNames []string) string {
 	var file_description []string
 	var emailContents string

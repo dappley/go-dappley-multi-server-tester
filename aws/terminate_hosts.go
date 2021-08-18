@@ -10,7 +10,7 @@ import (
 	"io/ioutil"
 )
 
-//Termiante all servers via aws cli command
+//Termiante all servers via aws cli command.
 func Terminate_hosts(number string) {
 	var updated_instance_list string
 	var updated_host_list string
