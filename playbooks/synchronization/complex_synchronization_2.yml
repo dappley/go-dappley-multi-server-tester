@@ -507,7 +507,7 @@
     when: inventory_hostname in groups['NODE1']
 
   - name: Create height directory
-    shell: 'mkdir height'
+    shell: 'sudo mkdir height'
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
     when: inventory_hostname in groups['NODE1'] and height_directory.stat.exists == false

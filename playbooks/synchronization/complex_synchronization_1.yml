@@ -509,12 +509,12 @@
 ########## NODE 1 ##########
   - name: Check directory exists
     stat:
-      path: /home/ubuntu/go/src/github.com/dappley/go-dappley
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/height
     register: height_directory
     when: inventory_hostname in groups['NODE1']
 
   - name: Create height directory
-    shell: 'mkdir height'
+    shell: 'sudo mkdir height'
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
     when: inventory_hostname in groups['NODE1'] and height_directory.stat.exists == false
