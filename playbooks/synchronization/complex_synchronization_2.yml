@@ -500,17 +500,11 @@
 #################### Compare blockchain height ####################
 
 ########## NODE 1 ##########
-  - name: Check directory exists
-    stat:
+  - name: Create a directory if it does not exist
+    ansible.builtin.file:
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/height
-    register: height_directory
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Create height directory
-    shell: 'sudo mkdir height'
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
-    when: inventory_hostname in groups['NODE1'] and height_directory.stat.exists == false
+      state: directory
+      mode: '0755'
 
   - name: Create height info file
     shell: '> height_1.txt'
@@ -901,5 +895,10 @@
 
   - name: Remove /go-dappley/bin All Nodes
     shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+
+  - name: Remove /go-dappley/height All Nodes
+    shell: rm -r height
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
