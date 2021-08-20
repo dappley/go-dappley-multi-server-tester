@@ -167,7 +167,7 @@
     with_inventory_hostnames:
       - NODE1
     when: 
-      - not "'NODE10' in groups"
+      - "'NODE10' not in groups"
       - inventory_hostname in groups['NODE4']
 
   - name: Update node4 seed
@@ -190,7 +190,7 @@
     with_inventory_hostnames:
       - NODE1
     when: 
-      - not "'NODE10' in groups"
+      - "'NODE10' not in groups"
       - inventory_hostname in groups['NODE5']
 
   - name: Update node5 seed
@@ -302,7 +302,7 @@
     - ']'
     - 'max_producers: 5'
     when: 
-    - not "'NODE10' in groups"
+    - "'NODE10' not in groups"
 
   - name: Update genesis.conf
     lineinfile:

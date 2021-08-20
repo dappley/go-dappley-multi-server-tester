@@ -512,6 +512,7 @@
       path: /home/ubuntu/go/src/github.com/dappley/go-dappley/height
       state: directory
       mode: '0755'
+    when: inventory_hostname in groups['NODE1']
 
   - name: Create height info file
     shell: '> height_1.txt'
