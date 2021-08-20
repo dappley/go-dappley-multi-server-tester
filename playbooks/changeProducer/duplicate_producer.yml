@@ -287,12 +287,6 @@
       msg: '{{ test_result }}'
     when: inventory_hostname in groups['NODE1']
 
-  - name: Test
-    fail:
-      msg: "Expected the producer to stay the same but returned {{ test_result }}"
-    when: inventory_hostname in groups['NODE1'] and test_result.stdout == "Producer will be changed."
-    ignore_errors: true
-
   - name: Wait 2 Blocks
     shell: ./cli getBlockchainInfo
     args:
