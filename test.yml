@@ -12,4 +12,6 @@
     - role: initialize_async
       async_runtime: 100
       node_number: 5
+    - role: blockchain_status_check
+      node_number: 5
     - role: terminate_async

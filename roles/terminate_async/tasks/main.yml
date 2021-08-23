@@ -18,7 +18,7 @@
   args:
     chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
   ignore_errors: true
-  when: bin_1.stat.exists == false
+  when: bin_1.stat.exists == true
 
 - name: Check if /go-dappley/dapp/bin directory exists
   stat:
@@ -30,4 +30,4 @@
   args:
     chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
   ignore_errors: true
-  when: bin_2.stat.exists == false
+  when: bin_2.stat.exists == true
