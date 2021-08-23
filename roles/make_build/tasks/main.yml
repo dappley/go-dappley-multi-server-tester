@@ -1,0 +1,5 @@
+- name: Make build
+  make:
+    chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
+    target: build
+    file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile

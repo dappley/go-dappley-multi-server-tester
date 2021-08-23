@@ -35,6 +35,7 @@
   args:
     chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
   when: inventory_hostname in groups['NODE5']
+  async: '{{ async_runtime }}'
   poll: 0
 
 - name: Launch NODE6
@@ -105,6 +106,3 @@
   retries: 20
   delay: 10
   ignore_errors: true
-
-- debug:
-    msg: '{{ blockchainHeight }}'

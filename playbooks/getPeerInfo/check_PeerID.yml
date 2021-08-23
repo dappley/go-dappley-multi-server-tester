@@ -14,186 +14,16 @@
     peerID4: peer_ID_4
     peerID5: peer_ID_5
 
+  roles:
+#################### make_build, initialize_async & blockchain_status_check ####################
+    - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/make_build
+    - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/initialize_async
+      node_number: 5
+      async_runtime: 60
+    - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/blockchain_status_check
+      node_number: 5
+
   tasks:
-#################### Make build ####################
-  - name: Make build
-    make:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-      target: build
-      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
-
-
-#################### Launch Blockchain ####################
-  - name: Launch NODE1
-    shell: ./dapp -f conf/node1.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE1']
-    async: 60
-    poll: 0
-
-  - name: Launch NODE2
-    shell: ./dapp -f conf/node2.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE2']
-    async: 60
-    poll: 0
-
-  - name: Launch NODE3
-    shell: ./dapp -f conf/node3.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE3']
-    async: 60
-    poll: 0
-
-  - name: Launch NODE4
-    shell: ./dapp -f conf/node4.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE4']
-    async: 60
-    poll: 0
-
-  - name: Launch NODE5
-    shell: ./dapp -f conf/node5.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE5']
-    async: 60
-    poll: 0
-
-  - name: Wait for blockchain initialization
-    wait_for:
-      timeout: 20
-
-  - name: Wait til the blockchain reaches height of 10
-    shell: ./cli getBlockchainInfo
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: blockchainHeight
-    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
-    retries: 20
-    delay: 10
-    ignore_errors: true
-
-
-#################### Check NODE1 result ####################
-  - name: Create initialization result NODE1 - true
-    shell: echo true > error_1.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE1'] and blockchainHeight.failed
-
-  - name: Create initialization result NODE1- false
-    shell: echo false > error_1.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE1'] and not blockchainHeight.failed
-
-
-#################### Check NODE2 result ####################
-  - name: Create initialization result NODE2 - true
-    shell: echo true > error_2.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE2'] and blockchainHeight.failed
-
-  - name: Create initialization result NODE2 - false
-    shell: echo false > error_2.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE2'] and not blockchainHeight.failed
-
-
-#################### Check NODE3 result ####################
-  - name: Create initialization result NODE3 - true
-    shell: echo true > error_3.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE3'] and blockchainHeight.failed
-
-  - name: Create initialization result NODE3 - false
-    shell: echo false > error_3.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE3'] and not blockchainHeight.failed
-
-
-#################### Check NODE4 result ####################
-  - name: Create initialization result NODE4 - true
-    shell: echo true > error_4.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE4'] and blockchainHeight.failed
-
-  - name: Create initialization result NODE4 - false
-    shell: echo false > error_4.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE4'] and not blockchainHeight.failed
-
-
-#################### Check NODE5 result ####################
-  - name: Create initialization result NODE5 - true
-    shell: echo true > error_5.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE5'] and blockchainHeight.failed
-
-  - name: Create initialization result NODE5 - false
-    shell: echo false > error_5.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE5'] and not blockchainHeight.failed
-
-
-#################### Move initialization result ####################
-  - name: Move playbook test result to Jenkins - NODE1
-    fetch:
-      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node1/
-      flat: yes
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Move playbook test result to Jenkins - NODE2
-    fetch:
-      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node2/
-      flat: yes
-    when: inventory_hostname in groups['NODE2']
-
-  - name: Move playbook test result to Jenkins - NODE3
-    fetch:
-      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node3/
-      flat: yes
-    when: inventory_hostname in groups['NODE3']
-
-  - name: Move playbook test result to Jenkins - NODE4
-    fetch:
-      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node4/
-      flat: yes
-    when: inventory_hostname in groups['NODE4']
-
-  - name: Move playbook test result to Jenkins - NODE5
-    fetch:
-      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node5/
-      flat: yes
-    when: inventory_hostname in groups['NODE5']
-
-
-#################### Terminate playbook when initialization returns error ####################
-  - debug:
-      msg: '{{ blockchainHeight }}'
-
-  - meta: end_play
-    when: blockchainHeight.failed
-
-
 #################### Check PeerID node1 ####################
   - name: Check PeerID Node1
     shell: grep -rnw '.' -e '{{ peerID1 }}'
@@ -202,16 +32,11 @@
     when: inventory_hostname in groups['NODE1']
     register: peerID_check_node1
 
-  # - debug:
-  #     msg: '{{ peerID_check_node1 }}'
-  #   when: inventory_hostname in groups['NODE1']
-
   - name: Test node1 PeerID
     fail:
       msg: Expected to find the peerID {{ peerID1 }} in the log file, but peer ID is not found!"
     when: inventory_hostname in groups['NODE1'] and peerID_check_node1.stdout == ""
     ignore_errors: true
-
 
 #################### Check PeerID node2 ####################
   - name: Check PeerID Node2
@@ -221,16 +46,11 @@
     when: inventory_hostname in groups['NODE2']
     register: peerID_check_node2
 
-  # - debug:
-  #     msg: '{{ peerID_check_node2 }}'
-  #   when: inventory_hostname in groups['NODE2']
-
   - name: Test node2 PeerID
     fail:
       msg: Expected to find the peerID {{ peerID2 }} in the log file, but peer ID is not found!"
     when: inventory_hostname in groups['NODE2'] and peerID_check_node2.stdout == ""
     ignore_errors: true
-
 
 #################### Check PeerID node3 ####################
   - name: Check PeerID Node3
@@ -240,16 +60,11 @@
     when: inventory_hostname in groups['NODE3']
     register: peerID_check_node3
 
-  # - debug:
-  #     msg: '{{ peerID_check_node3 }}'
-  #   when: inventory_hostname in groups['NODE3']
-
   - name: Test node3 PeerID
     fail:
       msg: Expected to find the peerID {{ peerID3 }} in the log file, but peer ID is not found!"
     when: inventory_hostname in groups['NODE3'] and peerID_check_node3.stdout == ""
     ignore_errors: true
-
 
 #################### Check PeerID node4 ####################
   - name: Check PeerID Node4
@@ -259,16 +74,11 @@
     when: inventory_hostname in groups['NODE4']
     register: peerID_check_node4
 
-  # - debug:
-  #     msg: '{{ peerID_check_node4 }}'
-  #   when: inventory_hostname in groups['NODE4']
-
   - name: Test node4 PeerID
     fail:
       msg: Expected to find the peerID {{ peerID4 }} in the log file, but peer ID is not found!"
     when: inventory_hostname in groups['NODE4'] and peerID_check_node4.stdout == ""
     ignore_errors: true
-
 
 #################### Check PeerID node5 ####################
   - name: Check PeerID Node5
@@ -278,30 +88,19 @@
     when: inventory_hostname in groups['NODE5']
     register: peerID_check_node5
 
-  # - debug:
-  #     msg: '{{ peerID_check_node5 }}'
-  #   when: inventory_hostname in groups['NODE5']
-
   - name: Test node5 PeerID
     fail:
       msg: Expected to find the peerID {{ peerID5 }} in the log file, but peer ID is not found!"
     when: inventory_hostname in groups['NODE5'] and peerID_check_node5.stdout == ""
     ignore_errors: true
 
-
 #################### Terminate ####################
-  - name: Wait til the blockchain terminates
-    shell: ./cli getBlockchainInfo
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: blockchainHeight
-    until: blockchainHeight.stdout_lines[0][7:] == "server is not reachable!"
-    retries: 20
-    delay: 10
-    ignore_errors: true
-
-  - name: Remove /go-dappley/bin All Nodes
-    shell: rm -r bin
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
-    ignore_errors: true
+- hosts: all
+  become: true
+  become_user: ubuntu
+  environment:
+    GOPATH: "/home/ubuntu/go"
+    GOROOT: "/usr/local/go"
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin"
+  roles:
+    - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/terminate_async
