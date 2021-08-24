@@ -12,24 +12,12 @@
     account2: account_2_address
     invalid_address: thisistheaddressofaninvalidaddress
 
-#   pre_tasks:
-# #################### Send Accounts.dat ####################
-#   - name: Copy accounts.dat to NODE1
-#     copy:
-#       src: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node1/accounts.dat
-#       dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
-#     when: inventory_hostname in groups['NODE1']
-
-#   - name: Copy accounts.dat to NODE2
-#     copy:
-#       src: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node2/accounts.dat
-#       dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
-#     when: inventory_hostname in groups['NODE2']
-
   roles:
-#################### make_build, initialize_async & blockchain_status_check ####################
+#################### Roles ####################
     - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/copy_account_address
-      node_number: " 12 "
+      node_number: 1
+    - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/copy_account_address
+      node_number: 2
     - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/make_build
     - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/initialize_async
       node_number: 5

@@ -13,9 +13,13 @@
     account3: account_3_address
 
   roles:
-#################### make_build, initialize_async & blockchain_status_check ####################
+#################### Roles ####################
     - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/copy_account_address
-      node_number: " 123 "
+      node_number: 1
+    - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/copy_account_address
+      node_number: 2
+    - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/copy_account_address
+      node_number: 3
     - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/make_build
     - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/initialize_async
       node_number: 5

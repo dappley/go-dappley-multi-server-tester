@@ -10,36 +10,36 @@
 
   tasks:
 #################### Terminate ####################
-- name: Wait til the blockchain terminates
-  shell: ./cli getBlockchainInfo
-  args:
-    chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-  register: blockchainHeight
-  until: blockchainHeight.stdout_lines[0][7:] == "server is not reachable!"
-  retries: 20
-  delay: 10
-  ignore_errors: true
+  - name: Wait til the blockchain terminates
+    shell: ./cli getBlockchainInfo
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+    register: blockchainHeight
+    until: blockchainHeight.stdout_lines[0][7:] == "server is not reachable!"
+    retries: 20
+    delay: 10
+    ignore_errors: true
 
-- name: Check if /go-dappley/bin directory exists
-  stat:
-    path: /home/ubuntu/go/src/github.com/dappley/go-dappley/bin
-  register: bin_1
+  - name: Check if /go-dappley/bin directory exists
+    stat:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/bin
+    register: bin_1
 
-- name: Remove /go-dappley/bin All Nodes
-  shell: rm -r bin
-  args:
-    chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
-  ignore_errors: true
-  when: bin_1.stat.exists == true
+  - name: Remove /go-dappley/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+    ignore_errors: true
+    when: bin_1.stat.exists == true
 
-- name: Check if /go-dappley/dapp/bin directory exists
-  stat:
-    path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin
-  register: bin_2
+  - name: Check if /go-dappley/dapp/bin directory exists
+    stat:
+      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin
+    register: bin_2
 
-- name: Remove /go-dappley/dapp/bin All Nodes
-  shell: rm -r bin
-  args:
-    chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
-  ignore_errors: true
-  when: bin_2.stat.exists == true
+  - name: Remove /go-dappley/dapp/bin All Nodes
+    shell: rm -r bin
+    args:
+      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
+    ignore_errors: true
+    when: bin_2.stat.exists == true
