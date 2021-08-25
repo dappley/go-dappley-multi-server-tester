@@ -371,10 +371,3 @@
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin"
   roles:
     - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/terminate_async
-    ignore_errors: true
-
-  - name: Remove /go-dappley/dapp/bin Node
-    shell: rm -r bin
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
-    ignore_errors: true
