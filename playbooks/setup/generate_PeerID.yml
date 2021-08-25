@@ -392,17 +392,12 @@
 
 
 #################### Terminate ####################
-  - name: Wait til the blockchain terminates
-    shell: ./cli getBlockchainInfo
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: blockchainHeight
-    until: blockchainHeight.stdout_lines[0][7:] == "server is not reachable!"
-    retries: 20
-    delay: 10
-    ignore_errors: true
-
-  - name: Remove /go-dappley/bin All Nodes
-    shell: rm -r bin
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
+- hosts: all
+  become: true
+  become_user: ubuntu
+  environment:
+    GOPATH: "/home/ubuntu/go"
+    GOROOT: "/usr/local/go"
+    PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin"
+  roles:
+    - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/terminate_async

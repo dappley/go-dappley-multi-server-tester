@@ -8,328 +8,16 @@
     GOROOT: "/usr/local/go"
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin"
 
+  roles:
+#################### Roles ####################
+    - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/make_build
+    - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/initialize_async
+      node_number: 10
+      async_runtime: 150
+    - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/blockchain_status_check
+      node_number: 10
+
   tasks:
-#################### Make build ####################
-  - name: Make build
-    make:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-      target: build
-      file: /home/ubuntu/go/src/github.com/dappley/go-dappley/Makefile
-
-
-#################### Launch Blockchain ####################
-  - name: Launch NODE1
-    shell: ./dapp -f conf/node1.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE1']
-    async: 150
-    poll: 0
-
-  - name: Launch NODE2
-    shell: ./dapp -f conf/node2.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE2']
-    async: 150
-    poll: 0
-
-  - name: Launch NODE3
-    shell: ./dapp -f conf/node3.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE3']
-    async: 150
-    poll: 0
-
-  - name: Launch NODE4
-    shell: ./dapp -f conf/node4.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE4']
-    async: 150
-    poll: 0
-
-  - name: Launch NODE5
-    shell: ./dapp -f conf/node5.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE5']
-    async: 150
-    poll: 0
-
-  - name: Launch NODE6
-    shell: ./dapp -f conf/node6.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE6']
-    async: 150
-    poll: 0
-
-  - name: Launch NODE7
-    shell: ./dapp -f conf/node7.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE7']
-    async: 150
-    poll: 0
-
-  - name: Launch NODE8
-    shell: ./dapp -f conf/node8.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE8']
-    async: 150
-    poll: 0
-
-  - name: Launch NODE9
-    shell: ./dapp -f conf/node9.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE9']
-    async: 150
-    poll: 0
-
-  - name: Launch NODE10
-    shell: ./dapp -f conf/node10.conf
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp
-    when: inventory_hostname in groups['NODE10']
-    async: 150
-    poll: 0
-
-  - name: Wait for blockchain initialization
-    wait_for:
-      timeout: 20
-
-  - name: Wait til the blockchain reaches height of 10
-    shell: ./cli getBlockchainInfo
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: blockchainHeight
-    until: (blockchainHeight.stdout_lines[1][17:-1])|int > (10)|int
-    retries: 20
-    delay: 10
-    ignore_errors: true
-
-
-#################### Check NODE1 result ####################
-  - name: Create initialization result NODE1 - true
-    shell: echo true > error_1.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE1'] and blockchainHeight.failed
-
-  - name: Create initialization result NODE1- false
-    shell: echo false > error_1.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE1'] and not blockchainHeight.failed
-
-
-#################### Check NODE2 result ####################
-  - name: Create initialization result NODE2 - true
-    shell: echo true > error_2.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE2'] and blockchainHeight.failed
-
-  - name: Create initialization result NODE2 - false
-    shell: echo false > error_2.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE2'] and not blockchainHeight.failed
-
-
-#################### Check NODE3 result ####################
-  - name: Create initialization result NODE3 - true
-    shell: echo true > error_3.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE3'] and blockchainHeight.failed
-
-  - name: Create initialization result NODE3 - false
-    shell: echo false > error_3.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE3'] and not blockchainHeight.failed
-
-
-#################### Check NODE4 result ####################
-  - name: Create initialization result NODE4 - true
-    shell: echo true > error_4.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE4'] and blockchainHeight.failed
-
-  - name: Create initialization result NODE4 - false
-    shell: echo false > error_4.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE4'] and not blockchainHeight.failed
-
-
-#################### Check NODE5 result ####################
-  - name: Create initialization result NODE5 - true
-    shell: echo true > error_5.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE5'] and blockchainHeight.failed
-
-  - name: Create initialization result NODE5 - false
-    shell: echo false > error_5.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE5'] and not blockchainHeight.failed
-
-
-#################### Check NODE6 result ####################
-  - name: Create initialization result NODE6 - true
-    shell: echo true > error_6.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE6'] and blockchainHeight.failed
-
-  - name: Create initialization result NODE6 - false
-    shell: echo false > error_6.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE6'] and not blockchainHeight.failed
-
-
-#################### Check NODE7 result ####################
-  - name: Create initialization result NODE7 - true
-    shell: echo true > error_7.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE7'] and blockchainHeight.failed
-
-  - name: Create initialization result NODE7 - false
-    shell: echo false > error_7.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE7'] and not blockchainHeight.failed
-
-
-#################### Check NODE8 result ####################
-  - name: Create initialization result NODE8 - true
-    shell: echo true > error_8.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE8'] and blockchainHeight.failed
-
-  - name: Create initialization result NODE8 - false
-    shell: echo false > error_8.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE8'] and not blockchainHeight.failed
-
-
-#################### Check NODE9 result ####################
-  - name: Create initialization result NODE9 - true
-    shell: echo true > error_9.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE9'] and blockchainHeight.failed
-
-  - name: Create initialization result NODE9 - false
-    shell: echo false > error_9.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE9'] and not blockchainHeight.failed
-
-
-#################### Check NODE10 result ####################
-  - name: Create initialization result NODE10 - true
-    shell: echo true > error_10.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE10'] and blockchainHeight.failed
-
-  - name: Create initialization result NODE10 - false
-    shell: echo false > error_10.txt
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley
-    when: inventory_hostname in groups['NODE10'] and not blockchainHeight.failed
-
-
-#################### Move initialization result ####################
-  - name: Move playbook test result to Jenkins - NODE1
-    fetch:
-      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_1.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node1/
-      flat: yes
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Move playbook test result to Jenkins - NODE2
-    fetch:
-      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_2.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node2/
-      flat: yes
-    when: inventory_hostname in groups['NODE2']
-
-  - name: Move playbook test result to Jenkins - NODE3
-    fetch:
-      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_3.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node3/
-      flat: yes
-    when: inventory_hostname in groups['NODE3']
-
-  - name: Move playbook test result to Jenkins - NODE4
-    fetch:
-      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_4.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node4/
-      flat: yes
-    when: inventory_hostname in groups['NODE4']
-
-  - name: Move playbook test result to Jenkins - NODE5
-    fetch:
-      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_5.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node5/
-      flat: yes
-    when: inventory_hostname in groups['NODE5']
-
-  - name: Move playbook test result to Jenkins - NODE6
-    fetch:
-      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_6.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node6/
-      flat: yes
-    when: inventory_hostname in groups['NODE6']
-
-  - name: Move playbook test result to Jenkins - NODE7
-    fetch:
-      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_7.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node7/
-      flat: yes
-    when: inventory_hostname in groups['NODE7']
-
-  - name: Move playbook test result to Jenkins - NODE8
-    fetch:
-      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_8.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node8/
-      flat: yes
-    when: inventory_hostname in groups['NODE8']
-
-  - name: Move playbook test result to Jenkins - NODE9
-    fetch:
-      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_9.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node9/
-      flat: yes
-    when: inventory_hostname in groups['NODE9']
-
-  - name: Move playbook test result to Jenkins - NODE10
-    fetch:
-      src: /home/ubuntu/go/src/github.com/dappley/go-dappley/error_10.txt
-      dest: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/playbook_error/node10/
-      flat: yes
-    when: inventory_hostname in groups['NODE10']
-
-
-#################### Terminate playbook when initialization returns error ####################
-  - meta: end_play
-    when: blockchainHeight.failed
-
-
 #################### Wait till the blockchain reaches the height of 25 ####################
   - name: Wait til the blockchain reaches height of 25
     shell: ./cli getBlockchainInfo
@@ -340,9 +28,6 @@
     retries: 40
     delay: 10
     ignore_errors: true
-
-  - debug:
-      msg: '{{ blockchainHeight }}'
 
   - name: Wait til the async tasks to stop
     shell: ./cli getBlockchainInfo
@@ -359,7 +44,6 @@
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
     when: inventory_hostname in (( groups['NODE1'] + groups['NODE2'] + groups['NODE3'] + groups['NODE4'] + groups['NODE5'] + groups['NODE6'] +  groups['NODE7'] + groups['NODE8'] ) | unique )
-
 
 #################### Relaunch 8 nodes ####################
   - name: Launch NODE1
@@ -441,11 +125,6 @@
     ignore_errors: true
     when: inventory_hostname in (( groups['NODE1'] + groups['NODE2'] + groups['NODE3'] + groups['NODE4'] + groups['NODE5'] + groups['NODE6'] +  groups['NODE7'] + groups['NODE8'] ) | unique )
 
-  - debug:
-      msg: '{{ blockchainHeight }}'
-    when: inventory_hostname in (( groups['NODE1'] + groups['NODE2'] + groups['NODE3'] + groups['NODE4'] + groups['NODE5'] + groups['NODE6'] +  groups['NODE7'] + groups['NODE8'] ) | unique )
-
-
 #################### Relaunch the remaining 2 nodes ####################
   - name: Launch NODE9
     shell: ./dapp -f conf/node9.conf
@@ -469,10 +148,6 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: blockchainHeight
 
-  - debug:
-      msg: '{{ blockchainHeight }}'
-
-
 #################### Wait for two groups to merge ####################
   - name: Wait 60 seconds
     wait_for:
@@ -484,18 +159,11 @@
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: blockchainHeight
 
-  - debug:
-      msg: '{{ blockchainHeight }}'
-
   - name: Check genesisblock
     shell: ./cli getBlockByHeight -height 1
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: genesisBlock
-
-  - debug:
-      msg: '{{ genesisBlock }}'
-
 
 #################### Compare blockchain height ####################
 
@@ -645,7 +313,6 @@
       line: '{{ blockchainHeight.stdout_lines[1][17:-1] }}'
     when: inventory_hostname in groups['NODE10']
 
-
 #################### Move files to NODE1 ####################
   - name: Move height info to Jenkins
     fetch:
@@ -772,20 +439,12 @@
     when: inventory_hostname in groups['NODE1']
     register: height_1
 
-  - debug:
-      msg: '{{ height_1 }}'
-    when: inventory_hostname in groups['NODE1']
-
   - name: Check height_2
     shell: cat height_2.txt
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
     when: inventory_hostname in groups['NODE1']
     register: height_2
-
-  - debug:
-      msg: '{{ height_2 }}'
-    when: inventory_hostname in groups['NODE1']
 
   - name: Check height_3
     shell: cat height_3.txt
@@ -794,20 +453,12 @@
     when: inventory_hostname in groups['NODE1']
     register: height_3
 
-  - debug:
-      msg: '{{ height_3 }}'
-    when: inventory_hostname in groups['NODE1']
-
   - name: Check height_4
     shell: cat height_4.txt
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
     when: inventory_hostname in groups['NODE1']
     register: height_4
-
-  - debug:
-      msg: '{{ height_4 }}'
-    when: inventory_hostname in groups['NODE1']
 
   - name: Check height_5
     shell: cat height_5.txt
@@ -816,20 +467,12 @@
     when: inventory_hostname in groups['NODE1']
     register: height_5
 
-  - debug:
-      msg: '{{ height_5 }}'
-    when: inventory_hostname in groups['NODE1']
-
   - name: Check height_6
     shell: cat height_6.txt
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
     when: inventory_hostname in groups['NODE1']
     register: height_6
-
-  - debug:
-      msg: '{{ height_6 }}'
-    when: inventory_hostname in groups['NODE1']
 
   - name: Check height_7
     shell: cat height_7.txt
@@ -838,20 +481,12 @@
     when: inventory_hostname in groups['NODE1']
     register: height_7
 
-  - debug:
-      msg: '{{ height_7 }}'
-    when: inventory_hostname in groups['NODE1']
-
   - name: Check height_8
     shell: cat height_8.txt
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/height/
     when: inventory_hostname in groups['NODE1']
     register: height_8
-
-  - debug:
-      msg: '{{ height_8 }}'
-    when: inventory_hostname in groups['NODE1']
 
   - name: Check height_9
     shell: cat height_9.txt
@@ -860,10 +495,6 @@
     when: inventory_hostname in groups['NODE1']
     register: height_9
 
-  - debug:
-      msg: '{{ height_9 }}'
-    when: inventory_hostname in groups['NODE1']
-
   - name: Check height_10
     shell: cat height_10.txt
     args:
@@ -871,16 +502,11 @@
     when: inventory_hostname in groups['NODE1']
     register: height_10
 
-  - debug:
-      msg: '{{ height_10 }}'
-    when: inventory_hostname in groups['NODE1']
-
   - name: Check all nodes height
     fail:
       msg: "Expected the height of the blocks to be the same, but returned different values!"
     ignore_errors: true
     when: inventory_hostname in groups['NODE1'] and not (height_1.stdout|int == height_2.stdout|int == height_3.stdout|int == height_4.stdout|int == height_5.stdout|int == height_6.stdout|int == height_7.stdout|int == height_8.stdout|int == height_9.stdout|int == height_10.stdout|int)
-
 
 #################### Termintate ####################
   - name: Wait til the blockchain terminates

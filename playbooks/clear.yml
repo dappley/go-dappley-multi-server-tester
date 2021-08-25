@@ -7,39 +7,5 @@
     GOPATH: "/home/ubuntu/go"
     GOROOT: "/usr/local/go"
     PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/ubuntu/go/bin"
-
-  tasks:
-#################### Terminate ####################
-  - name: Wait til the blockchain terminates
-    shell: ./cli getBlockchainInfo
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
-    register: blockchainHeight
-    until: blockchainHeight.stdout_lines[0][7:] == "server is not reachable!"
-    retries: 20
-    delay: 10
-    ignore_errors: true
-
-  - name: Check if /go-dappley/bin directory exists
-    stat:
-      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/bin
-    register: bin_1
-
-  - name: Remove /go-dappley/bin All Nodes
-    shell: rm -r bin
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/
-    ignore_errors: true
-    when: bin_1.stat.exists == true
-
-  - name: Check if /go-dappley/dapp/bin directory exists
-    stat:
-      path: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin
-    register: bin_2
-
-  - name: Remove /go-dappley/dapp/bin All Nodes
-    shell: rm -r bin
-    args:
-      chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/
-    ignore_errors: true
-    when: bin_2.stat.exists == true
+  roles:
+    - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/terminate_async

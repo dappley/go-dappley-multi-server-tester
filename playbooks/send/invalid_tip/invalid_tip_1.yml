@@ -10,45 +10,31 @@
   vars:
     account1: account_1_address
     account2: account_2_address
+    producer: dastXXWLe5pxbRYFhcyUq8T3wb5srWkHKa
     invalid_address: thisistheaddressofaninvalidaddress
 
-  pre_tasks:
-#################### Send Accounts.dat ####################
-  - name: Copy accounts.dat to NODE1
-    copy:
-      src: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node1/accounts.dat
-      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
-    when: inventory_hostname in groups['NODE1']
-
-  - name: Copy accounts.dat to NODE2
-    copy:
-      src: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/accounts/node2/accounts.dat
-      dest: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/bin/
-    when: inventory_hostname in groups['NODE2']
-
   roles:
-#################### make_build, initialize_async & blockchain_status_check ####################
+#################### Roles ####################
+    - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/copy_account_address
+      node_number: 1
+    - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/copy_account_address
+      node_number: 2
     - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/make_build
     - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/initialize_async
       node_number: 5
       async_runtime: 90
     - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/blockchain_status_check
       node_number: 5
+    - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/add_producerAccount
 
   tasks:
 #################### Add balance to account ####################
   - name: Send money to account1
-    shell: ./cli sendFromMiner -to {{ account1 }} -amount 100000
+    shell: ./cli send -from dastXXWLe5pxbRYFhcyUq8T3wb5srWkHKa -to {{ account1 }} -amount 100000
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     when: inventory_hostname in groups['NODE1']
     register: transaction_result
-
-  - name: Transaction test
-    fail:
-      msg: Expected the transaction to approve but failed.
-    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout != "Requested amount is sent. Pending approval from network."
-    ignore_errors: true
 
   - name: Wait 10 seconds to complete transaction
     wait_for:

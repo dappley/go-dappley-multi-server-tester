@@ -190,7 +190,7 @@
 
 #################### No address or amount arguments ####################
   - name: No address
-    shell: ./cli sendFromMiner -amount -to
+    shell: ./cli send -from dastXXWLe5pxbRYFhcyUq8T3wb5srWkHKa -amount -to
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: test_result
@@ -213,7 +213,7 @@
 
 #################### No flag ####################
   - name: No flag
-    shell: ./cli sendFromMiner
+    shell: ./cli send -from dastXXWLe5pxbRYFhcyUq8T3wb5srWkHKa
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     register: test_result

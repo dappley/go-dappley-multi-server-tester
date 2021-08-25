@@ -1,0 +1,29 @@
+- name: Add producer 1
+  shell: ./cli addAccount -key 300c0338c4b0d49edc66113e3584e04c6b907f9ded711d396d522aae6a79be1a
+  args:
+    chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+  when: inventory_hostname in groups['NODE1']
+
+- name: Add producder 2
+  shell: ./cli addAccount -key da9282440fae188c371165e01615a2e1b14af68b3eaae51e6608c0bd86d4e6a6
+  args:
+    chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+  when: inventory_hostname in groups['NODE1']
+
+- name: Add producer 3
+  shell: ./cli addAccount -key 7c918ed7660d55759b7fc42b25f26bdab3caf8fc07586b2659a26470fb8dfc69
+  args:
+    chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+  when: inventory_hostname in groups['NODE1']
+
+- name: Add producer 4
+  shell: ./cli addAccount -key f9926ac4bb20e3e1f63dce51c31a0b575644a11c0c3f2694644dbe0b5bff2600
+  args:
+    chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+  when: inventory_hostname in groups['NODE1']
+
+- name: Add producer 5
+  shell: ./cli addAccount -key e321c051ab7e9b387e6572fe2018305acdf29ee370ac70a91230aa0e17cb099f
+  args:
+    chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
+  when: inventory_hostname in groups['NODE1']

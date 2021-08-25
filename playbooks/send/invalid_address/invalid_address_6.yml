@@ -26,21 +26,16 @@
       async_runtime: 90
     - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/blockchain_status_check
       node_number: 5
+    - role: /var/lib/jenkins/workspace/go-dappley-multi-server-tester/roles/add_producerAccount
 
   tasks:
 #################### Add balance to account ####################
   - name: Send money to account1
-    shell: ./cli sendFromMiner -to {{ account1 }} -amount 100000
+    shell: ./cli send -from dastXXWLe5pxbRYFhcyUq8T3wb5srWkHKa -to {{ account1 }} -amount 100000
     args:
       chdir: /home/ubuntu/go/src/github.com/dappley/go-dappley/dapp/cli
     when: inventory_hostname in groups['NODE1']
     register: transaction_result
-
-  - name: Transaction test
-    fail:
-      msg: Expected the transaction to approve but failed.
-    when: inventory_hostname in groups['NODE1'] and transaction_result.stdout != "Requested amount is sent. Pending approval from network."
-    ignore_errors: true
 
   - name: Wait 10 seconds to complete transaction
     wait_for:
